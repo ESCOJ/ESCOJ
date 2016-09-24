@@ -11,6 +11,6 @@ class Tag extends Model
     //building relationships
 
  	public function problems(){
-        return $this->belongsToMany('ESCOJ\Problem')->withPivot('level');
+        return $this->belongsToMany('EscojLB\Repo\Problem\Problem')->withPivot('level');
     }
 }

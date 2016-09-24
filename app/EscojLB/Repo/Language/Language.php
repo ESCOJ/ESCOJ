@@ -13,6 +13,6 @@ class Language extends Model
 
     public function problems(){
     	//the relationship without the withPivot method only provides the columns that form the pivot table, then we specify that also want the column multiplier of us pivot table
-   	    return $this->belongsToMany('ESCOJ\Problem')->withPivot('multiplier');
+   	    return $this->belongsToMany('EscojLB\Repo\Problem\Problem')->withPivot('multiplier');
    	}
 }

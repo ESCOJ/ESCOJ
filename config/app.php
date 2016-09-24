@@ -164,12 +164,14 @@ return [
         Illuminate\View\ViewServiceProvider::class,
 
         /*
-         * Package Service Providers... Personal Providers 
+         * Package Service Providers... and Personal Providers 
          */
         Collective\Html\HtmlServiceProvider::class,         //LaravelCollective
         Laracasts\Flash\FlashServiceProvider::class,        //flash messages
         Cviebrock\EloquentSluggable\ServiceProvider::class, //Slugable
+        EscojLB\Repo\RepoServiceProvider::class,  //Repository pattern provider
         //
+
 
         /*
          * Application Service Providers...

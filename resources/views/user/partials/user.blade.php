@@ -25,11 +25,11 @@
 </div>
 <div class="form-group">
 	{!!Form::label('countrys','Country:')!!}
-	{!! Form::select('country',$countries,null,['placeholder' => 'Select a counntry','id'=>'country', 'class' => 'form-control']) !!}
+	{!! Form::select('countrys',$countries,null,['placeholder' => 'Select a counntry','id'=>'country', 'class' => 'form-control']) !!}
 </div>
 <div class="form-group">
 	{!!Form::label('intitutions','Institution:')!!}
-	{!! Form::select('institution',[''=>''],null,['id'=>'institution', 'class' => 'form-control']) !!}
+	{!! Form::select('institutions',[''=>''],null,['id'=>'institution', 'class' => 'form-control']) !!}
 </div>
 <div class="form-group">
 	{!!Form::label('Avatar','Avatar (120x120, <35KB):')!!}

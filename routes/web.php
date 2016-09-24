@@ -1,5 +1,5 @@
 <?php
-
+use ESCOJ\Country;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -19,7 +19,7 @@ Route::get('/', function () {
 Auth::routes();
 
 Route::get('institutions/{id}','Auth\RegisterController@getInstitutions');
-Route::get('contestant/institutionss/{id}','UserController@getInstitutions');
+Route::get('contestant/institutions/{id}','UserController@getInstitutions');
 
 
 
@@ -36,5 +36,6 @@ Route::group(['prefix' => 'contestant'], function (){
 //Testing Route
 
 Route::get('test',function(){
+	dd(Country::pluck('name','id'));
 	return view('testing.test');
 });

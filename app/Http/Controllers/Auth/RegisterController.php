@@ -1,17 +1,20 @@
 <?php
 
 namespace ESCOJ\Http\Controllers\Auth;
+
 use Illuminate\Http\Request;
 use ESCOJ\Http\Requests;
-
-
-use ESCOJ\User;
-use ESCOJ\Country;
-use ESCOJ\Institution;
-use Validator;
 use ESCOJ\Http\Controllers\Controller;
 use Illuminate\Foundation\Auth\RegistersUsers;
 use Illuminate\Support\Facades\Storage;
+use Validator;
+
+use EscojLB\Repo\Country\CountryInterface;
+use EscojLB\Repo\Institution\InstitutionInterface;
+use EscojLB\Repo\User\UserInterface;
+
+
+
 
 class RegisterController extends Controller
 {
@@ -33,7 +36,26 @@ class RegisterController extends Controller
      *
      * @var string
      */
-    protected $redirectTo = '/home';
+    protected $redirectTo = '/';
+
+    protected $country;
+    protected $institution;
+    protected $user;
+
+
+    /**
+     * Create a new controller instance.
+     *
+     * @return void
+     */
+ 
+    public function __construct(CountryInterface $country,InstitutionInterface $institution,UserInterface $user)
+    {
+        $this->middleware('guest');
+        $this->country = $country;
+        $this->institution = $institution;
+        $this->user = $user;
+    }
 
     /**
      * Show the application registration form.
@@ -42,8 +64,8 @@ class RegisterController extends Controller
      */
     public function showRegistrationForm()
     {
-        $countries = Country::pluck('name','id');
-        return view('auth.register',compact('countries'));
+        $countries = $this->country->getKeyValueAll('name','id');
+        return view('auth.register',['countries' => $countries]);
     }
 
     /**
@@ -70,19 +92,9 @@ class RegisterController extends Controller
      */
     public function getInstitutions(Request $request, $id){
         if($request->ajax()){
-            $institutions = Institution::institutions($id);
+            $institutions=$this->institution->getInstitutionsByCountry($id);
             return response()->json($institutions);
         }
-    }
-
-    /**
-     * Create a new controller instance.
-     *
-     * @return void
-     */
-    public function __construct()
-    {
-        $this->middleware('guest');
     }
 
     /**
@@ -113,22 +125,19 @@ class RegisterController extends Controller
      */
     protected function create(array $data,Request $request )
     {
-        $name = 'user_defaul.jpg';
+        $flag = false;
         if($request->file('avatar')){
             $image = $request->file('avatar');
-            $name = $data['nickname']. time() . '.' . $image->extension();
-            $image->storeAs('/images/user_avatar', $name, "uploads"); 
+            $avatar = $data['nickname'] . '.' . $image->extension();
+            $flag = true;
         }
-        return User::create([
-            'name' => $data['name'],
-            'last_name' => $data['last_name'],
-            'nickname' => $data['nickname'],
-            'email' => $data['email'],
-            'password' => bcrypt($data['password']),
-            'register_date' => date("Y/m/d"),
-            'institution_id' => $data['institution'],
-            'country_id' => $data['country'],
-            'avatar' => $name,
-        ]);
+        else{
+            $avatar = 'user_defaul.jpg';
+        }
+        $user = $this->user->create($data,$avatar);  
+        if( !is_null($user)  and  $flag){
+            $image->storeAs('/images/user_avatar', $avatar, "uploads"); 
+        }
+        return $user;
     }
 }

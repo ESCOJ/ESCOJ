@@ -3,55 +3,21 @@
 interface UserInterface {
 
     /**
-     * Retrieve user by id
-     * regardless of status
+     * Create a new User
      *
-     * @param  int $id user ID
-     * @return stdObject object of user information
+     * @param array  Data to create a new user object
+     * @param string  $avatar the name of the avatar image
+     *
+     * @return User Object
      */
-    public function byId($id);
+    public function create(array $data , $avatar);
 
     /**
-     * Get paginated users
+     * Get a user by User ID
      *
-     * @param int $page Number of users per page
-     * @param int $limit Results per page
-     * @param boolean $all Show published or all
-     * @return StdClass Object with $items and $totalItems for pagination
+     * @param  int $id       User ID
+     * @return Object    User model object
      */
-    public function byPage($page=1, $limit=10, $all=false);
-
-   /* /**
-     * Get single user by URL
-     *
-     * @param string  URL slug of user
-     * @return object object of user information
-     */
-    public function bySlug($slug);
-
-   /**
-     * Get user by their tag
-     *
-     * @param string  URL slug of tag
-     * @param int Number of users per page
-     * @return StdClass Object with $items and $totalItems for pagination
-     */
-    public function byTag($tag, $page=1, $limit=10);
-
-    /**
-     * Create a new user
-     *
-     * @param array  Data to create a new object
-     * @return boolean
-     */
-    public function create(array $data);
-
-    /**
-     * Update an existing user
-     *
-     * @param array  Data to update an user
-     * @return boolean
-     */
-    public function update(array $data);
+    public function findById($id);
 
 }

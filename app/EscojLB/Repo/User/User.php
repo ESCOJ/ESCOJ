@@ -1,6 +1,6 @@
 <?php
 
-namespace ESCOJ;
+namespace EscojLB\Repo\User;
 
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -30,22 +30,22 @@ class User extends Authenticatable
     //building relationships
 
     public function country(){
-        return $this->belongsTo('ESCOJ\Country');
+        return $this->belongsTo('EscojLB\Repo\Country\Country');
     }
 
     public function institution(){
-        return $this->belongsTo('ESCOJ\Institution');
+        return $this->belongsTo('EscojLB\Repo\Institution\Institution');
     }
 
     public function contests(){
-        return $this->belongsToMany('ESCOJ\Contest');
+        return $this->belongsToMany('EscojLB\Repo\Contest\Contest');
     }
 
     public function judgments(){
-        return $this->hasMany('ESCOJ\Judgment');
+        return $this->hasMany('EscojLB\Repo\Judgment\Judgment');
     }
 
     public function problems(){
-        return $this->belongsToMany('ESCOJ\Problem')->withPivot('status');
+        return $this->belongsToMany('EscojLB\Repo\Problem\Problem')->withPivot('status');
     }
 }

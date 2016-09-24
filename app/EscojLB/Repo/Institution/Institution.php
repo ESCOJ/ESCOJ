@@ -1,6 +1,6 @@
 <?php
 
-namespace ESCOJ;
+namespace EscojLB\Repo\Institution;
 
 use Illuminate\Database\Eloquent\Model;
 
@@ -11,15 +11,11 @@ class Institution extends Model
     //building relationships
 
   	public function users(){
-        return $this->hasMany('ESCOJ\User');
+        return $this->hasMany('EscojLB\Repo\User\User');
     }
 
     public function country(){
-        return $this->belongsTo('ESCOJ\Country');
+        return $this->belongsTo('EscojLB\Repo\Country\Country');
     }
 
-    public static function institutions($id){
-    	return Institution::where('country_id','=',$id)
-    	->get();
-    }
 }

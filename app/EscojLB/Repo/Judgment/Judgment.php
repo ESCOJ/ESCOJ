@@ -16,10 +16,10 @@ class Judgment extends Model
     //building relationships
 
     public function users(){
-        return $this->belongsTo('ESCOJ\User');
+        return $this->belongsTo('EscojLB\Repo\User\User');
     }
 
     public function problems(){
-        return $this->belongsTo('ESCOJ\Problem');
+        return $this->belongsTo('EscojLB\Repo\Problem\Problem');
     }
 }

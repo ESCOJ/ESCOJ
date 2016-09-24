@@ -16,10 +16,10 @@ class Contest extends Model
     //building relationships
 
     public function users(){
-        return $this->belongsToMany('ESCOJ\User');
+        return $this->belongsToMany('EscojLB\Repo\User\User');
     }
 
     public function problems(){
-        return $this->belongsToMany('ESCOJ\Problem');
+        return $this->belongsToMany('EscojLB\Repo\Problem\Problem');
     }
 }

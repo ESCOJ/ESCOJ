@@ -67,7 +67,7 @@ return [
     'providers' => [
         'users' => [
             'driver' => 'eloquent',
-            'model' => ESCOJ\User::class,
+            'model' => EscojLB\Repo\User\User::class,
         ],
 
         // 'users' => [

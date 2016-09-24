@@ -1,6 +1,6 @@
-<?php
+<?php 
 
-namespace ESCOJ;
+namespace EscojLB\Repo\Country;
 
 use Illuminate\Database\Eloquent\Model;
 
@@ -12,11 +12,11 @@ class Country extends Model
     //building relationships
 
   	public function users(){
-        return $this->hasMany('ESCOJ\User');
+        return $this->hasMany('EscojLB\Repo\User\User');
     }
 
     public function institutions(){
-        return $this->hasMany('ESCOJ\Institution');
+        return $this->hasMany('EscojLB\Repo\Institution\Institution');
     }
 }
   
