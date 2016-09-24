@@ -61,7 +61,11 @@ return [
             'region' => 'your-region',
             'bucket' => 'your-bucket',
         ],
+        //Disk for store the image uploads
+        'uploads' => [
+          'driver' => 'local',
+          'root'   => public_path(),
+        ],
 
     ],
-
 ];

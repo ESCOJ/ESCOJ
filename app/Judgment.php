@@ -16,10 +16,10 @@ class Judgment extends Model
     //building relationships
 
     public function users(){
-        return $this->belongsTo('App\User');
+        return $this->belongsTo('ESCOJ\User');
     }
 
     public function problems(){
-        return $this->belongsTo('App\Problem');
+        return $this->belongsTo('ESCOJ\Problem');
     }
 }

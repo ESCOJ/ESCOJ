@@ -29,7 +29,7 @@ return [
     |
     */
 
-    'host' => env('MAIL_HOST', 'smtp.mailgun.org'),
+    'host' => env('MAIL_HOST', 'smtp.gmail.com'),
 
     /*
     |--------------------------------------------------------------------------
@@ -42,7 +42,7 @@ return [
     |
     */
 
-    'port' => env('MAIL_PORT', 587),
+    'port' => env('MAIL_PORT', 465),
 
     /*
     |--------------------------------------------------------------------------
@@ -54,10 +54,10 @@ return [
     | used globally for all e-mails that are sent by your application.
     |
     */
-
+    //Escoj12345
     'from' => [
-        'address' => 'hello@example.com',
-        'name' => 'Example',
+        'address' => 'esc.onlinejudge@gmail.com',
+        'name' => 'Escuela Superior de Cómputo Online Judge - ESCOJ',
     ],
 
     /*
@@ -71,7 +71,7 @@ return [
     |
     */
 
-    'encryption' => env('MAIL_ENCRYPTION', 'tls'),
+    'encryption' => env('MAIL_ENCRYPTION', 'ssl'),
 
     /*
     |--------------------------------------------------------------------------

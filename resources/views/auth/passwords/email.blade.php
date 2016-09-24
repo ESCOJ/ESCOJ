@@ -1,7 +1,10 @@
-@extends('layouts.app')
+@extends('layouts.main')
 
-<!-- Main Content -->
+
+@section('title', 'Forgot-Password')
+
 @section('content')
+<div id="divEspacio" class="rox marg-main" style="margin-top:110px;"></div>
 <div class="container">
     <div class="row">
         <div class="col-md-8 col-md-offset-2">

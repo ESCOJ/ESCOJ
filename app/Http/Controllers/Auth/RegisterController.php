@@ -1,11 +1,17 @@
 <?php
 
 namespace ESCOJ\Http\Controllers\Auth;
+use Illuminate\Http\Request;
+use ESCOJ\Http\Requests;
+
 
 use ESCOJ\User;
+use ESCOJ\Country;
+use ESCOJ\Institution;
 use Validator;
 use ESCOJ\Http\Controllers\Controller;
 use Illuminate\Foundation\Auth\RegistersUsers;
+use Illuminate\Support\Facades\Storage;
 
 class RegisterController extends Controller
 {
@@ -30,6 +36,46 @@ class RegisterController extends Controller
     protected $redirectTo = '/home';
 
     /**
+     * Show the application registration form.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function showRegistrationForm()
+    {
+        $countries = Country::pluck('name','id');
+        return view('auth.register',compact('countries'));
+    }
+
+    /**
+     * Handle a registration request for the application.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function register(Request $request)
+    {
+        $this->validator($request->all())->validate();
+
+        $this->guard()->login($this->create($request->all(),$request));
+
+        return redirect($this->redirectPath());
+    }
+
+    /**
+     * Get all intitutions for an incoming ajax request.
+     *
+     * @param  Request  $request
+     * @param  var     $id
+     * @return \Illuminate\Contracts\Validation\Validator
+     */
+    public function getInstitutions(Request $request, $id){
+        if($request->ajax()){
+            $institutions = Institution::institutions($id);
+            return response()->json($institutions);
+        }
+    }
+
+    /**
      * Create a new controller instance.
      *
      * @return void
@@ -48,9 +94,14 @@ class RegisterController extends Controller
     protected function validator(array $data)
     {
         return Validator::make($data, [
-            'name' => 'required|max:255',
-            'email' => 'required|email|max:255|unique:users',
+            'name' => 'required|max:30',
+            'last_name' => 'required|max:30',
+            'nickname' => 'required|max:30|unique:users',
+            'email' => 'required|email|max:60|unique:users',
             'password' => 'required|min:6|confirmed',
+            'country' => 'required',
+            'institution' => 'required',
+            'avatar' => 'image|max:35|dimensions:width=120,height=120',
         ]);
     }
 
@@ -60,12 +111,24 @@ class RegisterController extends Controller
      * @param  array  $data
      * @return User
      */
-    protected function create(array $data)
+    protected function create(array $data,Request $request )
     {
+        $name = 'user_defaul.jpg';
+        if($request->file('avatar')){
+            $image = $request->file('avatar');
+            $name = $data['nickname']. time() . '.' . $image->extension();
+            $image->storeAs('/images/user_avatar', $name, "uploads"); 
+        }
         return User::create([
             'name' => $data['name'],
+            'last_name' => $data['last_name'],
+            'nickname' => $data['nickname'],
             'email' => $data['email'],
             'password' => bcrypt($data['password']),
+            'register_date' => date("Y/m/d"),
+            'institution_id' => $data['institution'],
+            'country_id' => $data['country'],
+            'avatar' => $name,
         ]);
     }
 }

@@ -26,7 +26,8 @@ class CreateUsersTable extends Migration
             $table->enum('type',['contestant', 'coach', 'admin'])->default('contestant');
             $table->integer('institution_id')->unsigned();
             $table->integer('country_id')->unsigned();
-            $table->double('points');
+            $table->double('points')->default('0');
+            $table->string('avatar')->default('user_default.jpg');
             $table->rememberToken();
             $table->timestamps();
             //Foreign keys

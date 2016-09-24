@@ -25,10 +25,11 @@ class CreateProblemsTable extends Migration
             $table->text('input_specification');
             $table->text('output_specification');
             $table->string('sample_input',1000);
-            $table->string('output_input',1000);
+            $table->string('sample_output',1000);
             $table->string('hints',1000);
             $table->double('points');
             $table->string('status',2);//Indicates when the problem is available or disabled for the 24 hrs archive
+            $table->string('slug')->nullable();
             $table->timestamps();
         });
         

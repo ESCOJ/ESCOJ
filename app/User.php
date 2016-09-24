@@ -15,7 +15,7 @@ class User extends Authenticatable
      * @var array
      */
     protected $fillable = [
-        'name','last_name','nickname' 'email', 'password','register_date','type','institution_id','country_id','points',
+        'name','last_name','nickname', 'email', 'password','register_date','type','institution_id','country_id','points','avatar',
     ];
 
     /**
@@ -30,22 +30,22 @@ class User extends Authenticatable
     //building relationships
 
     public function country(){
-        return $this->belongsTo('App\Country');
+        return $this->belongsTo('ESCOJ\Country');
     }
 
     public function institution(){
-        return $this->belongsTo('App\Institution');
+        return $this->belongsTo('ESCOJ\Institution');
     }
 
     public function contests(){
-        return $this->belongsToMany('App\Contest');
+        return $this->belongsToMany('ESCOJ\Contest');
     }
 
     public function judgments(){
-        return $this->hasMany('App\Judgment');
+        return $this->hasMany('ESCOJ\Judgment');
     }
 
     public function problems(){
-        return $this->belongsToMany('App\Problem')->withPivot('status');
+        return $this->belongsToMany('ESCOJ\Problem')->withPivot('status');
     }
 }

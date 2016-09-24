@@ -90,7 +90,7 @@ return [
     |
     */
 
-    'fallback_locale' => 'es',
+    'fallback_locale' => 'en',
 
     /*
     |--------------------------------------------------------------------------
@@ -164,9 +164,11 @@ return [
         Illuminate\View\ViewServiceProvider::class,
 
         /*
-         * Package Service Providers... 
+         * Package Service Providers... Personal Providers 
          */
-        Collective\Html\HtmlServiceProvider::class,
+        Collective\Html\HtmlServiceProvider::class,         //LaravelCollective
+        Laracasts\Flash\FlashServiceProvider::class,        //flash messages
+        Cviebrock\EloquentSluggable\ServiceProvider::class, //Slugable
         //
 
         /*
