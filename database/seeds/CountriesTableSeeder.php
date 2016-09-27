@@ -1,7 +1,7 @@
 <?php
 
 use Illuminate\Database\Seeder;
-use ESCOJ\Country;
+use EscojLB\Repo\Country\Country;
 
 class CountriesTableSeeder extends Seeder
 {
@@ -17,7 +17,6 @@ class CountriesTableSeeder extends Seeder
         Country::create(array(
             'name' => 'Mexico',
         ));
-
         Country::create(array(
             'name' => 'Estados Unidos',
         ));
@@ -29,6 +28,9 @@ class CountriesTableSeeder extends Seeder
         ));
         Country::create(array(
             'name' => 'Rusia',
+        ));
+        Country::create(array(
+            'name' => 'Cuba',
         ));
 
         //Model::unguard();

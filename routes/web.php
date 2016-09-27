@@ -18,20 +18,20 @@ Route::get('/', function () {
 //The authenticaction Routes
 Auth::routes();
 
-Route::get('institutions/{id}','Auth\RegisterController@getInstitutions');
-Route::get('contestant/institutions/{id}','UserController@getInstitutions');
-
-
 
 Route::get('/home', 'HomeController@index');
 
 
 Route::group(['prefix' => 'contestant'], function (){
-	Route::get('profile', 'UserController@profile');
-	Route::get('edit','UserController@edit');
-	Route::put('update','UserController@update');
-
+	Route::get('profile', 'Auth\RegisterController@profile');
+	Route::get('edit','Auth\RegisterController@edit');
+	Route::put('update','Auth\RegisterController@update');
+	Route::get('institutions/{id}','Auth\RegisterController@getInstitutions');
+	Route::get('contestant/institutions/{id}','Auth\RegisterController@getInstitutions');
 });
+
+
+Route::resource('problem','ProblemController');
 
 //Testing Route
 

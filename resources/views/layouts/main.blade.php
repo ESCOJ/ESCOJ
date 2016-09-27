@@ -15,6 +15,8 @@
 	    {!!Html::style('plugins/bootstrap/css/bootstrap-theme.min.css')!!}
 	    {!!Html::style('css/style.css')!!}
 
+        @yield('styles')
+
             <!-- Scripts -->
         <script>
             window.Laravel = <?php echo json_encode([
@@ -34,8 +36,11 @@
 	    {!!Html::script('plugins/bootstrap/js/bootstrap.min.js')!!}
 	    {!!Html::script('plugins/jquery/js/jquery-3.1.0.js')!!}
 	    {!!Html::script('plugins/bootstrap/js/bootstrap.js')!!}
-        {!!Html::script('js/dropdown.js') !!}<!-- Pronto lo movere de lugar-->
+        {!!Html::script('js/dropdown.js') !!}
         
+        @yield('scripts')
+      
+
         <script type="text/javascript">
             $.ajaxSetup({
                 headers: {

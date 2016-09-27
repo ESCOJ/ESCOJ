@@ -48,4 +48,39 @@ class EloquentUser implements UserInterface {
         return $this->user->find($id);
     }
 
+    /**
+     * Update an existing User
+     *
+     * @param int $id      User ID
+     * @param array        Data to update an User
+     * @param bool         $withPass to indicate whether the password will be update
+     * @param string       $Avatar or null to indicate whether the avatar will be update
+     * @return boolean
+     */
+    public function update($id, array $data, $withPass, $Avatar = null)
+    {
+        $user = $this->findById($id);
+        $user->name = $data['name'];
+        $user->last_name = $data['last_name'];
+        $user->email = $data['email'];
+        if($withPass)
+            $user->password = bcrypt($data['password']);
+        if(!is_null($Avatar))
+            $user->avatar = $Avatar;
+        $user->country_id = $data['country'];
+        $user->institution_id = $data['institution'];
+        return $user->save();
+    }
+
+      /**
+     * Retrieve the avatar name by User ID
+     *
+     * @param  int $id       User ID
+     * @return string    avatar name
+     */
+    public function getAvatar($id){
+        $user = $this->findById($id);
+        return $user->avatar;
+    }
+
 }

@@ -1,6 +1,6 @@
 $("#country").change(event => {
 	$("#institution").empty();
-	$.get(`institutions/${event.target.value}`, function(res){
+	$.get(`contestant/institutions/${event.target.value}`, function(res){
 		res.forEach(element => {
 			$("#institution").append(`<option value=${element.id}> ${element.name} </option>`);
 		});

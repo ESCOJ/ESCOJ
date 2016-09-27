@@ -1,7 +1,7 @@
 <nav class="navbar navbar-default navbar-fixed-top navbar-inverse" style="background-color:blue;">
 	<div class="container-fluid">
 		<ul class="nav navbar-nav">
-			<li><img src="{{ asset('images/escoj7.png') }}" style=" width:210px; height:50px; position: relative; top:0px; left: -15px;"></li>
+			<li><a href="{{ url('/') }}" style="height:50px;"><img src="{{ asset('images/escoj7.png') }}" style=" width:210px; height:50px; position: relative; top:-14px; left: -30px;"></a></li>
 			<li><a href="./problems.php">Problems <span class="sr-only">(current)</span></a></li>
 			<li><a href="./sentencias.php">Verdicts</a></li>
 			<li><a href="#">Ranks</a></li>
