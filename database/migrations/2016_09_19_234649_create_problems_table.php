@@ -31,6 +31,10 @@ class CreateProblemsTable extends Migration
             $table->string('status',2);//Indicates when the problem is available or disabled for the 24 hrs archive
             $table->string('slug')->nullable();
             $table->timestamps();
+
+            $table->integer('added_by')->unsigned();
+            $table->foreign('added_by')->references('id')->on('users');
+
         });
         
         //Pivot table to manage the relationship many to many between problems and tags

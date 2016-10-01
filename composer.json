@@ -9,7 +9,9 @@
         "laravel/framework": "5.3.*",
         "laravelcollective/html": "5.3.*",
         "laracasts/flash": "^2.0",
-        "cviebrock/eloquent-sluggable": "^4.1"
+        "cviebrock/eloquent-sluggable": "^4.1",
+        "anhskohbo/no-captcha": "^2.1",
+        "laravel/socialite": "^2.0"
     },
     "require-dev": {
         "fzaninotto/faker": "~1.4",

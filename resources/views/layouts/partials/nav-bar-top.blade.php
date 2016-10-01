@@ -9,17 +9,21 @@
 
 			<!--_________________________________Aqui_______________________________________-->
 			@if (Auth::guest())
-				<li><p class="navbar-text" style="margin-left:30em;">Already have an account?</p></li>
+				<li><p class="navbar-text" style="margin-left:28em;">Already have an account?</p></li>
 				<li class="dropdown" style="margin-left:.5em;">
-					<a href="#" class="dropdown-toggle" data-toggle="dropdown"><b>Login</b> <span class="caret"></span></a>
+					<a href="#" class="dropdown-toggle " data-toggle="dropdown"><b>Login</b> <span class="caret"></span></a>
 					<ul id="login-dp" class="dropdown-menu">
 						<li>
 							<div class="row">
 								<div class="col-md-12">
 									Login via
 									<div class="social-buttons">
-									<a href="#" class="btn btn-fb"><i class="fa fa-facebook"></i> Facebook</a>
-									<a href="#" class="btn btn-tw"><i class="fa fa-twitter"></i> Twitter</a>
+									<a href="#" class="btn btn-social btn-facebook">
+										<span class="fa fa-facebook"></span>Facebook
+									</a>
+									<a href="{{ url('/auth/github') }}"class="btn btn-social btn-github">
+										<span class="fa fa-github"></span>Github
+									</a>
 									</div>
 									or
 									<form class="form" role="form" method="POST" action="{{ url('/login') }}" accept-charset="UTF-8" id="login-nav"> {{ csrf_field() }}
@@ -44,7 +48,9 @@
 											<div class="help-block text-right"><a href="{{ url('/password/reset') }}">Forget the password ?</a></div>
 										</div>
 										<div class="form-group">
-											<button type="submit" class="btn btn-primary btn-block">Sign in</button>
+											<button type="submit" class="btn btn-primary btn-block">
+												<span class="fa fa-user"></span>     Sign in
+											</button>
 										</div>
 										<div class="checkbox">
 											<label>
@@ -61,7 +67,7 @@
 					</ul>
 				</li>
 			@else
-				<li><p class="navbar-text" style="margin-left:43em;"></p></li>
+				<li><p class="navbar-text" style="margin-left:40em;"></p></li>
 				<li class="dropdown"style="margin-left:.5em;">
 					<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
 						{{ Auth::user()->name }} <span class="caret"></span>

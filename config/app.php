@@ -170,6 +170,8 @@ return [
         Laracasts\Flash\FlashServiceProvider::class,        //flash messages
         Cviebrock\EloquentSluggable\ServiceProvider::class, //Slugable
         EscojLB\Repo\RepoServiceProvider::class,  //Repository pattern provider
+        Anhskohbo\NoCaptcha\NoCaptchaServiceProvider::class, //reCaptcha
+        Laravel\Socialite\SocialiteServiceProvider::class, //Laravel socialite for login and register whit social networks
         //
 
 
@@ -232,6 +234,7 @@ return [
         //Personal aliases
         'Form' => Collective\Html\FormFacade::class,
         'Html' => Collective\Html\HtmlFacade::class,
+        'Socialite' => Laravel\Socialite\Facades\Socialite::class,
 
     ],
 

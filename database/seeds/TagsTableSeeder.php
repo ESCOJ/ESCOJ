@@ -2,7 +2,7 @@
 
 use Illuminate\Database\Seeder;
 use EscojLB\Repo\Tag\Tag;
-class TagsSeeder extends Seeder
+class TagsTableSeeder extends Seeder
 {
     /**
      * Run the database seeds.

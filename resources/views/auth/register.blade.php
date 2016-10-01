@@ -2,6 +2,10 @@
 
 @section('title', 'Register')
 
+@section('styles')
+    {!!Html::style('plugins/fileinput/css/fileinput.min.css')!!}
+@endsection   
+
 @section('content')
 <div id="divEspacio" class="rox marg-main" style="margin-top:55px;"></div>
 <div class="container">
@@ -17,7 +21,13 @@
                             <label for="name" class="col-md-4 control-label">Name</label>
 
                             <div class="col-md-6">
-                                <input id="name" type="text" class="form-control" name="name" value="{{ old('name') }}" autofocus>
+                               
+                                @if(!session('name'))
+                                    <input id="name" type="text" class="form-control" name="name" value="{{ old('name') }}" autofocus>
+                                @else
+                                    <input id="name" type="text" class="form-control" name="name" value="{{ session('name') }}" autofocus>
+                                @endif
+                                
 
                                 @if ($errors->has('name'))
                                     <span class="help-block">
@@ -45,7 +55,11 @@
                             <label id="nickname" for="nickname" class="col-md-4 control-label">NickName</label>
 
                             <div class="col-md-6">
-                               <input type="text" class="form-control" name="nickname" value="{{ old('nickname') }}">
+                                @if(!session('nickname'))
+                                    <input type="text" class="form-control" name="nickname" value="{{ old('nickname') }}">
+                                @else
+                                    <input type="text" class="form-control" name="nickname" value="{{ session('nickname') }}">
+                                @endif
 
                                 @if ($errors->has('nickname'))
                                     <span class="help-block">
@@ -59,11 +73,30 @@
                             <label for="email" class="col-md-4 control-label">E-Mail Address</label>
 
                             <div class="col-md-6">
-                                <input id="email" type="text" class="form-control" name="email" value="{{ old('email') }}" >
+                                
+                                @if(!session('email'))
+                                    <input id="email" type="text" class="form-control" name="email" value="{{ old('email') }}" >
+                                @else
+                                    <input id="email" type="text" class="form-control" name="email" value="{{ session('email') }}" >
+                                @endif
 
                                 @if ($errors->has('email'))
                                     <span class="help-block">
                                         <strong>{{ $errors->first('email') }}</strong>
+                                    </span>
+                                @endif
+                            </div>
+                        </div>
+
+                         <div class="form-group{{ $errors->has('email_confirmation') ? ' has-error' : '' }}">
+                            <label for="email_confirmation" class="col-md-4 control-label">Confirm E-Mail</label>
+
+                            <div class="col-md-6">
+                                <input id="email_confirmation" type="text" class="form-control" name="email_confirmation" value="{{ old('email_confirmation') }}" >
+
+                                @if ($errors->has('email_confirmation'))
+                                    <span class="help-block">
+                                        <strong>{{ $errors->first('email_confirmation') }}</strong>
                                     </span>
                                 @endif
                             </div>
@@ -129,8 +162,7 @@
                         
                             <label for="avatar" class="col-md-4 control-label">Avatar (120x120, <35KB)</label>                            
                             <div class="col-md-6">
-                                <input id="avatar" type="file" name="avatar" class="btn-primary ">
-                               
+                                <input id="avatar" type="file" name="avatar" class="btn-primary" value>
                                 @if ($errors->has('avatar'))
                                     <span class="help-block">
                                         <strong>{{ $errors->first('avatar') }}</strong>
@@ -138,13 +170,52 @@
                                 @endif
 
                             </div>
-                        </div>     
-  
+                        </div>
 
+                        @if(session('github_id'))
+                            <input type="hidden" name="github_id" value="{{ session('github_id') }}">
+                        @else
+                            <input type="hidden" name="github_id" value="{{ old('github_id') }}">  
+                        @endif
+
+                        <div class="form-group{{ $errors->has('g-recaptcha-response') ? ' has-error' : '' }}">
+
+                            <label class="col-md-4 control-label">Captcha</label>
+
+                            <div class="col-md-6">
+                                {!! app('captcha')->display() !!}
+
+                                @if ($errors->has('g-recaptcha-response'))
+                                    <span class="help-block">
+                                        <strong>{{ $errors->first('g-recaptcha-response') }}</strong>
+                                    </span>
+                                @endif
+
+                            </div>
+                        </div>
+                        
+                        <div class="form-group {{ $errors->has('terms_of_services') ? ' has-error' : '' }}">
+                            
+                            <label class="col-md-4 control-label">
+                                    <input id="terms_of_services" type="radio" name="terms_of_services">
+                            </label>  
+                                                                                  
+                            <div class="col-md-6 radio">
+                                I agree with the <a href="{{ url('/register/escojtos') }}" target="new">ESCOJ Terms of Service</a>
+                                @if ($errors->has('terms_of_services'))
+                                    <span class="help-block">
+                                        <strong>{{ $errors->first('terms_of_services') }}</strong>
+                                    </span>
+                                @endif
+
+                            </div>
+                        </div>
+
+    
                         <div class="form-group">
                             <div class="col-md-6 col-md-offset-4">
                                 <button type="submit" class="btn btn-primary">
-                                    Register
+                                    <span class="glyphicon glyphicon-user"></span>  Register
                                 </button>
                             </div>
                         </div>
@@ -157,5 +228,21 @@
 @endsection
 @section('scripts')
     {!!Html::script('js/dropdown.js') !!}
+    {!!Html::script('plugins/fileinput/js/fileinput.min.js')!!}
+    <script type="text/javascript">
+         $("#avatar").fileinput({
+            maxFileSize : 35,
+            msgProgress : 'Loading {percent}%',
+            previewClass : 'file_preview',
+            previewFileType : "image",
+            browseClass : "btn btn-primary",
+            browseLabel : "Pick image",
+            browseIcon : '<i class="fa fa-picture-o"></i>&nbsp;',
+            removeClass : "btn btn-default",
+            removeLabel : "Delete",
+            removeIcon : '<i class="fa fa-trash"></i>',
+            showUpload: false,
+        });
+    </script>
 @endsection
 

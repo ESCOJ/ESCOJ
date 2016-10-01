@@ -54,7 +54,6 @@ return [
     | used globally for all e-mails that are sent by your application.
     |
     */
-    //Escoj12345
     'from' => [
         'address' => 'esc.onlinejudge@gmail.com',
         'name' => 'Escuela Superior de Cómputo Online Judge - ESCOJ',

@@ -11,7 +11,7 @@ use Illuminate\Support\Facades\Storage;
 use Validator;
 use File;
 use Illuminate\Support\Facades\Auth;
-
+use Mail;
 
 use EscojLB\Repo\Country\CountryInterface;
 use EscojLB\Repo\Institution\InstitutionInterface;
@@ -80,11 +80,43 @@ class RegisterController extends Controller
      */
     public function register(Request $request)
     {
+
         $this->validator($request->all())->validate();
+        if ($request->has('github_id'))
+        {
 
-        $this->guard()->login($this->create($request->all(),$request));
+            $user = $this->create($request->all(),$request,$request->github_id);
+            if ( ! $user )
+            {
+                flash('Error in your account registration.', 'danger');
+            }
+            else
+            {
+                $this->user->confirmationSuccess($user->id);
+                Auth::login($user);
+                flash('Thanks for signing up! start coding.', 'info');
+            }
 
-        return redirect($this->redirectPath());
+        }
+        else
+        {
+            $confirmation_code = str_random(50);
+
+            $user = $this->create($request->all(),$request,null,$confirmation_code);
+            if ( ! $user )
+            {
+                flash('Error in your account registration.', 'danger');
+            }
+            else
+            {    
+                $user->sendConfirmAccountNotification($confirmation_code);
+
+                flash('Thanks for signing up! Please check your email for confirm your account.', 'info');
+            }
+        }
+        
+        return redirect('/');
+
     }
 
     /**
@@ -93,7 +125,7 @@ class RegisterController extends Controller
      * @param  array  $data
      * @return User
      */
-    protected function create(array $data,Request $request )
+    protected function create(array $data, Request $request, $github_id = null ,$confirmation_code = null)
     {
         $flag = false;
         if($request->file('avatar')){
@@ -104,11 +136,36 @@ class RegisterController extends Controller
         else{
             $avatar = 'user_defaul.jpg';
         }
-        $user = $this->user->create($data,$avatar);  
+        $user = $this->user->create($data,$confirmation_code,$avatar,$github_id);  
         if( !is_null($user)  and  $flag){
             $image->storeAs('/images/user_avatar', $avatar, "uploads"); 
         }
         return $user;
+    }
+
+    public function confirm($confirmation_code)
+    {
+
+        if( ! $confirmation_code)
+        {
+            flash('Error in your account confirmation, not was given the confirmation code.', 'danger');
+            return redirect('/');
+        }
+
+        $user = $this->user->whereConfirmationCode($confirmation_code);
+
+        if ( ! $user )
+        {
+
+            flash('Error in your account confirmation, no user with this confirmation code.', 'danger');
+            return redirect('/');
+        }
+
+        $this->user->confirmationSuccess($user->id);
+
+        flash('You have successfully verified your account. Please sign in','info');
+
+        return redirect('/');
     }
 
     /**
@@ -118,9 +175,7 @@ class RegisterController extends Controller
      */
     public function profile()
     {
-        //$user = User::find(Auth::user()->id);
         $user = $this->user->findById(Auth::user()->id);
-        //dd($user->institution->name);
         return view('user.profile',['user' => $user]);
     }
 
@@ -134,7 +189,8 @@ class RegisterController extends Controller
     {
         $user = $this->user->findById(Auth::user()->id);
         $countries = $this->country->getKeyValueAll('name','id');
-        return view('user.update',['user' => $user,'countries' => $countries]);
+        $institutions = $this->institution->getInstitutionsKeyValueByCountry('name','id',$user->country_id);
+        return view('user.update',['user' => $user,'countries' => $countries, 'institutions' => $institutions]);
     }
 
      /**
@@ -147,13 +203,18 @@ class RegisterController extends Controller
     public function update(UserUpdateRequest $request)
     {   
         $pass = $flag = false;
+        $email_prev = $this->user->getEmail(Auth::user()->id);
+
         if(!empty($request->password))
             $pass = true;
+
         if($request->file('avatar')){
+
             $image = $request->file('avatar');
             $avatar = $request['nickname'] . '.' . $image->extension();
             $avatar_prev = $this->user->getAvatar(Auth::user()->id);
             $flag = $this->user->update(Auth::user()->id,$request->all(),$pass,$avatar);
+
             if($flag){
                 if(File::exists(public_path().'/images/user_avatar/'. $avatar_prev))
                     File::delete(public_path().'/images/user_avatar/'.$avatar_prev);
@@ -162,15 +223,27 @@ class RegisterController extends Controller
         }
         else
             $flag = $this->user->update(Auth::user()->id,$request->all(),$pass);
+        //If the email is changed
+        if($email_prev != $request->email){
+
+            $confirmation_code = str_random(50);
+
+            if($flag and $this->user->updateEmailChange(Auth::user()->id,$confirmation_code)){
+              
+                $this->user->findById(Auth::user()->id)->sendConfirmAccountNotification($confirmation_code);
+                $this->logout($request);
+                flash('Your account is disabled, Please check your email for confirm your account.', 'info');
+            } 
+            else
+                flash('Error updating data', 'warning');
+            return redirect('/');
+        }
 
         if($flag)
             flash('Data updated successfully', 'success');
         else
             flash('Error updating data', 'warning');
         return redirect('/contestant/profile');
-
-        
-
     }
 
     /**
@@ -199,11 +272,29 @@ class RegisterController extends Controller
             'name' => 'required|max:30',
             'last_name' => 'required|max:30',
             'nickname' => 'required|max:30|unique:users',
-            'email' => 'required|email|max:60|unique:users',
+            'email' => 'required|email|max:60|confirmed|unique:users',
             'password' => 'required|min:6|confirmed',
             'country' => 'required',
             'institution' => 'required',
             'avatar' => 'image|max:35|dimensions:width=120,height=120',
+            'terms_of_services' => 'accepted',
+            'g-recaptcha-response' => 'required|captcha',
         ]);
     }
+
+    /**
+     * Log the user out of the application.
+     *
+     * @param  Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function logout(Request $request)
+    {
+        Auth::logout();
+
+        $request->session()->flush();
+
+        $request->session()->regenerate();
+    }
+
 }

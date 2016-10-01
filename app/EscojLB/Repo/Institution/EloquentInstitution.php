@@ -23,4 +23,16 @@ class EloquentInstitution implements InstitutionInterface {
         return $this->institution->where('country_id','=',$id)->get();
     }
 
+    /**
+     * Get all institutions of a specific country as key-value array 
+     *
+     * @param  string $key  key to associate
+     * @param  string $value  value to associate
+     * @param  int $id       Country ID
+     * @return array    Associative Array with all institutions of a given country
+     */
+    public function getInstitutionsKeyValueByCountry($key,$value,$id){
+        return $this->institution->where('country_id','=',$id)->pluck($key,$value);
+    }
+
 }

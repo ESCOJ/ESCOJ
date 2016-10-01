@@ -12,7 +12,7 @@
     <div class="row">
         <div class="col-md-10 col-md-offset-1">
             <div class="panel panel-primary">
-                <div class="panel-heading">Add Problem</div>
+                <div class="panel-heading"><strong><center>Add Problem</center></strong></div>
                     <div class="panel-body">
                         {!!Form::open(['route'=>'problem.store', 'method'=>'POST','files' => true,'class' => 'form-horizontal'])!!}
                             @include('problem.partials.problem')
@@ -31,6 +31,9 @@
 
 @section('scripts')
     {!!Html::script('plugins/trumbowyg/trumbowyg.js') !!}
+    {!!Html::script('plugins/fileinput/js/plugins/canvas-to-blob.min.js')!!}
+    {!!Html::script('plugins/fileinput/js/plugins/sortable.min.js')!!}
+    {!!Html::script('plugins/fileinput/js/plugins/purify.min.js')!!}
     <script type="text/javascript">
         $('.textarea-content').trumbowyg();
     </script>

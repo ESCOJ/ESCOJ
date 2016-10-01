@@ -4,7 +4,8 @@ namespace EscojLB\Repo\User;
 
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Foundation\Auth\User as Authenticatable;
-
+use ESCOJ\Notifications\ResetPassword as ResetPasswordNotification;
+use ESCOJ\Notifications\ConfirmAccount;
 class User extends Authenticatable
 {
     use Notifiable;
@@ -15,7 +16,7 @@ class User extends Authenticatable
      * @var array
      */
     protected $fillable = [
-        'name','last_name','nickname', 'email', 'password','register_date','type','institution_id','country_id','points','avatar',
+        'name','last_name','nickname', 'email', 'password','register_date','type','institution_id','country_id','points','avatar','confirmation_code', 'github_id',
     ];
 
     /**
@@ -47,5 +48,27 @@ class User extends Authenticatable
 
     public function problems(){
         return $this->belongsToMany('EscojLB\Repo\Problem\Problem')->withPivot('status');
+    }
+
+    /**
+     * Send the password reset notification.
+     *
+     * @param  string  $token
+     * @return void
+     */
+    public function sendPasswordResetNotification($token)
+    {
+        $this->notify(new ResetPasswordNotification($token));
+    }
+
+    /**
+     * Send the confirmation account notification.
+     *
+     * @param  string  $confirmation_code
+     * @return void
+     */
+    public function sendConfirmAccountNotification($confirmation_code)
+    {
+        $this->notify(new ConfirmAccount($confirmation_code));
     }
 }

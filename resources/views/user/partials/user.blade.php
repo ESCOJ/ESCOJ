@@ -9,6 +9,7 @@
         @endif
 	</div>
 </div>
+
 <div class="form-group{{ $errors->has('last_name') ? ' has-error' : '' }}">
 	{!!Form::label('last_name','Last name:',['class' => 'col-md-4 control-label'])!!}
 	<div class="col-md-6">
@@ -20,6 +21,7 @@
         @endif
 	</div>
 </div>
+
 <div class="form-group{{ $errors->has('nickname') ? ' has-error' : '' }}">
 	{!!Form::label('nickname','NickName:',['class' => 'col-md-4 control-label'])!!}
 	<div class="col-md-6">
@@ -43,6 +45,7 @@
         @endif
 	</div>
 </div>
+
 <div class="form-group{{ $errors->has('password') ? ' has-error' : '' }}">
 	{!!Form::label('password','New password:',['class' => 'col-md-4 control-label'])!!}
 	<div class="col-md-6">
@@ -54,6 +57,7 @@
         @endif
 	</div>
 </div>
+
 <div class="form-group{{ $errors->has('password_confirmation') ? ' has-error' : '' }}">
 	{!!Form::label('password_confirmation','Confirm password:',['class' => 'col-md-4 control-label'])!!}
 	<div class="col-md-6">
@@ -65,10 +69,11 @@
         @endif
 	</div>
 </div>
+
 <div class="form-group{{ $errors->has('country') ? ' has-error' : '' }}">
 	{!!Form::label('country','Country:',['class' => 'col-md-4 control-label'])!!}
 	<div class="col-md-6">
-		{!! Form::select('country',$countries,null,['placeholder' => 'Select a counntry','id'=>'country', 'class' => 'form-control']) !!}
+		{!! Form::select('country',$countries,$user->country_id,['placeholder' => 'Select a counntry','id'=>'country', 'class' => 'form-control']) !!}
 		@if ($errors->has('country'))
             <span class="help-block">
                 <strong>{{ $errors->first('country') }}</strong>
@@ -76,10 +81,11 @@
         @endif
 	</div>
 </div>
+
 <div class="form-group{{ $errors->has('institution') ? ' has-error' : '' }}">
 	{!!Form::label('intitution','Institution:',['class' => 'col-md-4 control-label'])!!}
 	<div class="col-md-6">
-		{!! Form::select('institution',[''=>''],null,['id'=>'institution', 'class' => 'form-control']) !!}
+		{!! Form::select('institution',$institutions,$user->institution_id,['id'=>'institution', 'class' => 'form-control']) !!}
 		@if ($errors->has('institution'))
             <span class="help-block">
                 <strong>{{ $errors->first('institution') }}</strong>
@@ -87,10 +93,11 @@
         @endif
 	</div>
 </div>
+
 <div class="form-group{{ $errors->has('avatar') ? ' has-error' : '' }}">
 	{!!Form::label('Avatar','Avatar (120x120, <35KB):',['class' => 'col-md-4 control-label'])!!}
     <div class="col-md-6">
-		{!!Form::file('avatar')!!}
+		{!!Form::file('avatar',['id' => 'avatar'])!!}
   		@if ($errors->has('avatar'))
             <span class="help-block">
                 <strong>{{ $errors->first('avatar') }}</strong>

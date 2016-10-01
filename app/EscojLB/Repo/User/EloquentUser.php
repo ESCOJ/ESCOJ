@@ -17,13 +17,13 @@ class EloquentUser implements UserInterface {
      *
      * @param array  Data to create a new user object
      * @param string  $avatar the name of the avatar image
-     *
+     * @param string  $confirmation_code the value of the confirmation code
+     * @param string  $github_id the value of the github_id
      * @return User Object
      */
-    public function create(array $data , $avatar)
+    public function create(array $data , $confirmation_code = null, $avatar ,$github_id = null)
     {
         // Create the a user
-
         return $this->user->create(array(
             'name' => $data['name'],
             'last_name' => $data['last_name'],
@@ -34,6 +34,8 @@ class EloquentUser implements UserInterface {
             'institution_id' => $data['institution'],
             'country_id' => $data['country'],
             'avatar' => $avatar,
+            'confirmation_code' => $confirmation_code,
+            'github_id' => $github_id,
         ));
 
     }
@@ -46,6 +48,29 @@ class EloquentUser implements UserInterface {
      */
     public function findById($id){
         return $this->user->find($id);
+    }
+
+    /**
+     * Get a user by your Github ID
+     *
+     * @param  int $id       Github ID
+     * @return Object    User model object
+     */
+    public function findByGithubId($id){
+        return $this->user->where('github_id', '=', $id)->first();
+    }
+
+    /**
+     * Set the attributes that indicate that the account is confirmed
+     *
+     * @param  int $id       User ID
+     * @return bool    value of the save method
+     */
+    public function confirmationSuccess($id){
+        $user = $this->findById($id);
+        $user->confirmed = 1;
+        $user->confirmation_code = null;
+        return $user->save();
     }
 
     /**
@@ -72,7 +97,22 @@ class EloquentUser implements UserInterface {
         return $user->save();
     }
 
-      /**
+     /**
+     * Update an existing User when the email change
+     *
+     * @param int $id      User ID
+     * @param string       $confirmation_code the value of the confirmation code
+     * @return boolean
+     */
+    public function updateEmailChange($id, $confirmation_code){
+        $user = $this->findById($id);
+        $user->confirmed = 0;
+        $user->confirmation_code = $confirmation_code;
+        return $user->save();
+    }
+
+
+     /**
      * Retrieve the avatar name by User ID
      *
      * @param  int $id       User ID
@@ -81,6 +121,26 @@ class EloquentUser implements UserInterface {
     public function getAvatar($id){
         $user = $this->findById($id);
         return $user->avatar;
+    }
+
+    /**
+     * Retrieve a user by a given conformation code
+     *
+     * @param  string $confirmation_code    attribute confirmation code
+     * @return Object    User model object
+     */
+    public function whereConfirmationCode($confirmation_code){
+        return $this->user->where('confirmation_code','=',$confirmation_code)->first();
+    }
+
+    /**
+     * Get a user email by User ID
+     *
+     * @param  int $id       User ID
+     * @return string    user email
+     */
+    public function getEmail($id){
+        return $this->user->find($id)->email;
     }
 
 }

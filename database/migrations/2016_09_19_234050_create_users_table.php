@@ -28,6 +28,9 @@ class CreateUsersTable extends Migration
             $table->integer('country_id')->unsigned();
             $table->double('points')->default('0');
             $table->string('avatar')->default('user_default.jpg');
+            $table->boolean('confirmed')->default(0);
+            $table->string('confirmation_code')->nullable();
+            $table->string('github_id')->unique()->nullable();
             $table->rememberToken();
             $table->timestamps();
             //Foreign keys

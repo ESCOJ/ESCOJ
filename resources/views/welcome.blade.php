@@ -1,7 +1,12 @@
 @extends('layouts.main')
 @section('content')
-<div class="container-fluid">  
-
+<div class="container-fluid">
+    <div id="divEspacio1" class="rox marg-main" style="margin-top:60px;"></div>
+    <div class="col-md-8 col-md-offset-2 text-center">
+        <h4>
+            @include('flash::message')
+        </h4>
+    </div>  
     <div id="divEspacio" class="rox marg-main" style="margin-top:150px;"></div>
     <form action="./index.php" method="POST">
         

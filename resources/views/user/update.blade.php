@@ -2,6 +2,10 @@
 
 @section('title' , 'Update user')
 
+@section('styles')
+    {!!Html::style('plugins/fileinput/css/fileinput.min.css')!!}
+@endsection  
+
 @section('content')
 <div id="divEspacio" class="rox marg-main" style="margin-top:40px;"></div>
 <div class="container">
@@ -27,4 +31,20 @@
 
 @section('scripts')
 	{!!Html::script('js/dropdown.js') !!}
+    {!!Html::script('plugins/fileinput/js/fileinput.min.js')!!}
+    <script type="text/javascript">
+         $("#avatar").fileinput({
+            maxFileSize : 35,
+            msgProgress : 'Loading {percent}%',
+            previewClass : 'file_preview',
+            previewFileType : "image",
+            browseClass : "btn btn-primary",
+            browseLabel : "Pick image",
+            browseIcon : '<i class="fa fa-picture-o"></i>&nbsp;',
+            removeClass : "btn btn-default",
+            removeLabel : "Delete",
+            removeIcon : '<i class="fa fa-trash"></i>',
+            showUpload: false,
+        });
+    </script>
 @endsection

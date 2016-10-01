@@ -17,6 +17,21 @@ Route::get('/', function () {
 
 //The authenticaction Routes
 Auth::routes();
+Route::get('register/verify/{confirmationCode}', [
+    'as' => 'confirmation_path',
+    'uses' => 'Auth\RegisterController@confirm'
+]);
+Route::get('register/escojtos', function(){
+	return view('terms.escojtos');
+});
+Route::get('register/{data?}','Auth\SocialNetworkAccountController@showRegistrationForm');
+
+
+
+// Redirect to github to authenticate
+Route::get('auth/github', 'Auth\SocialNetworkAccountController@githubRedirect');
+// Get back to redirect url
+Route::get('auth/github/callback', 'Auth\SocialNetworkAccountController@githubCallback');
 
 
 Route::get('/home', 'HomeController@index');
