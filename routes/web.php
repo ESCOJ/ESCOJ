@@ -28,6 +28,11 @@ Route::get('register/{data?}','Auth\SocialNetworkAccountController@showRegistrat
 
 
 
+
+$s = 'social.';
+Route::get('/auth/redirect/{provider}',   ['as' => $s . 'redirect',   'uses' => 'Auth\SocialAuthController@socialRedirect']);
+Route::get('/auth/callback/{provider}',     ['as' => $s . 'handle',     'uses' => 'Auth\SocialAuthController@socialCallback']);
+
 // Redirect to github to authenticate
 Route::get('auth/github', 'Auth\SocialNetworkAccountController@githubRedirect');
 // Get back to redirect url

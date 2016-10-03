@@ -82,10 +82,13 @@ class RegisterController extends Controller
     {
 
         $this->validator($request->all())->validate();
-        if ($request->has('github_id'))
+        if ($request->has('provider'))
         {
 
-            $user = $this->create($request->all(),$request,$request->github_id);
+            $provider['provider'] = $request->provider;
+            $provider['provider_id'] = $request->provider_id;
+
+            $user = $this->create($request->all(),$request,$provider);
             if ( ! $user )
             {
                 flash('Error in your account registration.', 'danger');
@@ -113,10 +116,8 @@ class RegisterController extends Controller
 
                 flash('Thanks for signing up! Please check your email for confirm your account.', 'info');
             }
-        }
-        
+        } 
         return redirect('/');
-
     }
 
     /**
@@ -125,7 +126,7 @@ class RegisterController extends Controller
      * @param  array  $data
      * @return User
      */
-    protected function create(array $data, Request $request, $github_id = null ,$confirmation_code = null)
+    protected function create(array $data, Request $request,array $provider = null,$confirmation_code = null)
     {
         $flag = false;
         if($request->file('avatar')){
@@ -136,7 +137,7 @@ class RegisterController extends Controller
         else{
             $avatar = 'user_defaul.jpg';
         }
-        $user = $this->user->create($data,$confirmation_code,$avatar,$github_id);  
+        $user = $this->user->create($data,$confirmation_code,$avatar,$provider);  
         if( !is_null($user)  and  $flag){
             $image->storeAs('/images/user_avatar', $avatar, "uploads"); 
         }

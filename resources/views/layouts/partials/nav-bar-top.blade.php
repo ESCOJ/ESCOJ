@@ -18,10 +18,10 @@
 								<div class="col-md-12">
 									Login via
 									<div class="social-buttons">
-									<a href="#" class="btn btn-social btn-facebook">
+									<a href="{{ url('/auth/redirect/facebook') }}" class="btn btn-social btn-facebook">
 										<span class="fa fa-facebook"></span>Facebook
 									</a>
-									<a href="{{ url('/auth/github') }}"class="btn btn-social btn-github">
+									<a href="{{ url('/auth/redirect/github') }}"class="btn btn-social btn-github">
 										<span class="fa fa-github"></span>Github
 									</a>
 									</div>
@@ -70,9 +70,9 @@
 				<li><p class="navbar-text" style="margin-left:40em;"></p></li>
 				<li class="dropdown"style="margin-left:.5em;">
 					<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
-						{{ Auth::user()->name }} <span class="caret"></span>
+						{{ Auth::user()->nickname }} <span class="caret"></span>
 					</a>
-
+					
 					<ul class="dropdown-menu">
 						<li><a href="{{ url('/contestant/profile') }}">Your profile</a></li>
 						<li><a href="{{ url('/contestant/edit') }}">Edit account</a></li>

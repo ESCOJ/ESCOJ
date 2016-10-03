@@ -8,10 +8,10 @@ interface UserInterface {
      * @param array  Data to create a new user object
      * @param string  $avatar the name of the avatar image
      * @param string  $confirmation_code the value of the confirmation code
-     * @param string  $github_id the value of the github_id
+     * @param array   Provider has the name of the provider social network and the id  
      * @return User Object
      */
-    public function create(array $data , $confirmation_code = null, $avatar ,$github_id = null);
+    public function create(array $data , $confirmation_code = null, $avatar ,array $provider = null);
     /**
      * Get a user by User ID
      *
@@ -21,12 +21,12 @@ interface UserInterface {
     public function findById($id);
 
     /**
-     * Get a user by your Github ID
-     *
-     * @param  int $id       Github ID
+     * Get a user by your provider name and provider ID
+     * @param  string    $provider       social network provider  name
+     * @param  int       $id       Github ID
      * @return Object    User model object
      */
-    public function findByGithubId($id);
+    public function findByProvider($provider,$provider_id);
 
     /**
      * Set the attributes that indicate that the account is confirmed

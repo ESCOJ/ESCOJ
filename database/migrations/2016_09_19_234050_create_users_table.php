@@ -30,7 +30,8 @@ class CreateUsersTable extends Migration
             $table->string('avatar')->default('user_default.jpg');
             $table->boolean('confirmed')->default(0);
             $table->string('confirmation_code')->nullable();
-            $table->string('github_id')->unique()->nullable();
+            $table->string('provider')->nullable();
+            $table->string('provider_id')->unique()->nullable();
             $table->rememberToken();
             $table->timestamps();
             //Foreign keys

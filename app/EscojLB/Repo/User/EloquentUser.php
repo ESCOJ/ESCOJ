@@ -12,16 +12,16 @@ class EloquentUser implements UserInterface {
         $this->user = $user;
     }
 
-    /**
+ /**
      * Create a new User
      *
      * @param array  Data to create a new user object
      * @param string  $avatar the name of the avatar image
      * @param string  $confirmation_code the value of the confirmation code
-     * @param string  $github_id the value of the github_id
+     * @param array   Provider has the name of the provider social network and the id  
      * @return User Object
      */
-    public function create(array $data , $confirmation_code = null, $avatar ,$github_id = null)
+    public function create(array $data , $confirmation_code = null, $avatar ,array $provider = null)
     {
         // Create the a user
         return $this->user->create(array(
@@ -35,7 +35,9 @@ class EloquentUser implements UserInterface {
             'country_id' => $data['country'],
             'avatar' => $avatar,
             'confirmation_code' => $confirmation_code,
-            'github_id' => $github_id,
+            'provider' => $provider['provider'],
+            'provider_id' => $provider['provider_id'],
+
         ));
 
     }
@@ -51,14 +53,15 @@ class EloquentUser implements UserInterface {
     }
 
     /**
-     * Get a user by your Github ID
-     *
-     * @param  int $id       Github ID
+     * Get a user by your provider name and provider ID
+     * @param  string    $provider       social network provider  name
+     * @param  int       $id       provider ID
      * @return Object    User model object
      */
-    public function findByGithubId($id){
-        return $this->user->where('github_id', '=', $id)->first();
+    public function findByProvider($provider,$provider_id){
+        return $this->user->where('provider', '=', $provider)->where('provider_id', '=', $provider_id)->first();
     }
+
 
     /**
      * Set the attributes that indicate that the account is confirmed

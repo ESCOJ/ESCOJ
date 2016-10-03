@@ -35,10 +35,10 @@ return [
         'secret' => env('STRIPE_SECRET'),
     ],
 
-    'github' => [
-        'client_id' => 'your-github-app-id',
-        'client_secret' => 'your-github-app-secret',
-        'redirect' => 'http://your-callback-url',
+    'facebook' => [
+        'client_id' => env('FB_ID'),
+        'client_secret' => env('FB_SECRET'),
+        'redirect' => env('FB_URL'),
     ],
 
     'github' => [

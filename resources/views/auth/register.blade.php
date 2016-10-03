@@ -172,12 +172,6 @@
                             </div>
                         </div>
 
-                        @if(session('github_id'))
-                            <input type="hidden" name="github_id" value="{{ session('github_id') }}">
-                        @else
-                            <input type="hidden" name="github_id" value="{{ old('github_id') }}">  
-                        @endif
-
                         <div class="form-group{{ $errors->has('g-recaptcha-response') ? ' has-error' : '' }}">
 
                             <label class="col-md-4 control-label">Captcha</label>
@@ -211,7 +205,15 @@
                             </div>
                         </div>
 
-    
+                        @if(session('provider'))
+                            <input type="hidden" name="provider" value="{{ session('provider') }}">
+                            <input type="hidden" name="provider_id" value="{{ session('provider_id') }}">
+                        @else
+                            <input type="hidden" name="provider" value="{{ old('provider') }}">
+                            <input type="hidden" name="provider_id" value="{{ old('provider_id') }}">  
+                              
+                        @endif
+
                         <div class="form-group">
                             <div class="col-md-6 col-md-offset-4">
                                 <button type="submit" class="btn btn-primary">
