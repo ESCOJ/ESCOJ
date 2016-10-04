@@ -28,7 +28,6 @@
                                     <input id="name" type="text" class="form-control" name="name" value="{{ session('name') }}" autofocus>
                                 @endif
                                 
-
                                 @if ($errors->has('name'))
                                     <span class="help-block">
                                         <strong>{{ $errors->first('name') }}</strong>

@@ -52,6 +52,7 @@ Route::group(['prefix' => 'contestant'], function (){
 
 
 Route::resource('problem','ProblemController');
+Route::resource('submit','JudgementController');
 
 //Testing Route
 

@@ -45,7 +45,7 @@ class CreateProblemsTable extends Migration
             $table->integer('tag_id')->unsigned();
 
             $table->foreign('problem_id')->references('id')->on('problems');
-            $table->foreign('tag_id')->references('id')->on('tags');
+            $table->foreign('problem_id')->references('id')->on('problems');       $table->foreign('tag_id')->references('id')->on('tags');
         });
 
         //Pivot table to manage the relationship many to many between problems and users
