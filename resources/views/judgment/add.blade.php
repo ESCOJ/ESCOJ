@@ -73,6 +73,7 @@
         function clearBox()
         {
             var editor = ace.edit("editor");
+            editor.setValue("");
             //To get the code from the editor
             //var code = editor.getValue();
         }
