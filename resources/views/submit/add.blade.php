@@ -19,7 +19,8 @@
                             <div class="form-group">
                                 <div class="col-md-6 col-md-offset-4">
                                     <input type="button" value="Clear" onclick="clearBox()" class="btn btn-primary">
-                                    {!!Form::submit('Add',['class'=>'btn btn-primary'])!!}
+                                    
+                                    {!!Form::submit('Submit',['class'=>'btn btn-primary'])!!}
                                 </div>
                             </div>
                         {!!Form::close()!!}

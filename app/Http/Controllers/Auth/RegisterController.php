@@ -93,7 +93,7 @@ class RegisterController extends Controller
      * @param  array  $data
      * @return User
      */
-    protected function create(array $data,Request $request )
+    protected function create(array $data,Request $request)
     {
         $flag = false;
         if($request->file('avatar')){

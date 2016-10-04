@@ -15,7 +15,7 @@ class JudgementController extends Controller
      */
     public function index()
     {
-        return view('submit.add');
+    	return view('submit.add');
     }
 
     /**
@@ -25,7 +25,11 @@ class JudgementController extends Controller
      */
     public function create()
     {
-        
+    	/* We can use either exec, passthru and system, but the exit it's different for everyone
+    		$s1 = exec('ls -l');
+			return view('submit.add', ['compiling' => $s1]);
+        */
+        return view('submit.add');
     }
 
     /**

@@ -10,7 +10,7 @@
 <div class="form-group{{ $errors->has('name') ? ' has-error' : '' }}">
     {!!Form::label('name','Problem ID:',['class' => 'col-md-3 control-label'])!!}
     <div class="col-md-7">
-        {!!Form::text('name',null,['class'=>'form-control','placeholder'=>'Some ID Problem Here'])!!}
+        {!!Form::text('name',null,['class'=>'form-control','placeholder'=>'ID Problem'])!!}
          @if ($errors->has('name'))
             <span class="help-block">
                 <strong>{{ $errors->first('name') }}</strong>
@@ -51,16 +51,17 @@
 </div>
 <div id="editor"></div>
 
-<script src="js/src-noconflict/ace.js" type="text/javascript" charset="utf-8"></script>
+<script src="plugins/ace/src-noconflict/ace.js" type="text/javascript" charset="utf-8"></script>
 
 <script>
     var editor = ace.edit("editor");
-    editor.setTheme("js/ace/theme/twilight");
-    editor.session.setMode("js/ace/mode/javascript");
+    editor.setTheme("plugins/ace/ace/theme/monokai");
+    editor.setValue("New code here!");
+    editor.session.setMode("plugins/ace/ace/mode/javascript");
     function clearBox()
     {
         var editor = ace.edit("editor");
-        editor.setValue("new code here");
+        editor.setValue("New code here!");
         //To get the code from the editor
         //var code = editor.getValue();
     }
