@@ -60,7 +60,7 @@ class JudgementController extends Controller
             $fileCodeTemp = $file->move('temp/',$name);
 
             $file_splited = explode('.',$name);
-            $sentence = "clang++ -std=c++11 ". $fileCodeTemp->getRealPath() ." -o ".$file_splited[0]." 2>&1 ";
+            $sentence = "clang++ -std=c++11 ". $fileCodeTemp->getRealPath() ." -o ".public_path()."/temp/".$file_splited[0]." 2>&1 ";
             exec($sentence);
 
             var_dump($sentence);
