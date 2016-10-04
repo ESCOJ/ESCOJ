@@ -67,5 +67,10 @@ return [
           'root'   => public_path(),
         ],
 
+        'judgements' => [
+          'driver' => 'local',
+          'root'   => public_path(),
+        ],
+
     ],
 ];

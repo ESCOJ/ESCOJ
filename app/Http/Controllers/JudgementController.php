@@ -48,8 +48,26 @@ class JudgementController extends Controller
      */
     public function store(JudgmentAddRequest $request)
     {
-        //
-        dd($request->all());
+        $code = $request->input('your_code_in_the_editor');
+        $language = $request->input('language');
+        $problem_id = $request->input('problem_id');
+
+        $file = $request->file('code');
+
+        if($request->hasFile('code')){
+            $file_name = $file->getClientOriginalName();
+            $name = $problem_id . "_" . $file_name; 
+            $fileCodeTemp = $file->move('temp/',$name);
+
+            $file_splited = explode('.',$name);
+            $sentence = "clang++ -std=c++11 ". $fileCodeTemp->getRealPath() ." -o ".$file_splited[0]." 2>&1 ";
+            exec($sentence);
+
+            var_dump($sentence);
+            //var_dump($ls . " " .$name . " " . $file_splited[0]);
+        }else{
+
+        }
     }
 
     /**
