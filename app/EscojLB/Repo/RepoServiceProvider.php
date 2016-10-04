@@ -8,6 +8,8 @@ use EscojLB\Repo\Institution\EloquentInstitution;
 use EscojLB\Repo\Institution\Institution;
 use EscojLB\Repo\User\EloquentUser;
 use EscojLB\Repo\User\User;
+use EscojLB\Repo\Language\EloquentLanguage;
+use EscojLB\Repo\Language\Language;
 
 use Illuminate\Support\ServiceProvider;
 
@@ -35,7 +37,6 @@ class RepoServiceProvider extends ServiceProvider
         $app->bind('EscojLB\Repo\Country\CountryInterface', function($app)
         {
             $country =  new EloquentCountry(new Country);
-
             return $country;
 
         });
@@ -43,7 +44,6 @@ class RepoServiceProvider extends ServiceProvider
         $app->bind('EscojLB\Repo\Institution\InstitutionInterface', function($app)
         {
             $institution =  new EloquentInstitution(new Institution);
-
             return $institution;
 
         });
@@ -52,6 +52,13 @@ class RepoServiceProvider extends ServiceProvider
         {
             $user =  new EloquentUser(new User);
             return $user;
+
+        });
+
+        $app->bind('EscojLB\Repo\Language\LanguageInterface', function($app)
+        {
+            $language =  new EloquentLanguage(new Language);
+            return $language;
 
         });
 

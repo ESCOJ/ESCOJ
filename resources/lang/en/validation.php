@@ -102,6 +102,9 @@ return [
         'g-recaptcha-response' => [
             'required' => 'The captcha is required!',
         ],
+        'your_code_in_the_editor' => [
+            'required_without' => 'The code in the editor textarea is required when you don´t select a upload file.',
+        ],
     ],
 
     /*

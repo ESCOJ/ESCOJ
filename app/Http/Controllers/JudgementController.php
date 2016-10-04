@@ -3,11 +3,18 @@
 namespace ESCOJ\Http\Controllers;
 
 use Illuminate\Http\Request;
-
+use ESCOJ\Http\Requests\JudgmentAddRequest;
 use ESCOJ\Http\Requests;
+use EscojLB\Repo\Language\LanguageInterface;
 
 class JudgementController extends Controller
 {
+
+    protected $language;
+
+    public function __construct(LanguageInterface $language){
+        $this->language = $language;
+    }
     /**
      * Display a listing of the resource.
      *
@@ -15,7 +22,7 @@ class JudgementController extends Controller
      */
     public function index()
     {
-    	return view('submit.add');
+
     }
 
     /**
@@ -29,7 +36,8 @@ class JudgementController extends Controller
     		$s1 = exec('ls -l');
 			return view('submit.add', ['compiling' => $s1]);
         */
-        return view('submit.add');
+        $languages = $this->language->getKeyValueAll('id','name');
+        return view('judgment.add',['languages' => $languages]);
     }
 
     /**
@@ -38,9 +46,10 @@ class JudgementController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(JudgmentAddRequest $request)
     {
         //
+        dd($request->all());
     }
 
     /**
@@ -88,3 +97,5 @@ class JudgementController extends Controller
         //
     }
 }
+
+

@@ -68,7 +68,7 @@ class RegisterController extends Controller
      */
     public function showRegistrationForm()
     {
-        $countries = $this->country->getKeyValueAll('name','id');
+        $countries = $this->country->getKeyValueAll('id','name');
         return view('auth.register',['countries' => $countries]);
     }
 
@@ -189,8 +189,8 @@ class RegisterController extends Controller
     public function edit()
     {
         $user = $this->user->findById(Auth::user()->id);
-        $countries = $this->country->getKeyValueAll('name','id');
-        $institutions = $this->institution->getInstitutionsKeyValueByCountry('name','id',$user->country_id);
+        $countries = $this->country->getKeyValueAll('id','name');
+        $institutions = $this->institution->getInstitutionsKeyValueByCountry('id','name',$user->country_id);
         return view('user.update',['user' => $user,'countries' => $countries, 'institutions' => $institutions]);
     }
 

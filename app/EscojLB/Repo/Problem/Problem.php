@@ -1,6 +1,6 @@
 <?php
 
-namespace ESCOJ;
+namespace EscojLB\Repo\Problem;
 use Cviebrock\EloquentSluggable\Sluggable;
 use Illuminate\Database\Eloquent\Model;
 
@@ -32,24 +32,24 @@ class Problem extends Model
     //building relationships
 
     public function tags(){
-        return $this->belongsToMany('ESCOJ\Tag')->withPivot('level');
+        return $this->belongsToMany('EscojLB\Repo\Tag\Tag')->withPivot('level');
     }
 
     public function judgments(){
-        return $this->hasMany('ESCOJ\Judgment');
+        return $this->hasMany('EscojLB\Repo\Judgment\Judgment');
     }
 
     public function languages(){
     	//the relationship without the withPivot method only provides the columns that form the pivot table, then we specify that also want the column multiplier of us pivot table
-   	    return $this->belongsToMany('ESCOJ\Language')->withPivot('multiplier');
+   	    return $this->belongsToMany('EscojLB\Repo\Language\Language')->withPivot('multiplier');
    	}
 
     public function users(){
     	//the relationship without the withPivot method only provides the columns that form the pivot table, then we specify that also want the column multiplier of us pivot table
-        return $this->belongsToMany('ESCOJ\User')->withPivot('status');
+        return $this->belongsToMany('EscojLB\Repo\User\User')->withPivot('status');
     }
 
     public function contests(){
-        return $this->belongsToMany('ESCOJ\Contest');
+        return $this->belongsToMany('EscojLB\Repo\Contest\Contest');
     }
 }

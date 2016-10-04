@@ -447,7 +447,7 @@
     defaultPreviewSettings = {
         image: {width: "auto", height: "160px"},
         html: {width: "213px", height: "160px"},
-        text: {width: "213px", height: "160px"},
+        text: {width: "413px", height: "160px"},
         video: {width: "213px", height: "160px"},
         audio: {width: "213px", height: "80px"},
         flash: {width: "213px", height: "160px"},

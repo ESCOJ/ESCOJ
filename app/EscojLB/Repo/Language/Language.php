@@ -1,6 +1,6 @@
 <?php
 
-namespace ESCOJ;
+namespace EscojLB\Repo\Language;
 
 use Illuminate\Database\Eloquent\Model;
 

@@ -32,7 +32,7 @@ class EloquentInstitution implements InstitutionInterface {
      * @return array    Associative Array with all institutions of a given country
      */
     public function getInstitutionsKeyValueByCountry($key,$value,$id){
-        return $this->institution->where('country_id','=',$id)->pluck($key,$value);
+        return $this->institution->where('country_id','=',$id)->pluck($value,$key);
     }
 
 }

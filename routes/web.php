@@ -1,5 +1,4 @@
 <?php
-use ESCOJ\Country;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -24,19 +23,8 @@ Route::get('register/verify/{confirmationCode}', [
 Route::get('register/escojtos', function(){
 	return view('terms.escojtos');
 });
-Route::get('register/{data?}','Auth\SocialNetworkAccountController@showRegistrationForm');
-
-
-
-
-$s = 'social.';
-Route::get('/auth/redirect/{provider}',   ['as' => $s . 'redirect',   'uses' => 'Auth\SocialAuthController@socialRedirect']);
-Route::get('/auth/callback/{provider}',     ['as' => $s . 'handle',     'uses' => 'Auth\SocialAuthController@socialCallback']);
-
-// Redirect to github to authenticate
-Route::get('auth/github', 'Auth\SocialNetworkAccountController@githubRedirect');
-// Get back to redirect url
-Route::get('auth/github/callback', 'Auth\SocialNetworkAccountController@githubCallback');
+Route::get('/auth/redirect/{provider}',  'Auth\SocialAuthController@socialRedirect');
+Route::get('/auth/callback/{provider}',  'Auth\SocialAuthController@socialCallback');
 
 
 Route::get('/home', 'HomeController@index');
@@ -52,11 +40,11 @@ Route::group(['prefix' => 'contestant'], function (){
 
 
 Route::resource('problem','ProblemController');
-Route::resource('submit','JudgementController');
+Route::resource('judgment','JudgementController');
 
 //Testing Route
 
 Route::get('test',function(){
-	dd(Country::pluck('name','id'));
+	
 	return view('testing.test');
 });

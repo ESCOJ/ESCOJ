@@ -21,7 +21,7 @@ class EloquentCountry implements CountryInterface {
      */
     public function getKeyValueAll($key,$value)
     { 
-      return $this->country->pluck($key,$value);
+      return $this->country->pluck($value,$key);
     }
 
 }
