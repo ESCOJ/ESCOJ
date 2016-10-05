@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use ESCOJ\Http\Requests\JudgmentAddRequest;
 use ESCOJ\Http\Requests;
 use EscojLB\Repo\Language\LanguageInterface;
+use ESCOJ\Entities\EvaluateTool;
 
 class JudgementController extends Controller
 {
@@ -51,22 +52,20 @@ class JudgementController extends Controller
         $code = $request->input('your_code_in_the_editor');
         $language = $request->input('language');
         $problem_id = $request->input('problem_id');
-
         $file = $request->file('code');
 
         if($request->hasFile('code')){
+
             $file_name = $file->getClientOriginalName();
-            $name = $problem_id . "_" . $file_name; 
-            $fileCodeTemp = $file->move('temp/',$name);
-
-            $file_splited = explode('.',$name);
-            $sentence = "clang++ -std=c++11 ". $fileCodeTemp->getRealPath() ." -o ".public_path()."/temp/".$file_splited[0]." 2>&1 ";
-            exec($sentence);
-
-            var_dump($sentence);
-            //var_dump($ls . " " .$name . " " . $file_splited[0]);
+            $file_splited = explode('.',$file_name);
+            $name = $problem_id . "." . $file_splited[1]; 
+            $file_temp = $file->storeAs('temp',$name,"judgements");
+            
+            EvaluateTool::evaluateCode($file_temp,$language,$problem_id);
         }else{
-
+            $file_temp = EvaluateTool::buildCodeFile($file,$language,$problem_id,$code);
+            $real_name_file = 'temp/'.$file_temp;
+            EvaluateTool::evaluateCode($real_name_file,$language,$problem_id);
         }
     }
 
