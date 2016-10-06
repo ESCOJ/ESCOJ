@@ -53,19 +53,22 @@ class JudgementController extends Controller
         $language = $request->input('language');
         $problem_id = $request->input('problem_id');
         $file = $request->file('code');
+        //This has to be substituted by the id of the contestant
+        //with Auth::user()->id;
+        $id_user = "Adri";
 
         if($request->hasFile('code')){
 
             $file_name = $file->getClientOriginalName();
             $file_splited = explode('.',$file_name);
-            $name = $problem_id . "." . $file_splited[1]; 
+            $name = $id_user."_".$problem_id . "." . $file_splited[1]; 
             $file_temp = $file->storeAs('temp',$name,"judgements");
             
-            EvaluateTool::evaluateCode($file_temp,$language,$problem_id);
+            EvaluateTool::evaluateCode($file_temp,$language,$problem_id,$id_user);
         }else{
-            $file_temp = EvaluateTool::buildCodeFile($file,$language,$problem_id,$code);
+            $file_temp = EvaluateTool::buildCodeFile($file,$language,$problem_id,$code,$id_user);
             $real_name_file = 'temp/'.$file_temp;
-            EvaluateTool::evaluateCode($real_name_file,$language,$problem_id);
+            EvaluateTool::evaluateCode($real_name_file,$language,$problem_id,$id_user);
         }
     }
 
