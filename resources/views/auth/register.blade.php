@@ -4,6 +4,7 @@
 
 @section('styles')
     {!!Html::style('plugins/fileinput/css/fileinput.min.css')!!}
+    {!!Html::style('plugins/chosen/chosen.css')!!}
 @endsection   
 
 @section('content')
@@ -146,7 +147,7 @@
                             
                             <label for="institution" class="col-md-4 control-label">Institution</label>                            
                             <div class="col-md-6">
-                                {!! Form::select('institution',[''=>''],null,['id'=>'institution', 'class' => 'form-control']) !!}
+                                {!! Form::select('institution',[''=>''],null,['placeholder' => '','id'=>'institution', 'class' => 'form-control']) !!}
 
                                 @if ($errors->has('institution'))
                                     <span class="help-block">
@@ -230,6 +231,7 @@
 @section('scripts')
     {!!Html::script('js/dropdown.js') !!}
     {!!Html::script('plugins/fileinput/js/fileinput.min.js')!!}
+    {!!Html::script('plugins/chosen/chosen.jquery.js')!!}
     <script type="text/javascript">
          $("#avatar").fileinput({
             maxFileSize : 35,
@@ -246,6 +248,13 @@
             allowedFileTypes : ['image'],
 
         });
+        $('#country').chosen({
+            
+        });
+        $('#institution').chosen({
+            
+        });
+
     </script>
 @endsection
 

@@ -3,11 +3,12 @@
 interface TagInterface {
 
     /**
-     * Find existing tags
+     * Get all tags as key-value array 
      *
-     * @param  Array $tags  Array of strings, each representing a tag
-     * @return array         Array or Arrayable collection of Tag objects
+     * @param  string $key  key to associate
+     * @param  string $value  value to associate
+     * @return array    Associative Array with all tags
      */
-    public function find(array $tags);
+    public function getKeyValueAll($key,$value);
 
 }

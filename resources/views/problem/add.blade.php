@@ -4,6 +4,8 @@
 
 @section('styles')
     {!! Html::style('plugins/trumbowyg/ui/trumbowyg.css') !!}
+    {!!Html::style('plugins/fileinput/css/fileinput.min.css')!!}
+    {!!Html::style('plugins/chosen/chosen.css')!!}
 @endsection
 
 @section('content')
@@ -15,12 +17,17 @@
                 <div class="panel-heading"><strong><center>Add Problem</center></strong></div>
                     <div class="panel-body">
                         {!!Form::open(['route'=>'problem.store', 'method'=>'POST','files' => true,'class' => 'form-horizontal'])!!}
+
+                            <input type="hidden" name="_token" value="{{ csrf_token() }}" id="token">
+
                             @include('problem.partials.problem')
+
                             <div class="form-group">
                                 <div class="col-md-6 col-md-offset-4">
                                     {!!Form::submit('Add',['class'=>'btn btn-primary'])!!}
                                 </div>
                             </div>
+
                         {!!Form::close()!!}
                     </div>
             </div>
@@ -34,8 +41,37 @@
     {!!Html::script('plugins/fileinput/js/plugins/canvas-to-blob.min.js')!!}
     {!!Html::script('plugins/fileinput/js/plugins/sortable.min.js')!!}
     {!!Html::script('plugins/fileinput/js/plugins/purify.min.js')!!}
+    {!!Html::script('plugins/fileinput/js/fileinput.js')!!}
+    {!!Html::script('plugins/chosen/chosen.jquery.js')!!}
+    {!!Html::script('js/addProblem.js')!!}
+    
     <script type="text/javascript">
         $('.textarea-content').trumbowyg();
+        $("#dataset").fileinput({
+            maxFileSize : 5000,
+            msgProgress : 'Loading {percent}%',
+            previewClass : 'file_preview',
+            previewFileType : "text",
+            browseClass : "btn btn-primary",
+            browseLabel : "Upload file",
+            browseIcon : '<i class="fa fa-file"></i>&nbsp;',
+            removeClass : "btn btn-default",
+            removeLabel : "Delete",
+            removeIcon : '<i class="fa fa-trash"></i>',
+            showUpload: false,
+            showZoom: false,
+            showDrag: false,
+            showUploadedThumbs: false,
+
+            allowedFileTypes : [ 'text', 'object' ],
+            msgValidationError: "File upload error",
+            msgSizeTooLarge: 'File "{name}" (<b>{size} KB</b>) exceeds maximum allowed upload size of <b>{maxSize} KB</b>. Please retry your upload!',
+        });
+        $('.select-author').chosen({
+            
+        });
+        $('.select-tag').chosen({
+            include_group_label_in_selected : true,
+        });
     </script>
 @endsection
-

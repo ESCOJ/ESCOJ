@@ -4,6 +4,8 @@ $("#country").change(event => {
 		res.forEach(element => {
 			$("#institution").append(`<option value=${element.id}> ${element.name} </option>`);
 		});
+         $("#institution").chosen({ width: "95%" });
+		 $("#institution").trigger("chosen:updated");
 	});
 });
 

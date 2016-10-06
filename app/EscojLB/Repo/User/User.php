@@ -46,6 +46,10 @@ class User extends Authenticatable
         return $this->hasMany('EscojLB\Repo\Judgment\Judgment');
     }
 
+    public function problems_added(){
+        return $this->hasMany('EscojLB\Repo\Problem\Problem', 'added_by');
+    }
+
     public function problems(){
         return $this->belongsToMany('EscojLB\Repo\Problem\Problem')->withPivot('status');
     }

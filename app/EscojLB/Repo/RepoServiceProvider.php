@@ -10,6 +10,11 @@ use EscojLB\Repo\User\EloquentUser;
 use EscojLB\Repo\User\User;
 use EscojLB\Repo\Language\EloquentLanguage;
 use EscojLB\Repo\Language\Language;
+use EscojLB\Repo\Tag\EloquentTag;
+use EscojLB\Repo\Tag\Tag;
+use EscojLB\Repo\Problem\EloquentProblem;
+use EscojLB\Repo\Problem\Problem;
+
 
 use Illuminate\Support\ServiceProvider;
 
@@ -62,19 +67,19 @@ class RepoServiceProvider extends ServiceProvider
 
         });
 
-        /*$app->bind('Impl\Repo\Tag\TagInterface', function($app)
+        $app->bind('EscojLB\Repo\Tag\TagInterface', function($app)
         {
-            return new EloquentTag(
-                new Tag,
-                new LaravelCache($app['cache'], 'tags', 10)
-            );
+            $tag =  new EloquentTag(new Tag);
+            return $tag;
+
         });
 
-        $app->bind('Impl\Repo\Status\StatusInterface', function($app)
+        $app->bind('EscojLB\Repo\Problem\ProblemInterface', function($app)
         {
-            return new EloquentStatus(
-                new Status
-            );
-        });*/
+            $problem =  new EloquentProblem(new Problem);
+            return $problem;
+
+        });
+
     }
 }

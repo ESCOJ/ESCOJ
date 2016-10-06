@@ -17,18 +17,18 @@ class CreateProblemsTable extends Migration
             $table->increments('id');
             $table->string('name');
             $table->string('author');
-            $table->double('tlpc');// Time Limit Per Case
-            $table->double('ttl');// Total Time Limit
-            $table->integer('ml')->unsigned();//Memory Limit
-            $table->integer('sl')->unsigned();// Size Limit (size of file)
+            $table->double('tlpc')->nullable();// Time Limit Per Case
+            $table->double('ttl')->nullable();// Total Time Limit
+            $table->integer('ml')->unsigned()->nullable();//Memory Limit
+            $table->integer('sl')->unsigned()->nullable();// Size Limit (size of file)
             $table->mediumText('description');
             $table->text('input_specification');
             $table->text('output_specification');
             $table->string('sample_input',1000);
             $table->string('sample_output',1000);
             $table->string('hints',1000);
-            $table->double('points');
-            $table->string('status',2);//Indicates when the problem is available or disabled for the 24 hrs archive
+            $table->double('points')->nullable();
+            $table->string('status',2)->nullable();//Indicates when the problem is available or disabled for the 24 hrs archive
             $table->string('slug')->nullable();
             $table->timestamps();
 

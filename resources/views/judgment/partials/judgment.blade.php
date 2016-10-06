@@ -34,7 +34,6 @@
             </span>
         @endif
      </div>
-     
 </div>
 
 <div class="form-group{{ $errors->has('your_code_in_the_editor') ? ' has-error' : '' }}">

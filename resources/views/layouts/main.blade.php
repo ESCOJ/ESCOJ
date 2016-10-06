@@ -36,8 +36,8 @@
 
         <!-- Scripts -->
 	    {!!Html::script('plugins/bootstrap/js/bootstrap.min.js')!!}
-	    {!!Html::script('plugins/jquery/js/jquery-3.1.0.js')!!}
-	    {!!Html::script('plugins/bootstrap/js/bootstrap.js')!!}
+        {!!Html::script('plugins/jquery/js/jquery-3.1.0.js')!!}
+        {!!Html::script('plugins/bootstrap/js/bootstrap.js')!!}
         
         @yield('scripts')
       

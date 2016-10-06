@@ -24,7 +24,7 @@ class Problem extends Model
     }
 
     protected $fillable = [
-        'name','author','tlpc' 'ttl', 'ml','sl','description','input_specification','output_specification','sample_input','output_input','hints','points','status','slug',
+        'name','author','tlpc','ttl', 'ml','sl','description','input_specification','output_specification','sample_input','sample_output','output_input','hints','points','status','slug','added_by'
     ];
 
 
@@ -43,6 +43,10 @@ class Problem extends Model
     	//the relationship without the withPivot method only provides the columns that form the pivot table, then we specify that also want the column multiplier of us pivot table
    	    return $this->belongsToMany('EscojLB\Repo\Language\Language')->withPivot('multiplier');
    	}
+
+    public function user(){
+        return $this->belongsTo('EscojLB\Repo\User\User', 'added_by');
+    }
 
     public function users(){
     	//the relationship without the withPivot method only provides the columns that form the pivot table, then we specify that also want the column multiplier of us pivot table

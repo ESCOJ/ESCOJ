@@ -5,9 +5,26 @@ namespace ESCOJ\Http\Controllers;
 use Illuminate\Http\Request;
 
 use ESCOJ\Http\Requests;
+use EscojLB\Repo\Tag\TagInterface;
+use EscojLB\Repo\Problem\ProblemInterface;
+use Illuminate\Support\Facades\Auth;
 
 class ProblemController extends Controller
 {
+
+    protected $tag;
+    protected $problem;
+
+    /**
+     * Create a new controller instance.
+     *
+     * @return void
+     */
+    public function __construct(TagInterface $tag,ProblemInterface $problem){
+        $this->tag = $tag;
+        $this->problem = $problem;
+    }
+
     /**
      * Display a listing of the resource.
      *
@@ -25,8 +42,9 @@ class ProblemController extends Controller
      */
     public function create()
     {
-        //
-        return view('problem.add');
+
+        $tags = $this->inputToSelectTags();
+        return view('problem.add',['tags' => $tags]);
     }
 
     /**
@@ -37,7 +55,12 @@ class ProblemController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        if($request->ajax()){
+            $this->problem->create($request->all(),Auth::user()->id);
+            return response()->json([
+                "mensaje" => $request->all()//"creado"
+            ]);
+        }
     }
 
     /**
@@ -84,4 +107,29 @@ class ProblemController extends Controller
     {
         //
     }
+
+    /**
+     * Generate the input to the tags selction.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function inputToSelectTags()
+    {
+        
+        $tags = $this->tag->getKeyValueAll('id','name');
+        $levels = array('Very Easy', 'Easy', 'Medium', 'Hard', 'Very Hard' );
+        $tags_classification = array();
+
+        foreach ($tags as $tag_id => $tag_name) {
+            $options = array();
+            for ($i=0; $i < 5; $i++) { 
+                $options[$i+1 . '_' . $tag_id] = $levels[$i];
+            }    
+            $tags_classification[$tag_name] = $options;
+        }
+
+        return $tags_classification;
+
+    }
+
 }

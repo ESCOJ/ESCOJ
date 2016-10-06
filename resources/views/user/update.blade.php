@@ -4,6 +4,7 @@
 
 @section('styles')
     {!!Html::style('plugins/fileinput/css/fileinput.min.css')!!}
+    {!!Html::style('plugins/chosen/chosen.css')!!}
 @endsection  
 
 @section('content')
@@ -32,6 +33,7 @@
 @section('scripts')
 	{!!Html::script('js/dropdown.js') !!}
     {!!Html::script('plugins/fileinput/js/fileinput.min.js')!!}
+    {!!Html::script('plugins/chosen/chosen.jquery.js')!!}
     <script type="text/javascript">
          $("#avatar").fileinput({
             maxFileSize : 35,
@@ -45,6 +47,12 @@
             removeLabel : "Delete",
             removeIcon : '<i class="fa fa-trash"></i>',
             showUpload: false,
+        });
+        $('#country').chosen({
+            
+        });
+        $('#institution').chosen({
+            
         });
     </script>
 @endsection
