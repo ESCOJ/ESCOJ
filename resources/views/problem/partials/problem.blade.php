@@ -1,10 +1,10 @@
-<div class="form-group{{ $errors->has('name') ? ' has-error' : '' }}">
+<div id = "div_name" class="form-group{{ $errors->has('name') ? ' has-error' : '' }}">
 	{!!Form::label('name','Title:',['class' => 'col-md-3 control-label'])!!}
 	<div class="col-md-7">
 		{!!Form::text('name',null,['id'=>'name','class'=>'form-control ','placeholder'=>'Insert the problem name'])!!}
 		 	
-		 	<span id = "_name" class="help-block" style="display:none">
-                <strong></strong>
+		 	<span id = "span_name" class="help-block" style="display:none">
+                
             </span>
 		 @if ($errors->has('name'))
             <span  class="help-block" >
@@ -14,12 +14,12 @@
 	</div>
 </div>
 
-<div class="form-group{{ $errors->has('source') ? ' has-error' : '' }}">
+<div id = "div_source" class="form-group{{ $errors->has('source') ? ' has-error' : '' }}">
 	{!!Form::label('source','Author:',['class' => 'col-md-3 control-label'])!!}
 	<div class="col-md-7">
         {!! Form::select('source',$sources,null,['id'=>'source', 'class' => 'form-control select-source','placeholder'=>'Select the source']) !!}
-        <span id = "_author" class="help-block" style="display:none">
-                <strong></strong>
+        <span id = "span_source" class="help-block" style="display:none">
+
         </span>
 		@if ($errors->has('source'))
             <span class="help-block">
@@ -31,13 +31,16 @@
 
 
 <!--Description-->
-<div class="form-group{{ $errors->has('description') ? ' has-error' : '' }}">
+<div id = "div_description" class="form-group{{ $errors->has('description') ? ' has-error' : '' }}">
 	<div class="row">
 	      <h4><label for="input" class="col-sm-10 col-sm-offset-1 label label-primary"><center>Problem Description</center></label></h4>
 	</div>
 	{!!Form::label('description','Description:',['class' => 'col-md-3 control-label'])!!}
 	<div class="col-md-7">
 		{!!Form::textArea('description',null,['id'=>'description','class'=>'form-control textarea-content','placeholder'=>'Problem description...','rows'=> '15'])!!}
+		<span id = "span_description" class="help-block" style="display:none">
+
+        </span>
 		 @if ($errors->has('description'))
             <span class="help-block">
                 <strong>{{ $errors->first('description') }}</strong>
@@ -46,10 +49,13 @@
 	</div>
 </div>
 
-<div class="form-group{{ $errors->has('input_specification') ? ' has-error' : '' }}">
+<div id = "div_input_specification" class="form-group{{ $errors->has('input_specification') ? ' has-error' : '' }}">
 	{!!Form::label('input_specification','Input specification:',['class' => 'col-md-3 control-label'])!!}
 	<div class="col-md-7">
 		{!!Form::textArea('input_specification',null,['id'=>'input_specification','class'=>'form-control textarea-content','placeholder'=>'Input specification...','rows'=> '2'])!!}
+		<span id = "span_input_specification" class="help-block" style="display:none">
+
+        </span>
 		 @if ($errors->has('input_specification'))
             <span class="help-block">
                 <strong>{{ $errors->first('input_specification') }}</strong>
@@ -58,10 +64,13 @@
 	</div>
 </div>
 
-<div class="form-group{{ $errors->has('output_specification') ? ' has-error' : '' }}">
+<div id = "div_output_specification" class="form-group{{ $errors->has('output_specification') ? ' has-error' : '' }}">
 	{!!Form::label('output_specification','Output specification:',['class' => 'col-md-3 control-label'])!!}
 	<div class="col-md-7">
 		{!!Form::textArea('output_specification',null,['id'=>'output_specification','class'=>'form-control textarea-content','placeholder'=>'Output specification...','rows'=> '2'])!!}
+		<span id = "span_output_specification" class="help-block" style="display:none">
+
+        </span>
 		 @if ($errors->has('output_specification'))
             <span class="help-block">
                 <strong>{{ $errors->first('output_specification') }}</strong>
@@ -70,10 +79,13 @@
 	</div>
 </div>
 
-<div class="form-group{{ $errors->has('sample_input') ? ' has-error' : '' }}">
+<div id = "div_sample_input" class="form-group{{ $errors->has('sample_input') ? ' has-error' : '' }}">
 	{!!Form::label('sample_input','Sample input:',['class' => 'col-md-3 control-label'])!!}
 	<div class="col-md-7">
 		{!!Form::textArea('sample_input',null,['id'=>'sample_input','class'=>'form-control textarea-content','placeholder'=>'Sample input...','rows'=> '2'])!!}
+		<span id = "span_sample_input" class="help-block" style="display:none">
+
+        </span>
 		 @if ($errors->has('sample_input'))
             <span class="help-block">
                 <strong>{{ $errors->first('sample_input') }}</strong>
@@ -82,10 +94,13 @@
 	</div>
 </div>
 
-<div class="form-group{{ $errors->has('sample_output') ? ' has-error' : '' }}">
+<div id = "div_sample_output" class="form-group{{ $errors->has('sample_output') ? ' has-error' : '' }}">
 	{!!Form::label('sample_output','Sample output:',['class' => 'col-md-3 control-label'])!!}
 	<div class="col-md-7">
 		{!!Form::textArea('sample_output',null,['id'=>'sample_output','class'=>'form-control textarea-content','placeholder'=>'Sample output...','rows'=> '2'])!!}
+		<span id = "span_sample_output" class="help-block" style="display:none">
+
+        </span>
 		 @if ($errors->has('sample_output'))
             <span class="help-block">
                 <strong>{{ $errors->first('sample_output') }}</strong>
@@ -94,10 +109,13 @@
 	</div>
 </div>
 
-<div class="form-group{{ $errors->has('hints') ? ' has-error' : '' }}">
+<div id = "div_hints" class="form-group{{ $errors->has('hints') ? ' has-error' : '' }}">
 	{!!Form::label('hints','Hints:',['class' => 'col-md-3 control-label'])!!}
 	<div class="col-md-7">
 		{!!Form::textArea('hints',null,['id'=>'hints','class'=>'form-control textarea-content','placeholder'=>'Hints...','rows'=> '2'])!!}
+		<span id = "span_hints" class="help-block" style="display:none">
+
+        </span>
 		 @if ($errors->has('hints'))
             <span class="help-block">
                 <strong>{{ $errors->first('hints') }}</strong>
@@ -114,8 +132,6 @@
 <br>
 
 <div id = "div_success" class="col-md-6 col-md-offset-3" style="display:none"> </div>
-
-<div id = "div_error" class="col-md-6 col-md-offset-3" style="display:none"> </div>
 
 <!--Limits-->
 

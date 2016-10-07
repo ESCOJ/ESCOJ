@@ -62,10 +62,12 @@ class ProblemController extends Controller
     {
 
         if($request->ajax()){
-            $this->problem->create($request->all(),Auth::user()->id);
-            return response()->json([
-                'message' => 'The data has been updated successfully.'
-            ]);
+            $flag = $this->problem->create($request->all(),Auth::user()->id);
+            if($flag){
+                return response()->json([
+                    'message' => 'The data has been updated successfully.'
+                ]);
+            }
         }
     }
 

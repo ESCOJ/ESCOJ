@@ -22,9 +22,9 @@ $("#register_problem_description").click(function(){
 			  hints: hints},
 
 		success:function(msj){
-			$("#div_error").html('');
 			$("#div_success").html('');
 			alert(msj.responseJSON.name)
+			
 			var msj_success = 
 				'<div id = "msj-success" class="alert alert-success alert-dismissible" role="alert" >'+
 			  		'<button type="button" class="close" data-dismiss="alert" aria-label="Close" >'+
@@ -35,46 +35,27 @@ $("#register_problem_description").click(function(){
 
 			$("#div_success").append(msj_success);
 			$("#div_success").fadeIn();
-			$('#div_success').focus();
+			$('#name').focus();
 		},
+
 		error:function(msj){
-			$("#div_error").html('');
 			$("#div_success").html('');
-			$("#_email")
+
+			$("#span_name, #span_source, #span_description, #span_input_specification,"+
+			  "#span_output_specification, #span_sample_input, #span_sample_output, #span_hints").html('');
+
+			$("#span_name, #span_source, #span_description, #span_input_specification,"+
+			  "#span_output_specification, #span_sample_input, #span_sample_output, #span_hints").fadeOut();
+
+			$("#div_name, #div_source, #div_description, #div_input_specification,"+
+			  "#div_output_specification, #div_sample_input, #div_sample_output, #div_hints").removeClass('has-error');
+
 			$.each( msj.responseJSON, function(key,value) {
-				alert(value);
+				$("#span_"+key).html('<strong>'+value+'</strong>');
+				$("#div_"+key).addClass('has-error');
+				$("#span_"+key).fadeIn();
 			});
-
-
-
-
-			var msj_error = 
-				'<div id = "msj-error" class="alert alert-danger alert-dismissible" role="alert" >'+
-			  		'<button type="button" class="close" data-dismiss="alert" aria-label="Close" >'+
-			  			'<span aria-hidden="true">&times;</span>'+
-			  		'</button>';
-
-		  	if( msj.responseJSON.name)
-		  		msj_error += '<p><strong><center>*' + msj.responseJSON.name  + '</center></strong</p>';
-		  	if( msj.responseJSON.source)
-				msj_error +='<p><strong><center>*' + msj.responseJSON.source + '</center></strong</p>';
-			if( msj.responseJSON.description)
-				msj_error +='<p><strong><center>*' + msj.responseJSON.description + '</center></strong</p>';
-			if( msj.responseJSON.input_specification)
-				msj_error +='<p><strong><center>*' + msj.responseJSON.input_specification + '</center></strong</p>';
-			if( msj.responseJSON.output_specification)
-				msj_error +='<p><strong><center>*' + msj.responseJSON.output_specification + '</center></strong</p>';
-			if( msj.responseJSON.sample_input)
-				msj_error +='<p><strong><center>*' + msj.responseJSON.sample_input + '</center></strong</p>';
-			if( msj.responseJSON.sample_output)
-				msj_error +='<p><strong><center>*' + msj.responseJSON.sample_output + '</center></strong</p>';
-			if( msj.responseJSON.hints)
-				msj_error +='<p><strong><center>*' + msj.responseJSON.hints + '</center></strong</p>';
-			
-			msj_error += '</div>';
-
-			$("#div_error").append(msj_error);
-			$("#div_error").fadeIn();
 		}
+
 	});
 });
