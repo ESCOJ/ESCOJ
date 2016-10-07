@@ -2,21 +2,28 @@
 	{!!Form::label('name','Title:',['class' => 'col-md-3 control-label'])!!}
 	<div class="col-md-7">
 		{!!Form::text('name',null,['id'=>'name','class'=>'form-control ','placeholder'=>'Insert the problem name'])!!}
+		 	
+		 	<span id = "_name" class="help-block" style="display:none">
+                <strong></strong>
+            </span>
 		 @if ($errors->has('name'))
-            <span class="help-block">
+            <span  class="help-block" >
                 <strong>{{ $errors->first('name') }}</strong>
             </span>
         @endif
 	</div>
 </div>
 
-<div class="form-group{{ $errors->has('author') ? ' has-error' : '' }}">
-	{!!Form::label('author','Author:',['class' => 'col-md-3 control-label'])!!}
+<div class="form-group{{ $errors->has('source') ? ' has-error' : '' }}">
+	{!!Form::label('source','Author:',['class' => 'col-md-3 control-label'])!!}
 	<div class="col-md-7">
-        {!! Form::select('author',['1' => 'Miguel Angel mickemandujas ESCOM-IPN'],null,['id'=>'author', 'class' => 'form-control select-author','placeholder'=>'Select the author']) !!}
-		@if ($errors->has('author'))
+        {!! Form::select('source',$sources,null,['id'=>'source', 'class' => 'form-control select-source','placeholder'=>'Select the source']) !!}
+        <span id = "_author" class="help-block" style="display:none">
+                <strong></strong>
+        </span>
+		@if ($errors->has('source'))
             <span class="help-block">
-                <strong>{{ $errors->first('author') }}</strong>
+                <strong>{{ $errors->first('source') }}</strong>
             </span>
         @endif
 	</div>
@@ -101,18 +108,14 @@
 
 <div class="col-md-2 col-md-offset-5">
 	{!!link_to('#', $title='Save', $attributes = ['id'=>'register_problem_description', 'class'=>'form-control btn btn-primary'], $secure = null)!!}
+
 </div>
 <br>
 <br>
 
-<div class="col-md-6 col-md-offset-3">
-	<div id="msj-success" class="alert alert-success alert-dismissible" role="alert" style="display:none">
-	        <strong><center>Data save successfully.</center></strong>
-	</div>
-</div>
-<div id="msj-error" class=" form-control alert alert-danger alert-dismissible" role="alert" style="display:none">
-        <strong id="msj"><center></center> </strong>
-</div>
+<div id = "div_success" class="col-md-6 col-md-offset-3" style="display:none"> </div>
+
+<div id = "div_error" class="col-md-6 col-md-offset-3" style="display:none"> </div>
 
 <!--Limits-->
 

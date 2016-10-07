@@ -24,7 +24,7 @@ class EloquentProblem implements ProblemInterface {
         // Create the problem
         $problem = $this->problem->create(array(
             'name' => $data['name'],
-            'author' => $data['author'],
+            'source_id' => $data['source'],
             'description' => $data['description'],
             'input_specification' => $data['input_specification'],
             'output_specification' => $data['output_specification'],

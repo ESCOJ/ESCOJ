@@ -7,22 +7,27 @@ use Illuminate\Http\Request;
 use ESCOJ\Http\Requests;
 use EscojLB\Repo\Tag\TagInterface;
 use EscojLB\Repo\Problem\ProblemInterface;
+use EscojLB\Repo\Source\SourceInterface;
 use Illuminate\Support\Facades\Auth;
+use ESCOJ\Http\Requests\ProblemAddRequest;
+
 
 class ProblemController extends Controller
 {
 
     protected $tag;
     protected $problem;
+    protected $source;
 
     /**
      * Create a new controller instance.
      *
      * @return void
      */
-    public function __construct(TagInterface $tag,ProblemInterface $problem){
+    public function __construct(TagInterface $tag,ProblemInterface $problem,SourceInterface $source){
         $this->tag = $tag;
         $this->problem = $problem;
+        $this->source = $source;
     }
 
     /**
@@ -42,9 +47,9 @@ class ProblemController extends Controller
      */
     public function create()
     {
-
+        $sources = $this->source->getKeyValueAll('id','name');
         $tags = $this->inputToSelectTags();
-        return view('problem.add',['tags' => $tags]);
+        return view('problem.add',['sources' => $sources,'tags' => $tags]);
     }
 
     /**
@@ -53,17 +58,18 @@ class ProblemController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(ProblemAddRequest $request)
     {
+
         if($request->ajax()){
             $this->problem->create($request->all(),Auth::user()->id);
             return response()->json([
-                "mensaje" => $request->all()//"creado"
+                'message' => 'The data has been updated successfully.'
             ]);
         }
     }
 
-    /**
+    /**['data' => array('message' => 'thanks for registering!', 'redirecturl' => '/')]
      * Display the specified resource.
      *
      * @param  int  $id

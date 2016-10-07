@@ -67,7 +67,7 @@
             msgValidationError: "File upload error",
             msgSizeTooLarge: 'File "{name}" (<b>{size} KB</b>) exceeds maximum allowed upload size of <b>{maxSize} KB</b>. Please retry your upload!',
         });
-        $('.select-author').chosen({
+        $('.select-source').chosen({
             
         });
         $('.select-tag').chosen({

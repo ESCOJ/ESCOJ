@@ -24,7 +24,7 @@ class Problem extends Model
     }
 
     protected $fillable = [
-        'name','author','tlpc','ttl', 'ml','sl','description','input_specification','output_specification','sample_input','sample_output','output_input','hints','points','status','slug','added_by'
+        'name','tlpc','ttl', 'ml','sl','description','input_specification','output_specification','sample_input','sample_output','output_input','hints','points','status','slug','added_by','source_id'
     ];
 
 
@@ -55,5 +55,9 @@ class Problem extends Model
 
     public function contests(){
         return $this->belongsToMany('EscojLB\Repo\Contest\Contest');
+    }
+
+     public function source(){
+        return $this->belongsTo('EscojLB\Repo\Source\Source');
     }
 }

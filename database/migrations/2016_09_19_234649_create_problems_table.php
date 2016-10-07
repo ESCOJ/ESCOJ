@@ -16,7 +16,6 @@ class CreateProblemsTable extends Migration
         Schema::create('problems', function (Blueprint $table) {
             $table->increments('id');
             $table->string('name');
-            $table->string('author');
             $table->double('tlpc')->nullable();// Time Limit Per Case
             $table->double('ttl')->nullable();// Total Time Limit
             $table->integer('ml')->unsigned()->nullable();//Memory Limit
@@ -32,8 +31,12 @@ class CreateProblemsTable extends Migration
             $table->string('slug')->nullable();
             $table->timestamps();
 
+            $table->integer('source_id')->unsigned();
             $table->integer('added_by')->unsigned();
+
             $table->foreign('added_by')->references('id')->on('users');
+            $table->foreign('source_id')->references('id')->on('sources');
+
 
         });
         
