@@ -6,7 +6,7 @@ use Illuminate\Http\Request;
 use ESCOJ\Http\Requests\JudgmentAddRequest;
 use ESCOJ\Http\Requests;
 use EscojLB\Repo\Language\LanguageInterface;
-use ESCOJ\Entities\EvaluateTool;
+use ESCOJ\EscojLB\EvaluateTool;
 
 class JudgementController extends Controller
 {
