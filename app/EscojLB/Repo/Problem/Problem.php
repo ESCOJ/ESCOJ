@@ -41,7 +41,7 @@ class Problem extends Model
 
     public function languages(){
     	//the relationship without the withPivot method only provides the columns that form the pivot table, then we specify that also want the column multiplier of us pivot table
-   	    return $this->belongsToMany('EscojLB\Repo\Language\Language')->withPivot('multiplier');
+   	    return $this->belongsToMany('EscojLB\Repo\Language\Language')withPivot('tlpc_multiplier','ttl_multiplier','ml_multiplier','sl_multiplier','tlpc','ttl','ml','sl');
    	}
 
     public function user(){
