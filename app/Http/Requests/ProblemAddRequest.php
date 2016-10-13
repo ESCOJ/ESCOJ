@@ -24,7 +24,7 @@ class ProblemAddRequest extends FormRequest
     public function rules()
     {
         return [
-            'name' => 'required|max:200',
+            'name' => 'required|max:200|unique:problems',
             'source' => 'required|integer', //exists:sources,id
             'description' => 'required|max:5000',
             'input_specification' => 'required|max:5000',
@@ -32,6 +32,8 @@ class ProblemAddRequest extends FormRequest
             'sample_input' => 'required|max:2000',
             'sample_output' => 'required|max:2000',
             'hints' => 'required|max:2000',
+            'languages' => 'required|array',
+            'tags' => 'required|array',
         ];
     }
 }

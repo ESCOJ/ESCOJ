@@ -24,4 +24,22 @@ class EloquentLanguage implements LanguageInterface {
       return $this->language->pluck($value,$key);
     }
 
+    /**
+     * Retrieve all languages  
+     * @return array        Array or Arrayable collection of Language objects
+     */
+    public function getAll(){
+        return $this->language->all();
+    }
+
+    /**
+     * Get a Language by Language ID
+     *
+     * @param  int $id       Language ID
+     * @return Object    Language model object
+     */
+    public function findById($id){
+        return $this->language->find($id);
+    }
+
 }

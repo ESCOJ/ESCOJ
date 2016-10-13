@@ -11,4 +11,18 @@ interface LanguageInterface {
      */
     public function getKeyValueAll($key,$value);
 
+     /**
+     * Retrieve all languages  
+     * @return array        Array or Arrayable collection of Language objects
+     */
+    public function getAll();
+
+    /**
+     * Get a Language by Language ID
+     *
+     * @param  int $id       Language ID
+     * @return Object    Language model object
+     */
+    public function findById($id);
+
 }

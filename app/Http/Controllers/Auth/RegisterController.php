@@ -91,13 +91,13 @@ class RegisterController extends Controller
             $user = $this->create($request->all(),$request,$provider);
             if ( ! $user )
             {
-                flash('Error in your account registration.', 'danger');
+                flash('Error in your account registration.', 'danger')->important();
             }
             else
             {
                 $this->user->confirmationSuccess($user->id);
                 Auth::login($user);
-                flash('Thanks for signing up! start coding.', 'info');
+                flash('Thanks for signing up! start coding.', 'info')->important();
             }
 
         }
@@ -108,13 +108,13 @@ class RegisterController extends Controller
             $user = $this->create($request->all(),$request,null,$confirmation_code);
             if ( ! $user )
             {
-                flash('Error in your account registration.', 'danger');
+                flash('Error in your account registration.', 'danger')->important();
             }
             else
             {    
                 $user->sendConfirmAccountNotification($confirmation_code);
 
-                flash('Thanks for signing up! Please check your email for confirm your account.', 'info');
+                flash('Thanks for signing up! Please check your email for confirm your account.', 'info')->important();
             }
         } 
         return redirect('/');
@@ -149,7 +149,7 @@ class RegisterController extends Controller
 
         if( ! $confirmation_code)
         {
-            flash('Error in your account confirmation, not was given the confirmation code.', 'danger');
+            flash('Error in your account confirmation, not was given the confirmation code.', 'danger')->important();
             return redirect('/');
         }
 
@@ -158,13 +158,13 @@ class RegisterController extends Controller
         if ( ! $user )
         {
 
-            flash('Error in your account confirmation, no user with this confirmation code.', 'danger');
+            flash('Error in your account confirmation, no user with this confirmation code.', 'danger')->important();
             return redirect('/');
         }
 
         $this->user->confirmationSuccess($user->id);
 
-        flash('You have successfully verified your account. Please sign in','info');
+        flash('You have successfully verified your account. Please sign in','info')->important();
 
         return redirect('/');
     }
@@ -233,17 +233,17 @@ class RegisterController extends Controller
               
                 $this->user->findById(Auth::user()->id)->sendConfirmAccountNotification($confirmation_code);
                 $this->logout($request);
-                flash('Your account is disabled, Please check your email for confirm your account.', 'info');
+                flash('Your account is disabled, Please check your email for confirm your account.', 'info')->important();
             } 
             else
-                flash('Error updating data', 'warning');
+                flash('Error updating data', 'warning')->important();
             return redirect('/');
         }
 
         if($flag)
-            flash('Data updated successfully', 'success');
+            flash('Data updated successfully', 'success')->important();
         else
-            flash('Error updating data', 'warning');
+            flash('Error updating data', 'warning')->important();
         return redirect('/contestant/profile');
     }
 

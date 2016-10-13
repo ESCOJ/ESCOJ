@@ -77,7 +77,11 @@ class RepoServiceProvider extends ServiceProvider
 
         $app->bind('EscojLB\Repo\Problem\ProblemInterface', function($app)
         {
-            $problem =  new EloquentProblem(new Problem);
+            $problem =  new EloquentProblem(
+                new Problem,
+                $app->make('EscojLB\Repo\Tag\TagInterface'),
+                $app->make('EscojLB\Repo\Language\LanguageInterface')
+            );
             return $problem;
 
         });
