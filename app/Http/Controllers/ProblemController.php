@@ -11,9 +11,10 @@ use EscojLB\Repo\Source\SourceInterface;
 use EscojLB\Repo\Language\LanguageInterface;
 use Illuminate\Support\Facades\Auth;
 use ESCOJ\Http\Requests\ProblemAddRequest;
+use ESCOJ\Http\Requests\ProblemAssignLimitsRequest;
 use ESCOJ\Constants;
 use Validator;
-
+use Storage;
 class ProblemController extends Controller
 {
 
@@ -69,7 +70,46 @@ class ProblemController extends Controller
             if($request->action === Constants::CEATE_PROBLEM){
                 $problem_id = $this->problem->create($request->all(),Auth::user()->id);
                 if($problem_id){
-                    $url = '/problem/'.$problem_id.'/edit';
+                    $url = '/problem/limits/'.$problem_id;
+
+                    return response()->json([
+                        'message' => 'The problem has been created successfully.',
+                        'redirect' => $url
+                    ]);
+                }
+            }
+        }
+    }
+
+     /**
+     * Show the form for eding a existing problem.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function edit($id)
+    {
+        $problem = $this->problem->findById($id);
+        $sources = $this->source->getKeyValueAll('id','name');
+        $tags = $this->inputToSelectTags();
+        $languages = $this->language->getAll();
+        return view('problem.update',['problem' => $problem, 'sources' => $sources,'tags' => $tags, 'languages' => $languages]);
+    }
+
+    /**
+     * Update a existing problem.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function update(ProblemAddRequest $request ,$id)
+    {
+        dd($request->all());
+        if($request->ajax()){
+            if($request->action === Constants::CEATE_PROBLEM){
+                $problem_id = $this->problem->create($request->all(),Auth::user()->id);
+                if($problem_id){
+                    $url = '/problem/limits/'.$problem_id;
+
                     return response()->json([
                         'message' => 'The problem has been created successfully.',
                         'redirect' => $url
@@ -91,12 +131,12 @@ class ProblemController extends Controller
     }
 
     /**
-     * Show the form for editing the specified resource.
+     * Show the form for editing the limits of a problem in storage.
      *
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function edit($id)
+    public function limits($id)
     {
         $problem = $this->problem->findById($id);
         $languages = $this->problem->getAllLanguages($id);
@@ -104,27 +144,65 @@ class ProblemController extends Controller
         foreach($languages as $language){
             $ids[] = $language->id;
         }
-        return view('problem.add_or_update',['problem' => $problem, 'languages' => $languages, 'ids' => $ids]);
+        return view('problem.assign_limits',['problem' => $problem, 'languages' => $languages, 'ids' => $ids]);
     }
 
     /**
-     * Update the specified resource in storage.
+     * Update the limits of a problem in storage.
      *
      * @param  \Illuminate\Http\Request  $request
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function assignLimits(ProblemAssignLimitsRequest $request, $id)
     {
-        $languages = $this->problem->getKeyValueAllLanguages('name', 'id', $id);}
-
-        $this->validator($request->all(),$languages->toArray())->validate();
+        $languages = $this->problem->getKeyValueAllLanguages('name', 'id', $id);
 
         $request['languages'] = $languages->toArray();
 
         $problem = $this->problem->assignLimits($request->all(), $id);
 
         flash('The limits has been assigned successfully.','success')->important();
+
+        return back()->with(['addDatasets' => 'true']);
+
+    }
+
+    /**
+     * Show the form for editing the Datasets of a problem in storage.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function datasets($id)
+    {
+        $problem = $this->problem->findById($id);
+        return view('problem.assign_datasets',['problem' => $problem]);
+    }
+
+    /**
+     * Update the Datasets of a problem in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function assignDatasets(Request $request, $id)
+    {
+        
+        //dd(storage_path('datasets/problem_4/'));
+        $image = $request->file('dataset');
+        $image->storeAs('/problem_'.$id, 'dataset_'.$id.'.zip', "datasets"); 
+
+        $zip = new \ZipArchive();
+        if ($zip->open(storage_path('datasets/problem_'.$id.'/dataset_'.$id.'.zip')) === TRUE) {
+            $zip->extractTo(storage_path('datasets/problem_'.$id));
+            $zip->close();
+            Storage::disk('datasets')->delete('problem_'.$id.'/dataset_'.$id.'.zip');
+        } 
+
+        flash('The datasets has been loaded successfully.','success')->important();
+
         return back();
 
     }
@@ -161,46 +239,6 @@ class ProblemController extends Controller
         }
 
         return $tags_classification;
-
-    }
-
-
-        /**
-     * Get a validator for an incoming registration request.
-     *
-     * @param  array  $data
-     * @return \Illuminate\Contracts\Validation\Validator
-     */
-    protected function validator(array $data, $languages)
-    {
-        $rules = array();
-
-        $messages = [
-            'same'    => 'The :attribute and :other must match.',
-            'size'    => 'The :attribute must be exactly :size.',
-            'between' => 'The :attribute must be between :min - :max.',
-            'in'      => 'The :attribute must be one of the following types: :values',
-        ];
-
-        $rules['tlpc'] = 'required|digits_between:1,10';
-        $rules['ttl'] = 'required|digits_between:1,10';
-        $rules['ml'] = 'required|digits_between:1,10';
-        $rules['sl'] = 'required|digits_between:1,10';
-
-        foreach($languages as $id)
-        {
-            $rules['tlpc_multiplier_'.$id] = 'required|numeric';
-            $rules['ttl_multiplier_'.$id] = 'required|numeric';
-            $rules['ml_multiplier_'.$id] = 'required|numeric';
-            $rules['sl_multiplier_'.$id] = 'required|numeric';
-
-            $rules['tlpc_'.$id] = 'required|digits_between:1,10';
-            $rules['ttl_'.$id] = 'required|digits_between:1,10';
-            $rules['ml_'.$id] = 'required|digits_between:1,10';
-            $rules['sl_'.$id] = 'required|digits_between:1,10';
-        }
-
-        return Validator::make($data, $rules);
     }
 
 }

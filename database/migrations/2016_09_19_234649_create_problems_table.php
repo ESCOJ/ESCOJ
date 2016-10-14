@@ -16,10 +16,10 @@ class CreateProblemsTable extends Migration
         Schema::create('problems', function (Blueprint $table) {
             $table->increments('id');
             $table->string('name')->unique();
-            $table->integer('tlpc')->unsigned()->nullable();// Time Limit Per Case
-            $table->integer('ttl')->unsigned()->nullable();// Total Time Limit
             $table->integer('ml')->unsigned()->nullable();//Memory Limit
             $table->integer('sl')->unsigned()->nullable();// Size Limit (size of file)
+            $table->integer('tlpc')->unsigned()->nullable();// Time Limit Per Case
+            $table->integer('ttl')->unsigned()->nullable();// Total Time Limit
             $table->mediumText('description');
             $table->text('input_specification');
             $table->text('output_specification');

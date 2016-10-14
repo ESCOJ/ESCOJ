@@ -11,37 +11,39 @@
 		<br>
 
 		<div class="row">
-            <div class="col-sm-3">
+            <div class="col-sm-3 {{ $errors->has('limits.0.ml') ? ' has-error' : '' }}">
 				<strong>Memory Limit(B)</strong><br><br>
 				<div class="input-group">
-					<input id = "ml" name = "ml" type="text" class="form-control" placeholder="Max memory" value="{{$problem->ml or ''}}">
+					<input id = "ml" name = "limits[0][ml]" type="text" class="form-control" placeholder="Max memory" 
+					value="{{ !is_null(old('limits.0.ml')) ? old('limits.0.ml') : $problem->ml }}">
 					<span class="input-group-btn">
 						<button class="btn btn-default" type="button" onclick="assignMemoryLimit()">Apply</button>
 					</span>
 				</div>
             </div>
-            <div class="col-sm-3">
+            <div class="col-sm-3 {{ $errors->has('limits.0.sl') ? ' has-error' : '' }}">
 				<strong>Source Code Size(B)</strong><br><br>
 				<div class="input-group">
-					<input id = "sl" name = "sl" type="text" class="form-control" placeholder="Max size source" value="{{$problem->sl or ''}}">
+					<input id = "sl" name = "limits[0][sl]" type="text" class="form-control" placeholder="Max size source" 
+					value="{{ !is_null(old('limits.0.sl')) ? old('limits.0.sl') : $problem->sl }}">
 					<span class="input-group-btn">
 						<button class="btn btn-default" type="button" onclick="assignSourceLimit()">Apply</button>
 					</span>
 				</div>
             </div>
-            <div class="col-sm-3">
+            <div class="col-sm-3 {{ $errors->has('limits.0.tlpc') ? ' has-error' : '' }}">
 				<strong>Time Limit Case(MS)</strong><br><br>
 				<div class="input-group">
-					<input id = "tlpc" name = "tlpc" type="text" class="form-control" placeholder="Max execution time per case" value="{{$problem->tlpc or ''}}">
+					<input id = "tlpc" name = "limits[0][tlpc]" type="text" class="form-control" placeholder="Max execution time per case" value="{{ !is_null(old('limits.0.tlpc')) ? old('limits.0.tlpc') : $problem->tlpc }}">
 					<span class="input-group-btn">
 						<button class="btn btn-default" type="button" onclick="assignTimeLimitPerCase()">Apply</button>
 					</span>
 				</div>
             </div>
-            <div class="col-sm-3">
+            <div class="col-sm-3 {{ $errors->has('limits.0.ttl') ? ' has-error' : '' }}">
 				<strong>Total Time Limit(MS)</strong><br><br>
 				<div class="input-group">
-					<input id = "ttl" name = "ttl" type="text" class="form-control" placeholder="Max total execution time" value="{{$problem->ttl or ''}}">
+					<input id = "ttl" name = "limits[0][ttl]" type="text" class="form-control" placeholder="Max total execution time" value="{{ !is_null(old('limits.0.ttl')) ? old('limits.0.ttl') : $problem->ttl }}">
 					<span class="input-group-btn">
 						<button class="btn btn-default" type="button" onclick="assignTotalTimeLimit()">Apply</button>
 					</span>
@@ -85,18 +87,23 @@
 				<div class="panel panel-default">
 					<div class="panel-heading"><strong>{{ $language->name }}</strong></div>
 					<div class="panel-body">
-		            	<div class="col-sm-3">
-		            		
-							<input name="ml_multiplier_{{ $language->id }}" id="ml_multiplier_{{ $language->id }}" type="text" class="form-control" placeholder="Memory multiplier" value="{{ number_format($language->pivot->ml_multiplier,1) }}">
+		            	<div class="col-sm-3 {{ $errors->has('limits.'.$language->id.'.ml_multiplier') ? ' has-error' : '' }}">
+							<input name="limits[{{ $language->id }}][name]" type="hidden" value="{{ $language->name }}">
+
+							<input name="limits[{{ $language->id }}][ml_multiplier]" id="ml_multiplier_{{ $language->id }}" type="text" class="form-control" placeholder="Memory multiplier" 
+							value="{{ !is_null(old('limits.'.$language->id.'.ml_multiplier')) ? old('limits.'.$language->id.'.ml_multiplier') : number_format($language->pivot->ml_multiplier,1) }}">
 						</div>
-						<div class="col-sm-3">
-							<input name="sl_multiplier_{{ $language->id }}" id="sl_multiplier_{{ $language->id }}"type="text" class="form-control" placeholder="Source size multiplier" value="{{ number_format($language->pivot->sl_multiplier,1) }}">
+						<div class="col-sm-3 {{ $errors->has('limits.'.$language->id.'.sl_multiplier') ? ' has-error' : '' }}">
+							<input name="limits[{{ $language->id }}][sl_multiplier]" id="sl_multiplier_{{ $language->id }}"type="text" class="form-control" placeholder="Source size multiplier" 
+							value="{{ !is_null(old('limits.'.$language->id.'.sl_multiplier')) ? old('limits.'.$language->id.'.sl_multiplier') : number_format($language->pivot->sl_multiplier,1) }}">
 						</div>
-						<div class="col-sm-3">
-							<input name="tlpc_multiplier_{{ $language->id }}" id="tlpc_multiplier_{{ $language->id }}"type="text" class="form-control" placeholder="Execution time per case multiplier" value="{{ number_format($language->pivot->tlpc_multiplier,1) }}">
+						<div class="col-sm-3 {{ $errors->has('limits.'.$language->id.'.tlpc_multiplier') ? ' has-error' : '' }}">
+							<input name="limits[{{ $language->id }}][tlpc_multiplier]" id="tlpc_multiplier_{{ $language->id }}"type="text" class="form-control" placeholder="Execution time per case multiplier" 
+							value="{{ !is_null(old('limits.'.$language->id.'.tlpc_multiplier')) ? old('limits.'.$language->id.'.tlpc_multiplier') : number_format($language->pivot->tlpc_multiplier,1) }}">
 						</div>
-						<div class="col-sm-3">
-							<input name="ttl_multiplier_{{ $language->id }}" id="ttl_multiplier_{{ $language->id }}"type="text" class="form-control" placeholder="Total execution time multiplier" value="{{ number_format($language->pivot->ttl_multiplier,1) }}">
+						<div class="col-sm-3 {{ $errors->has('limits.'.$language->id.'.ttl_multiplier') ? ' has-error' : '' }}">
+							<input name="limits[{{ $language->id }}][ttl_multiplier]" id="ttl_multiplier_{{ $language->id }}"type="text" class="form-control" placeholder="Total execution time multiplier" 
+							value="{{ !is_null(old('limits.'.$language->id.'.ttl_multiplier')) ? old('limits.'.$language->id.'.ttl_multiplier') : number_format($language->pivot->ttl_multiplier,1) }}">
 						</div>
 					</div>
 			    </div> <br>
@@ -136,19 +143,23 @@
 				<div class="panel panel-default">
 					<div class="panel-heading"><strong>{{ $language->name }}</strong></div>
 					<div class="panel-body">
-	            		<div class="col-sm-3">
-	            			<input name="ml_{{ $language->id }}" id="ml_{{ $language->id }}" type="text" class="form-control" placeholder="Max memory" value="{{ $language->pivot->ml }}">
+	            		<div class="col-sm-3 {{ $errors->has('limits.'.$language->id.'.ml') ? ' has-error' : '' }}">
+	            			<input name="limits[{{ $language->id }}][ml]" id="ml_{{ $language->id }}" type="text" class="form-control" placeholder="Max memory" 
+	            			value="{{ !is_null(old('limits.'.$language->id.'.ml')) ? old('limits.'.$language->id.'.ml') : $language->pivot->ml }}">
 						</div>
-						<div class="col-sm-3">
-	            			<input name="sl_{{ $language->id }}" id="sl_{{ $language->id }}" type="text" class="form-control" placeholder="Max size source" value="{{ $language->pivot->sl }}">
+						<div class="col-sm-3 {{ $errors->has('limits.'.$language->id.'.sl') ? ' has-error' : '' }}">
+	            			<input name="limits[{{ $language->id }}][sl]" id="sl_{{ $language->id }}" type="text" class="form-control" placeholder="Max size source" 
+	            			value="{{ !is_null(old('limits.'.$language->id.'.sl')) ? old('limits.'.$language->id.'.sl') : $language->pivot->sl }}">
 
 						</div>
-						<div class="col-sm-3">
-							<input name="tlpc_{{ $language->id }}" id="tlpc_{{ $language->id }}" type="text" class="form-control" placeholder="Max execution time per case" value="{{  $language->pivot->tlpc }}">
+						<div class="col-sm-3 {{ $errors->has('limits.'.$language->id.'.tlpc') ? ' has-error' : '' }}">
+							<input name="limits[{{ $language->id }}][tlpc]" id="tlpc_{{ $language->id }}" type="text" class="form-control" placeholder="Max execution time per case" 
+							value="{{ !is_null(old('limits.'.$language->id.'.tlpc')) ? old('limits.'.$language->id.'.tlpc') : $language->pivot->tlpc }}">
 
 						</div>
-						<div class="col-sm-3">
-							<input name="ttl_{{ $language->id }}" id="ttl_{{ $language->id }}" type="text" class="form-control" placeholder="Max total execution time" value="{{ $language->pivot->ttl }}">
+						<div class="col-sm-3 {{ $errors->has('limits.'.$language->id.'.ttl') ? ' has-error' : '' }}">
+							<input name="limits[{{ $language->id }}][ttl]" id="ttl_{{ $language->id }}" type="text" class="form-control" placeholder="Max total execution time" 
+							value="{{ !is_null(old('limits.'.$language->id.'.ttl')) ? old('limits.'.$language->id.'.ttl') : $language->pivot->ttl }}">
 						</div>
 					</div>
 			    </div> <br>

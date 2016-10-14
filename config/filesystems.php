@@ -66,6 +66,11 @@ return [
           'driver' => 'local',
           'root'   => public_path(),
         ],
+        //Disk for store the datasets uploads
+        'datasets' => [
+          'driver' => 'local',
+          'root'   => storage_path('/datasets'),
+        ],
 
     ],
 ];

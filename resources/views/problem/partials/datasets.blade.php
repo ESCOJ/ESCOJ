@@ -2,7 +2,13 @@
 
 <div class="form-group{{ $errors->has('email') ? ' has-error' : '' }}">
 	<div class="row">
-	    <h4><label for="input" class="col-sm-10 col-sm-offset-1 label label-primary"><center>Datasets</center></label></h4>
+	    <h4><label for="input" class="col-sm-10 col-sm-offset-1 label label-primary"><center>Datasets</center></label>
+	    </h4>
+	    <div class="col-md-8 col-md-offset-2 text-center">
+	        <h5>
+	            @include('flash::message')
+	        </h5>
+    	</div> 
 	</div>
 	<br>
 	<div class="col-md-10 col-md-offset-1">
@@ -12,7 +18,7 @@
 					<div class="form-group{{ $errors->has('dataset') ? ' has-error' : '' }}">
 					    {!!Form::label('dataset','Source code:',['class' => 'col-md-3 control-label file'])!!}
 					    <div class="col-md-7">
-					        {!! Form::file('dataset', array('multiple'=>true)) !!}
+					        {!! Form::file('dataset') !!}
 					        @if ($errors->has('dataset'))
 					            <span class="help-block">
 					                <strong>{{ $errors->first('dataset') }}</strong>
@@ -24,10 +30,10 @@
 		</div>
 
 		<div class="checkbox">
-		    <label><input type="checkbox" value=""><strong>Multidata</strong></label>
+		    <label><input name="multidata" type="checkbox" value=""><strong>Multidata</strong></label>
 		</div>
 		<div class="checkbox">
-		    <label><input type="checkbox" value=""><strong>Enable</strong></label>
+		    <label><input name="enable" type="checkbox" value=""><strong>Enable</strong></label>
 		</div>
 
 		 @if ($errors->has('email'))

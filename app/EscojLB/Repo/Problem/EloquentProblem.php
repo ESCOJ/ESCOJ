@@ -122,14 +122,16 @@ class EloquentProblem implements ProblemInterface {
             {
 
                 $languageIds[$id] = array(
-                    'tlpc_multiplier' => $data['tlpc_multiplier_'.$id],
-                    'ttl_multiplier' => $data['ttl_multiplier_'.$id],
-                    'ml_multiplier' => $data['ml_multiplier_'.$id],
-                    'sl_multiplier' => $data['sl_multiplier_'.$id],
-                    'tlpc' => $data['tlpc_'.$id],
-                    'ttl' => $data['ttl_'.$id],
-                    'ml' => $data['ml_'.$id],
-                    'sl' => $data['sl_'.$id],
+                    'ml_multiplier' => $data['limits'][$id]['ml_multiplier'],
+                    'sl_multiplier' => $data['limits'][$id]['sl_multiplier'],
+                    'tlpc_multiplier' => $data['limits'][$id]['tlpc_multiplier'],
+                    'ttl_multiplier' => $data['limits'][$id]['ttl_multiplier'],
+               
+                    'ml' => $data['limits'][$id]['ml'],
+                    'sl' => $data['limits'][$id]['sl'],
+                    'tlpc' => $data['limits'][$id]['tlpc'],
+                    'ttl' => $data['limits'][$id]['ttl'],
+        
                     );
             }
         }
@@ -175,11 +177,12 @@ class EloquentProblem implements ProblemInterface {
      * @return boolean 
      */
     public function assignLimits(array $data, $id){
+
         $problem = $this->problem->find($id);
-        $problem->tlpc = $data['tlpc'];
-        $problem->ttl = $data['ttl'];
-        $problem->ml = $data['ml'];
-        $problem->sl = $data['sl'];
+        $problem->ml = $data['limits']['0']['ml'];
+        $problem->sl = $data['limits']['0']['sl'];
+        $problem->tlpc = $data['limits']['0']['tlpc'];
+        $problem->ttl = $data['limits']['0']['ttl'];
         $problem->save();
 
         $this->syncLanguages($problem, $data['languages'],$data);

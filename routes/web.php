@@ -10,11 +10,7 @@
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
-});
-
-//The authenticaction Routes
+//The Authenticaction Routes
 Auth::routes();
 Route::get('register/verify/{confirmationCode}', [
     'as' => 'confirmation_path',
@@ -27,9 +23,9 @@ Route::get('/auth/redirect/{provider}',  'Auth\SocialAuthController@socialRedire
 Route::get('/auth/callback/{provider}',  'Auth\SocialAuthController@socialCallback');
 
 
-Route::get('/home', 'HomeController@index');
 
 
+//The Users Routes
 Route::group(['prefix' => 'contestant'], function (){
 	Route::get('profile', 'Auth\RegisterController@profile');
 	Route::get('edit','Auth\RegisterController@edit');
@@ -38,12 +34,33 @@ Route::group(['prefix' => 'contestant'], function (){
 	Route::get('contestant/institutions/{id}','Auth\RegisterController@getInstitutions');
 });
 
+//The Problem Routes
+Route::group(['prefix' => 'problem'], function (){
+	Route::get('/create', 'ProblemController@create')->name('problem.create');
+	Route::post('', 'ProblemController@store')->name('problem.store');
+	//update
+	Route::get('/{problem}/edit', 'ProblemController@edit')->name('problem.edit');
+	Route::put('/update/{problem}', 'ProblemController@update')->name('problem.update');
+	//limits
+	Route::get('/limits/{problem}', 'ProblemController@limits')->name('problem.limits');
+	Route::put('/limits/{problem}', 'ProblemController@assignLimits')->name('problem.assignLimits');
+	//datasets
+	Route::get('/datasets/{problem}', 'ProblemController@datasets')->name('problem.datasets');
+	Route::put('/datasets/{problem}', 'ProblemController@assignDatasets')->name('problem.assignDatasets');	
+});
 
-Route::resource('problem','ProblemController');
+//The Judgements Routes
 Route::resource('judgment','JudgementController');
 
-//Testing Route
 
+//Other Routes
+Route::get('/', function () {
+    return view('welcome');
+});
+Route::get('/home', 'HomeController@index');
+
+
+//Testing Route
 Route::get('test',function(){
 	
 	return view('testing.test');

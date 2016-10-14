@@ -24,7 +24,7 @@ class Problem extends Model
     }
 
     protected $fillable = [
-        'name','tlpc','ttl', 'ml','sl','description','input_specification','output_specification','sample_input','sample_output','output_input','hints','points','status','slug','added_by','source_id'
+        'name','ml','sl', 'tlpc','ttl','description','input_specification','output_specification','sample_input','sample_output','output_input','hints','points','status','slug','added_by','source_id'
     ];
 
 
@@ -41,7 +41,7 @@ class Problem extends Model
 
     public function languages(){
     	//the relationship without the withPivot method only provides the columns that form the pivot table, then we specify that also want the column multiplier of us pivot table
-   	    return $this->belongsToMany('EscojLB\Repo\Language\Language')->withPivot('tlpc_multiplier','ttl_multiplier','ml_multiplier','sl_multiplier','tlpc','ttl','ml','sl');
+   	    return $this->belongsToMany('EscojLB\Repo\Language\Language')->withPivot('ml_multiplier','sl_multiplier','tlpc_multiplier','ttl_multiplier','ml','sl','tlpc','ttl');
    	}
 
     public function user(){

@@ -1,6 +1,6 @@
 @extends('layouts.main')
 
-@section('title' , 'Add problem')
+@section('title' , 'Update problem')
 
 @section('styles')
     {!! Html::style('plugins/trumbowyg/ui/trumbowyg.css') !!}
@@ -15,7 +15,7 @@
             <div class="panel panel-primary">
                 <div class="panel-heading"><strong><center>Add Problem</center></strong></div>
                     <div class="panel-body">
-                        {!!Form::open(['class' => 'form-horizontal'])!!}
+                        {!!Form::model($problem,['route'=> ['problem.update',$problem->id],'method'=>'PUT','class' => 'form-horizontal'])!!}
 
                             <input type="hidden" name="_token" value="{{ csrf_token() }}" id="token">
 
