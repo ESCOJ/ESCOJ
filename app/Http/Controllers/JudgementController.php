@@ -23,7 +23,7 @@ class JudgementController extends Controller
      */
     public function index()
     {
-
+        return view('judgment.index');
     }
 
     /**

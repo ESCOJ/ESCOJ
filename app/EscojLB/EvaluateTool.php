@@ -15,16 +15,38 @@ class EvaluateTool{
 	private static $JAVAC = "javac ";
 	private static $JAVA = "java -Djava.compiler=NONE -cp ";
 	private static $REDIRECT_OUTPUT = " 2>&1 ";
-	private static $SYSTEM_WORDS = array('thread','exec','system','fork','pthread_t','pthread_create');
-	private static $ERROR_SYSTEM_WORDS = false; 
+	private static $SYSTEM_WORDS = array('thread','exec','system','fork','pthread_t','pthread_create','fopen');
+    private static $LOOPS_TO_TIME =  5;
+    private static $SIZE_LIMIT = 20000;
+    private static $TIME_LIMIT = 20000;
+    private static $MEMORY_LIMIT = 20000;
+	private static $ERROR_SYSTEM_WORDS = array(
+        "Invalid Function",
+        "Compilation Error",
+        "Size Limit Exceeded",
+        "Unqualified",
+        "Internal Error",
+        "Runtime Error",
+        "Time Limit Exceeded",
+        "Memory Limit Exceeded",
+        "Output Limit Exceeded",
+        "Presentation Error",
+        "Wrong Answer",
+        "Accepted");
+
 
 	static function evaluateCode($file,$language,$problem_id,$id_user){
 
 		$wordsFounded = self::searchSystemWords($file);
 		if(!empty($wordsFounded)){
 
-			return $ERROR_SYSTEM_WORDS;
+			return self::$ERROR_SYSTEM_WORDS[0];
 		}
+        $size_file = filesize(public_path() . '/' . $file);
+        var_dump($size_file);
+        if($size_file > self::$SIZE_LIMIT){
+            return self::$ERROR_SYSTEM_WORDS[2];
+        }
 
 		switch ($language) {
 			case '1':
@@ -33,18 +55,22 @@ class EvaluateTool{
                 $sentence_to_compile = self::$GCC . realpath($file) . " -o " . public_path() . "/temp/" . $output_file .self::$OPTIMIZED_COMPILATION.self::$REDIRECT_OUTPUT;
 
                 exec($sentence_to_compile,$output);
-                var_dump($output);
+                
                 if(empty($output)){
                 	
                     $output_file = public_path() . '/temp/' . $output_file;
 
-                    self::measureTime($output_file);
+                    $time = self::getAverageTime($output_file);
+                    $memory = self::measureMemmory($output_file);
 
-                    self::measureMemmory($output_file);
+                    self::evaluateTimeMemory($time,$memory);
                 }
                 else{
                     #COMPILATION ERROR!!!
+                    return self::$ERROR_SYSTEM_WORDS[1];
                 }
+                self::deleteCode(public_path() . '/' . $file);
+                self::deleteExecutableforC(public_path(). '/' . $file);
 				break;
 			case '2':
 				# C++
@@ -52,18 +78,22 @@ class EvaluateTool{
                 $sentence_to_compile = self::$GCCPLUSPLUS . realpath($file) . " -o " . public_path() . "/temp/" . $output_file .self::$OPTIMIZED_COMPILATION.self::$REDIRECT_OUTPUT;
 
                 exec($sentence_to_compile,$output);
-                var_dump($output);
+                
                 if(empty($output)){
                 	
                     $output_file = public_path() . '/temp/' . $output_file;
 
-                    self::measureTime($output_file);
+                    $time = self::getAverageTime($output_file);
+                    $memory = self::measureMemmory($output_file);
 
-                    self::measureMemmory($output_file);
+                    self::evaluateTimeMemory($time,$memory);
                 }
                 else{
                     #COMPILATION ERROR!!!
+                    return self::$ERROR_SYSTEM_WORDS[1];
                 }
+                self::deleteCode(public_path() . '/' . $file);
+                self::deleteExecutableforC(public_path() . '/' . $file);
 				break;
 			case '3':
 				# JAVA
@@ -73,25 +103,79 @@ class EvaluateTool{
 
                 exec($sentence_to_compile,$output);
                 
-                var_dump($output);
+                
                 if(empty($output)){
 
                     $output_file = self::$JAVA.public_path() . '/temp ' . $replace;
 
-                    self::measureTime($output_file);
-                    self::measureMemmory($output_file);
+                    $time = self::getAverageTime($output_file);
+                    $memory = self::measureMemmory($output_file);
+
+                    self::evaluateTimeMemory($time,$memory);
+
+                }else{
+                    #COMPILATION ERROR!!!
+                    return self::$ERROR_SYSTEM_WORDS[1];
                 }
+                self::deleteCode(public_path() . '/' . $file);
+                self::deleteExecutableforJava(public_path() . '/' . $file);
 				break;
 			case '4':
 				# PYTHON
                 $sentence_to_execute = self::$PYTHON.realpath($file);
                 
-                self::measureTime($sentence_to_execute);
-                self::measureMemmory($sentence_to_execute);
+                $time = self::getAverageTime($output_file);
+                $memory = self::measureMemmory($output_file);
+
+                self::evaluateTimeMemory($time,$memory);
+
+                self::deleteCode(public_path() . '/' . $file);
 				break;	
 		}
 		
 	}
+
+    static function evaluateTimeMemory($time,$memory){
+        if($memory > $MEMORY_LIMIT){
+            return $ERROR_SYSTEM_WORDS[7];
+        }
+        if($time > $TIME_LIMIT){
+            return $ERROR_SYSTEM_WORDS[6];
+        }
+    }
+
+    static function deleteCode($file){
+
+        unlink($file);
+    }
+
+
+    static function deleteExecutableforC($file){
+        $executable = explode('.',$file);
+        $name = $executable[0] . ".out";
+        unlink($name);
+    } 
+
+
+    static function deleteExecutableforJava($file){
+        $executable = explode('.',$file);
+        $name = $executable[0] . ".class";
+        unlink($name);
+    } 
+
+    static function getAverageTime($exec_file){
+        $partial_time = 0.0;
+        for($i=0;$i<self::$LOOPS_TO_TIME;$i++)
+            $partial_time = $partial_time + (float)(self::measureTime($exec_file));
+        
+        $time_average = $partial_time / self::$LOOPS_TO_TIME;
+        var_dump("Tiempo de ejecución: ".$time_average." seg");
+        return $time_average;
+    }
+
+    static function runTimeErrorSorter(){
+
+    }
 
     /**
      * Uses the time command to measure the time of a program
@@ -100,12 +184,16 @@ class EvaluateTool{
      * @return string $time 
     */
     static function measureTime($exec_file){
-        var_dump($exec_file);
+        
         $sentence_to_evaluate_time = self::$TIME_SENTENCE.$exec_file.self::$REDIRECT_OUTPUT;
         exec($sentence_to_evaluate_time,$evaluated_time_output);
+        
+        runTimeErrorSorter($evaluated_time_output);
+
         $all_time = explode(' ',$evaluated_time_output[0]);
         $usr_time = explode('u',$all_time[0]);
-        var_dump("Tiempo de ejecución: ".$usr_time[0]." seg");
+        
+        return $usr_time[0];
     }
 
     /**

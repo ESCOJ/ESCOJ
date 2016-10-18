@@ -10,6 +10,8 @@ use EscojLB\Repo\User\EloquentUser;
 use EscojLB\Repo\User\User;
 use EscojLB\Repo\Language\EloquentLanguage;
 use EscojLB\Repo\Language\Language;
+use EscojLB\Repo\Language\EloquentLJudgment;
+use EscojLB\Repo\Judgment\Judgment;
 
 use Illuminate\Support\ServiceProvider;
 
@@ -62,6 +64,12 @@ class RepoServiceProvider extends ServiceProvider
 
         });
 
+        $app->bind('EscojLB\Repo\Judgment\JudgmentInterface', function($app)
+        {
+            $judgment =  new EloquentJudgment(new Judgment);
+            return $judgment;
+
+        });
         /*$app->bind('Impl\Repo\Tag\TagInterface', function($app)
         {
             return new EloquentTag(

@@ -10,6 +10,7 @@ class Judgment extends Model
         protected $fillable = [
         	'submitted_at','language','memory','time','judgment','file_size','problem_id','user_id',
     	];
+        public $timestamps = false;
 
 
 

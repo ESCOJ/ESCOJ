@@ -39,9 +39,9 @@ class EloquentLanguage implements JudgmentInterface {
      * Get all languages as key-value array 
      *
      * @param  
-     * @return array    Associative Array with all languages
+     * @return array    Associative Array with all judgments
      */
-    public function findAll($key,$value)
+    public function findAll()
     { 
       return $this->judgment->orderBy('submitted_at','desc')->get();
     }
