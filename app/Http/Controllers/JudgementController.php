@@ -64,11 +64,13 @@ class JudgementController extends Controller
             $name = $id_user."_".$problem_id . "." . $file_splited[1]; 
             $file_temp = $file->storeAs('temp',$name,"judgements");
             
-            EvaluateTool::evaluateCode($file_temp,$language,$problem_id,$id_user);
+            $RESULTS = EvaluateTool::evaluateCode($file_temp,$language,$problem_id,$id_user);
+
+            var_dump($RESULTS);
         }else{
             $file_temp = EvaluateTool::buildCodeFile($file,$language,$problem_id,$code,$id_user);
             $real_name_file = 'temp/'.$file_temp;
-            EvaluateTool::evaluateCode($real_name_file,$language,$problem_id,$id_user);
+            $RESULTS = EvaluateTool::evaluateCode($real_name_file,$language,$problem_id,$id_user);
         }
     }
 
