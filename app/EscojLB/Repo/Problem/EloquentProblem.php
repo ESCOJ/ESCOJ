@@ -32,6 +32,7 @@ class EloquentProblem implements ProblemInterface {
         $problem = $this->problem->create(array(
             'name' => $data['name'],
             'source_id' => $data['source'],
+            'points' => $data['points'],
             'description' => $data['description'],
             'input_specification' => $data['input_specification'],
             'output_specification' => $data['output_specification'],
@@ -39,6 +40,8 @@ class EloquentProblem implements ProblemInterface {
             'sample_output' => $data['sample_output'],
             'hints' => $data['hints'],
             'added_by' => $user_id,
+            'enable' => $data['enable'],
+            'multidata' => $data['multidata'],
         ));
 
         if( ! $problem )
@@ -143,28 +146,28 @@ class EloquentProblem implements ProblemInterface {
     /**
      * Update an existing Problem
      *
-     * @param array  Data to update an Problem
-     * @return boolean
+     * @param array  Data to update an problem
+     * @param  int $id       Problem ID
+     * @return boolean 
      */
-    public function update(array $data)
+    public function update(array $data, $id)
     {
-        $problem = $this->problem->find($data['id']);
+        $problem = $this->problem->find($id);
         $problem->name = $data['name'];
-        $problem->author = $data['author'];
-        $problem->tlpc = $data['tlpc'];
-        $problem->ttl = $data['ttl'];
-        $problem->ml = $data['ml'];
-        $problem->sl = $data['sl'];
+        $problem->source_id = $data['source'];
+        $problem->points = $data['points'];
         $problem->description = $data['description'];
         $problem->input_specification = $data['input_specification'];
         $problem->output_specification = $data['output_specification'];
         $problem->sample_input = $data['sample_input'];
         $problem->sample_output = $data['sample_output'];
         $problem->hints = $data['hints'];
-        $problem->points = $data['points'];
-        $problem->status = $data['status'];
+        $problem->enable = $data['enable'];
+        $problem->multidata = $data['multidata'];
         $problem->save();
 
+        $this->syncTags($problem, $data['tags']);
+        $this->syncLanguages($problem, $data['languages']);
         return true;
     }
 
@@ -186,6 +189,19 @@ class EloquentProblem implements ProblemInterface {
         $problem->save();
 
         $this->syncLanguages($problem, $data['languages'],$data);
+    }
+
+     /**
+     * Update the flag of an existing Problem that indicates whether the probles has or not dataset.
+     *
+     * @param int  flag to update the dataset flag of the problem 0 or 1.
+     * @param  int $id       Problem ID
+     * @return boolean 
+     */
+    public function addOrDeleteDataset(int $flag, $id){
+        $problem = $this->problem->find($id);
+        $problem->dataset = $flag;
+        $problem->save();
     }
 
     /**
@@ -219,6 +235,16 @@ class EloquentProblem implements ProblemInterface {
      */
     public function findById($id){
         return $this->problem->find($id);
+    }
+
+      /**
+     * Get paginated problems
+     *
+     * @param int $limit Results per page
+     * @return LengthAwarePaginator with the problems to paginate
+     */
+    public function getAllPaginate($limit=10){
+        return $this->problem->paginate($limit);
     }
 
 

@@ -36,6 +36,7 @@ Route::group(['prefix' => 'contestant'], function (){
 
 //The Problem Routes
 Route::group(['prefix' => 'problem'], function (){
+	//create
 	Route::get('/create', 'ProblemController@create')->name('problem.create');
 	Route::post('', 'ProblemController@store')->name('problem.store');
 	//update
@@ -46,12 +47,19 @@ Route::group(['prefix' => 'problem'], function (){
 	Route::put('/limits/{problem}', 'ProblemController@assignLimits')->name('problem.assignLimits');
 	//datasets
 	Route::get('/datasets/{problem}', 'ProblemController@datasets')->name('problem.datasets');
-	Route::put('/datasets/{problem}', 'ProblemController@assignDatasets')->name('problem.assignDatasets');	
+	Route::put('/datasets/{problem}', 'ProblemController@assignDatasets')->name('problem.assignDatasets');
+	Route::get('/datasets/{problem}/delete', 'ProblemController@deleteDatasets')->name('problem.deleteDatasets');	
+	Route::get('/datasets/{problem}/download', 'ProblemController@downloadDatasets')->name('problem.downloadDatasets');
+	//display
+	Route::get('', 'ProblemController@index')->name('problem.index');
+	Route::get('/{problem}', 'ProblemController@show')->name('problem.show');	
+
+
+
 });
 
 //The Judgements Routes
 Route::resource('judgment','JudgementController');
-
 
 //Other Routes
 Route::get('/', function () {

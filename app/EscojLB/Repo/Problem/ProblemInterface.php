@@ -15,11 +15,21 @@ interface ProblemInterface {
      * Update an existing Problem
      *
      * @param array  Data to update an problem
+     * @param  int $id       Problem ID
      * @return boolean 
      */
-    public function update(array $data);
+    public function update(array $data, $id);
 
      /**
+     * Update the flag of an existing Problem that indicates whether the probles has or not dataset.
+     *
+     * @param int  flag to update the dataset flag of the problem 0 or 1.
+     * @param  int $id       Problem ID
+     * @return boolean 
+     */
+    public function addOrDeleteDataset(int $flag, $id);
+
+    /**
      * Assign the limits to an existing Problem
      *
      * @param array  Data to update the limitis of the problem
@@ -55,5 +65,13 @@ interface ProblemInterface {
      * @return Object    Problem model object
      */
     public function findById($id);
+
+    /**
+     * Get paginated problems
+     *
+     * @param int $limit Results per page
+     * @return LengthAwarePaginator with the problems to paginate
+     */
+    public function getAllPaginate($limit=10);
 
 }

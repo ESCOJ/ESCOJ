@@ -26,8 +26,12 @@ class CreateProblemsTable extends Migration
             $table->string('sample_input',1000);
             $table->string('sample_output',1000);
             $table->string('hints',1000);
-            $table->double('points')->nullable();
-            $table->string('status',2)->nullable();//Indicates when the problem is available or disabled for the 24 hrs archive
+            $table->integer('points');
+            $table->boolean('enable');//Indicates when the problem is available or disabled for the 24 hrs archive
+            $table->boolean('multidata');//Indicates when the problem has more than one datasets
+            $table->boolean('dataset')->nullable();//Indicates when the problem has or not an dataset
+
+
             $table->string('slug')->nullable();
             $table->timestamps();
 

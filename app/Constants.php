@@ -12,5 +12,8 @@ class Constants
      */
     const CEATE_PROBLEM = 'create_problem';
 
+    const UPDATE_PROBLEM = 'update_problem';
+
+
  
 }

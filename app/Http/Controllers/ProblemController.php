@@ -10,11 +10,14 @@ use EscojLB\Repo\Problem\ProblemInterface;
 use EscojLB\Repo\Source\SourceInterface;
 use EscojLB\Repo\Language\LanguageInterface;
 use Illuminate\Support\Facades\Auth;
-use ESCOJ\Http\Requests\ProblemAddRequest;
+use ESCOJ\Http\Requests\ProblemDescriptionRequest;
 use ESCOJ\Http\Requests\ProblemAssignLimitsRequest;
+use ESCOJ\Http\Requests\ProblemAssignDatasetsRequest;
 use ESCOJ\Constants;
 use Validator;
 use Storage;
+use EscojLB\Repo\Problem\Problem;
+
 class ProblemController extends Controller
 {
 
@@ -36,17 +39,28 @@ class ProblemController extends Controller
     }
 
     /**
-     * Display a listing of the resource.
+     * Display a listing of the problem.
      *
      * @return \Illuminate\Http\Response
      */
     public function index()
     {
         //
+        $problems = $this->problem->getAllPaginate(5);
+        $tags = $this->tag->getKeyValueAll('id','name');
+        $levels = [
+                '1' => 'Eaasy',
+                '2' => 'Very Easy',
+                '3' => 'Medium',
+                '4' => 'Hard',
+                '5' => 'Very Hard',
+            ];
+
+        return view('problem.index',['problems' => $problems, 'tags' => $tags, 'levels' => $levels]);
     }
 
     /**
-     * Show the form for creating a new resource.
+     * Show the form for creating a new problem.
      *
      * @return \Illuminate\Http\Response
      */
@@ -59,12 +73,12 @@ class ProblemController extends Controller
     }
 
     /**
-     * Store a newly created resource in storage.
+     * Store a newly created problem in storage.
      *
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(ProblemAddRequest $request)
+    public function store(ProblemDescriptionRequest $request)
     {
         if($request->ajax()){
             if($request->action === Constants::CEATE_PROBLEM){
@@ -89,10 +103,25 @@ class ProblemController extends Controller
     public function edit($id)
     {
         $problem = $this->problem->findById($id);
+        
+        $problem_languages = $problem->languages;
+        $languages_selected = array();
+        foreach ($problem_languages as $language) {
+            $languages_selected[$language->id] = $language->name;
+        }
+
+        $problem_tags = $problem->tags;
+        foreach ($problem_tags as $tag) {
+            $tags_selected []= $tag->id . '_' . $tag->pivot->level ;
+        }
+
         $sources = $this->source->getKeyValueAll('id','name');
         $tags = $this->inputToSelectTags();
         $languages = $this->language->getAll();
-        return view('problem.update',['problem' => $problem, 'sources' => $sources,'tags' => $tags, 'languages' => $languages]);
+
+        return view('problem.update',['problem' => $problem, 'sources' => $sources,'tags' => $tags,
+                                     'languages' => $languages, 'languages_selected' => $languages_selected,
+                                     'tags_selected' => $tags_selected]);
     }
 
     /**
@@ -101,17 +130,16 @@ class ProblemController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function update(ProblemAddRequest $request ,$id)
+    public function update(ProblemDescriptionRequest $request ,$id)
     {
-        dd($request->all());
         if($request->ajax()){
-            if($request->action === Constants::CEATE_PROBLEM){
-                $problem_id = $this->problem->create($request->all(),Auth::user()->id);
+            if($request->action === Constants::UPDATE_PROBLEM){
+                $problem_id = $this->problem->update($request->all(),$id);
                 if($problem_id){
-                    $url = '/problem/limits/'.$problem_id;
+                    $url = '/problem/limits/'.$id;
 
                     return response()->json([
-                        'message' => 'The problem has been created successfully.',
+                        'message' => 'The problem has been updated successfully.',
                         'redirect' => $url
                     ]);
                 }
@@ -120,7 +148,7 @@ class ProblemController extends Controller
     }
 
     /**
-     * Display the specified resource.
+     * Display the specified problem.
      *
      * @param  int  $id
      * @return \Illuminate\Http\Response
@@ -128,6 +156,8 @@ class ProblemController extends Controller
     public function show($id)
     {
         //
+        $problem = $this->problem->findById($id);
+        return view('problem.show_problem',['problem' => $problem]);
     }
 
     /**
@@ -160,7 +190,7 @@ class ProblemController extends Controller
 
         $request['languages'] = $languages->toArray();
 
-        $problem = $this->problem->assignLimits($request->all(), $id);
+        $this->problem->assignLimits($request->all(), $id);
 
         flash('The limits has been assigned successfully.','success')->important();
 
@@ -187,18 +217,22 @@ class ProblemController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function assignDatasets(Request $request, $id)
+    public function assignDatasets(ProblemAssignDatasetsRequest $request, $id)
     {
         
-        //dd(storage_path('datasets/problem_4/'));
-        $image = $request->file('dataset');
-        $image->storeAs('/problem_'.$id, 'dataset_'.$id.'.zip', "datasets"); 
+        $dataset = $request->file('dataset');
+        
+        Storage::disk('datasets')->deleteDirectory('problem_'.$id);
+
+        $dataset->storeAs('/problem_'.$id, 'dataset_'.$id.'.zip', "datasets"); 
 
         $zip = new \ZipArchive();
         if ($zip->open(storage_path('datasets/problem_'.$id.'/dataset_'.$id.'.zip')) === TRUE) {
             $zip->extractTo(storage_path('datasets/problem_'.$id));
             $zip->close();
             Storage::disk('datasets')->delete('problem_'.$id.'/dataset_'.$id.'.zip');
+
+            $this->problem->addOrDeleteDataset( 1, $id);
         } 
 
         flash('The datasets has been loaded successfully.','success')->important();
@@ -208,7 +242,69 @@ class ProblemController extends Controller
     }
 
     /**
-     * Remove the specified resource from storage.
+     * Delete the Datasets of a problem in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function deleteDatasets(Request $request, $id)
+    {
+        
+        if(Storage::disk('datasets')->deleteDirectory('problem_'.$id)){
+            flash('The datasets has been removed successfully.','success')->important();
+            $this->problem->addOrDeleteDataset( 0, $id);
+        }
+        else
+            flash('The datasets could not be removed.','warning')->important();
+        return back();
+
+    }
+
+        /**
+     * Create the Dataset zip archive and Download it.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function downloadDatasets(Request $request, $id)
+    {
+        
+        $path_dir = storage_path('datasets/problem_'.$id.'/');
+
+        $file_name = 'problem_' .$id. '_dataset.zip';
+
+        $path_file = $path_dir . $file_name;
+
+        $zip = new \ZipArchive();
+
+        if ($zip->open($path_file, \ZipArchive::CREATE) === TRUE) {    
+
+            $files = $files = glob($path_dir . '*.*');
+
+            foreach($files as $file)
+                 $zip->addFile($file, basename($file));
+
+            $zip->close();
+        }
+
+        $headers = array(
+                'Content-Type' => 'application/octet-stream',
+            );
+
+        if(file_exists($path_file)){
+            flash('The datasets has been downloaded successfully.','success')->important();
+            return response()->download($path_file,$file_name,$headers)->deleteFileAfterSend(true);
+        }
+
+        flash('The datasets could not be downloaded.','danger')->important();
+        return back();
+
+    }
+
+    /**
+     * Remove the specified problem from storage.
      *
      * @param  int  $id
      * @return \Illuminate\Http\Response
@@ -219,7 +315,7 @@ class ProblemController extends Controller
     }
 
     /**
-     * Generate the input to the tags selction.
+     * Generate the input to the tags selection.
      *
      * @return \Illuminate\Http\Response
      */

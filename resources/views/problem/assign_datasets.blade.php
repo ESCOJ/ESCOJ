@@ -34,9 +34,6 @@
 @endsection
 
 @section('scripts')
-    {!!Html::script('plugins/fileinput/js/plugins/canvas-to-blob.min.js')!!}
-    {!!Html::script('plugins/fileinput/js/plugins/sortable.min.js')!!}
-    {!!Html::script('plugins/fileinput/js/plugins/purify.min.js')!!}
     {!!Html::script('plugins/fileinput/js/fileinput.js')!!}
     {!!Html::script('js/problem/assignLimits.js')!!}
 
@@ -63,6 +60,6 @@
     </script>
 
     <script>
-        $('div.alert').delay(600000).fadeOut(350);
+        $('div.alert').delay(10000).fadeOut(350);
     </script>
 @endsection

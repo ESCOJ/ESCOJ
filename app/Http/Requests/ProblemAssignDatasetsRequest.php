@@ -4,7 +4,7 @@ namespace ESCOJ\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class ProblemLimitsRequest extends FormRequest
+class ProblemAssignDatasetsRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -13,7 +13,7 @@ class ProblemLimitsRequest extends FormRequest
      */
     public function authorize()
     {
-        return false;
+        return true;
     }
 
     /**
@@ -24,7 +24,7 @@ class ProblemLimitsRequest extends FormRequest
     public function rules()
     {
         return [
-            //
+            'dataset' => 'required|file|max:5000|mimes:zip',
         ];
     }
 }

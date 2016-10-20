@@ -12,10 +12,26 @@
 <div id = "div_source" class="form-group">
 	{!!Form::label('source','Author:',['class' => 'col-md-3 control-label'])!!}
 	<div class="col-md-7">
-        {!! Form::select('source',$sources,null,['id'=>'source', 'class' => 'form-control select-source','placeholder'=>'Select the source']) !!}
+		@if(isset($problem))
+        	{!! Form::select('source',$sources,$problem->source_id,['id'=>'source', 'class' => 'form-control select-source','placeholder'=>'Select the source']) !!}
+        	<input type="hidden" name="id" id="problem_id" value="{{ $problem->id }}">
+        @else
+			{!! Form::select('source',$sources,null,['id'=>'source', 'class' => 'form-control select-source','placeholder'=>'Select the source']) !!}
+        @endif
         <span id = "span_source" class="help-block" style="display:none">
 
         </span>
+	</div>
+</div>
+
+<div id = "div_points" class="form-group">
+	{!!Form::label('points','Points:',['class' => 'col-md-3 control-label'])!!}
+	<div class="col-md-7">
+		{!!Form::text('points',null,['id'=>'points','class'=>'form-control ','placeholder'=>'Insert the points (1-100)'])!!}
+		 	
+		 	<span id = "span_points" class="help-block" style="display:none">
+                
+            </span>
 	</div>
 </div>
 
@@ -103,9 +119,16 @@
 				<div class="row">
 			@endif
 		  	<div class="col-sm-3">
-		    	<label><input type="checkbox" name = "{{ $language->name }}" id = "{{ $language->name }}"  value="{{ $language->id }}">
+				
+				@if(isset($languages_selected) and array_has($languages_selected,$language->id))
+					<label><input type="checkbox" name = "{{ $language->name }}" id = "{{ $language->name }}"  value="{{ $language->id }}" checked>
 		    		&nbsp;&nbsp;&nbsp;{{ $language->name }}
-		    	</label>
+		    		</label>
+				@else
+			    	<label><input type="checkbox" name = "{{ $language->name }}" id = "{{ $language->name }}"  value="{{ $language->id }}">
+			    		&nbsp;&nbsp;&nbsp;{{ $language->name }}
+			    	</label>
+		    	@endif
 		    </div>
 
 		    @if ( (($loop->index)%3 == 0) and (!$loop->first) )
@@ -138,8 +161,45 @@
 	
 	{!!Form::label('tags','Classification By Tags:',['class' => 'col-md-3 control-label'])!!}
 	<div class="col-md-7">
-        {!! Form::select('tags[]',$tags,null,['id'=>'tags', 'class' => 'form-control select-tag','data-placeholder'=>'Select tags and their levels ' ,'multiple' => true]) !!}
+		@if(isset($tags_selected))
+			{!! Form::select('tags[]',$tags,$tags_selected,['id'=>'tags', 'class' => 'form-control select-tag','data-placeholder'=>'Select tags and their levels ' ,'multiple' => true]) !!}
+		@else
+        	{!! Form::select('tags[]',$tags,null,['id'=>'tags', 'class' => 'form-control select-tag','data-placeholder'=>'Select tags and their levels ' ,'multiple' => true]) !!}
+        @endif
 		<span id = "span_tags" class="help-block" style="display:none">
+
+        </span>
+	</div>
+</div>
+
+<!--Other Options-->
+
+<div id = "div_other" class="form-group">
+	<div class="row">
+	    <h4><label for="input" class="col-sm-10 col-sm-offset-1 label label-primary"><center>Other Options</center></label></h4>
+	</div>
+	<br>
+	
+	{!!Form::label('other','Other Options:',['class' => 'col-md-3 control-label'])!!}
+	
+	<div class="col-md-7">
+		<div class="row">
+			<div class="checkbox">
+				 @if(isset($problem) and $problem->multidata)
+	    			<label><input id="multidata" name="multidata" type="checkbox" value="" checked="checked"><strong>Multidata</strong></label>
+	    		 @else
+					<label><input id="multidata" name="multidata" type="checkbox" value=""><strong>Multidata</strong></label>
+	    		@endif
+			</div>
+			<div class="checkbox">
+				 @if(isset($problem) and $problem->enable)
+			     	<label><input id="enable" name="enable" type="checkbox" value="" checked="checked"><strong>Enable</strong></label>
+			     @else
+					<label><input id="enable" name="enable" type="checkbox" value=""><strong>Enable</strong></label>
+			     @endif
+			</div>
+		</div>
+		<span id = "span_other" class="help-block" style="display:none">
 
         </span>
 	</div>

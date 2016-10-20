@@ -3,6 +3,7 @@ function createProblemDescription(){
 	var action = 'create_problem';
 	var name = $("#name").val();
 	var source = $("#source").val();
+	var points = $("#points").val();
 	var description = $("#description").val();
 	var input_specification = $("#input_specification").val();
 	var output_specification = $("#output_specification").val();
@@ -10,15 +11,26 @@ function createProblemDescription(){
 	var sample_output = $("#sample_output").val();
 	var hints = $("#hints").val();
 	var languages = {};
-	var tags = $("#tags").val();
+	var multidata = 0;
+	var enable = 0;
+	var id = 0;
 
 	var route = "http://www.escoj.com/problem";
+	var type = "POST";
+
+	var tags = $("#tags").val();
+	if( window.location != "http://www.escoj.com/problem/create"){
+		route = "http://www.escoj.com/problem/update/" + $("#problem_id").val();
+		type = "PUT";
+		action = 'update_problem'
+		id = $("#problem_id").val();
+	}
+
 	var token = $("#token").val();
 
+	var checkbox_languages = $("#div_languages").find('input[type=checkbox]');
 
-	var checkbox = $("#div_languages").find('input[type=checkbox]');
-
-    checkbox.each(function(e){
+    checkbox_languages.each(function(e){
       if($(this).is(':checked') ){
         var name = $(this).attr("name");
         var id = $(this).attr("value");
@@ -26,29 +38,30 @@ function createProblemDescription(){
       }
     });
 
-    /*for( key in languages){
-    	alert('Es el lenguaje ' + key + ' y es ' + languages[key]);
-    }*/
+    if($("#multidata").is(':checked') )
+     	multidata = 1;
+    if($("#enable").is(':checked') )
+     	enable = 1;
 
 	$.ajax({
 		url: route,
 		headers: {'X-CSRF-TOKEN': token},
-		type: 'POST',
+		type: type,
 		dataType: 'json',
-		data:{action : action, name: name ,source: source, description: description , input_specification: input_specification, 
+		data:{action : action, name: name ,source: source, points: points, description: description , input_specification: input_specification, 
 			  output_specification: output_specification, sample_input: sample_input, sample_output: sample_output, 
-			  hints: hints, languages: languages, tags: tags},
+			  hints: hints, languages: languages, tags: tags, multidata: multidata, enable: enable, id: id},
 
 		success:function(msj){
 			$("#div_success").html('');
 			
-			$("#span_name, #span_source, #span_description, #span_input_specification,"+
+			$("#span_name, #span_source, #span_points, #span_description, #span_input_specification,"+
 			  "#span_output_specification, #span_sample_input, #span_sample_output, #span_hints, #span_languages, #span_tags").html('');
 
-			$("#span_name, #span_source, #span_description, #span_input_specification,"+
+			$("#span_name, #span_source, #span_points, #span_description, #span_input_specification,"+
 			  "#span_output_specification, #span_sample_input, #span_sample_output, #span_hints, #span_languages, #span_tags").fadeOut();
 
-			$("#div_name, #div_source, #div_description, #div_input_specification,"+
+			$("#div_name, #div_source, #div_points, #div_description, #div_input_specification,"+
 			  "#div_output_specification, #div_sample_input, #div_sample_output, #div_hints, #div_languages, #div_tags").removeClass('has-error');
 
 			var msj_success = 
@@ -73,13 +86,13 @@ function createProblemDescription(){
 		error:function(msj){
 			$("#div_success").html('');
 
-			$("#span_name, #span_source, #span_description, #span_input_specification,"+
-			  "#span_output_specification, #span_sample_input, #span_sample_output, #span_hints, #span_languages, #span_tags").html('');
+			$("#span_name, #span_source, #span_points, #span_description, #span_input_specification,"+
+			  "#span_output_specification, #span_points, #span_sample_input, #span_sample_output, #span_hints, #span_languages, #span_tags").html('');
 
-			$("#span_name, #span_source, #span_description, #span_input_specification,"+
+			$("#span_name, #span_source, #span_points, #span_description, #span_input_specification,"+
 			  "#span_output_specification, #span_sample_input, #span_sample_output, #span_hints, #span_languages, #span_tags").fadeOut();
 
-			$("#div_name, #div_source, #div_description, #div_input_specification,"+
+			$("#div_name, #div_source, #div_points, #div_description, #div_input_specification,"+
 			  "#div_output_specification, #div_sample_input, #div_sample_output, #div_hints, #div_languages, #div_tags").removeClass('has-error');
 
 			var flag = true;

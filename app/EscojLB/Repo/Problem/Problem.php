@@ -24,7 +24,7 @@ class Problem extends Model
     }
 
     protected $fillable = [
-        'name','ml','sl', 'tlpc','ttl','description','input_specification','output_specification','sample_input','sample_output','output_input','hints','points','status','slug','added_by','source_id'
+        'name','ml','sl', 'tlpc','ttl','description','input_specification','output_specification','sample_input','sample_output','output_input','hints','points','enable', 'multidata','slug','added_by','source_id'
     ];
 
 
