@@ -74,4 +74,13 @@ interface ProblemInterface {
      */
     public function getAllPaginate($limit=10);
 
+    /**
+     * Get filter paginated problems
+     *
+     * @param int $limit Results per page
+     * @param array  Data that contains the filters to apply to the query.
+     * @return LengthAwarePaginator with the problems to paginate
+     */
+    public function getAllPaginateFiltered($limit=10, array $data);
+
 }

@@ -43,19 +43,24 @@ class ProblemController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        //
-        $problems = $this->problem->getAllPaginate(5);
+        //dd($request->all());
+        if( $request->has('name') or $request->has('tag') or $request->has('level') )
+            $problems = $this->problem->getAllPaginateFiltered(5, $request->all());   
+        else
+            $problems = $this->problem->getAllPaginate(5);
+
         $tags = $this->tag->getKeyValueAll('id','name');
+
         $levels = [
-                '1' => 'Eaasy',
+                '1' => 'Easy',
                 '2' => 'Very Easy',
                 '3' => 'Medium',
                 '4' => 'Hard',
                 '5' => 'Very Hard',
             ];
-
+        $request->flash();
         return view('problem.index',['problems' => $problems, 'tags' => $tags, 'levels' => $levels]);
     }
 

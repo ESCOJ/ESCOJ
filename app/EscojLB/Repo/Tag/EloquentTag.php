@@ -23,4 +23,25 @@ class EloquentTag implements TagInterface {
         return $this->tag->pluck($value,$key);
     }
 
+      /**
+     * Get a Tag by Tag ID
+     *
+     * @param  int $id       Tag ID
+     * @return Object    Tag model object
+     */
+    public function findById($id){
+        return $this->tag->find($id);
+    }
+
+    /**
+     * Retrieve all Tags with eager loading of problems
+     * @param  int $level   level of the tag asocciated to a problem
+     * @return array        Array or Arrayable collection of Tag objects
+     */
+    public function getAllWithProblemsByLevel($level){
+        return $this->tag->with(['problems' => function($query) use ($level){
+            $query->wherePivot('level', $level);
+        }])->get();
+    }
+
 }

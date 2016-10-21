@@ -15,13 +15,26 @@
                     <div class="panel-body">
                         
                         <h3><center>{{ $problem->name}}</center></h3>
+                        <br>
                         <!--border: 1px dotted blue; border-radius: 15px;-->
                          
+                        <h4>    
+                            <label for="input" class="col-sm-offset-1 col-sm-10 label label-primary">
+                                <center>Problem Limits</center>
+                            </label>
+                        </h4>
+
+                        <!-- <div class="col-xs-offset-1 col-xs-10">
+                            <div class="panel panel-primary text-center">
+                               <span class="text-info">Problem Limmits</span>
+                            </div>
+                        </div>-->
+
                         <div class="col-xs-offset-2 col-xs-8" >
                             <br>
                             <table class="table table-condensed table-bordered table-responsive">
                                 <thead>
-                                    <tr>
+                                    <tr class="active">
                                         <th style="text-align: center;">Time Limit Per Case</th>
                                         <th style="text-align: center;">Total Time Limit</th>
                                         <th style="text-align: center;">Memory Limit</th>
@@ -39,7 +52,13 @@
                             </table>
                         </div>
 
-                        <div class="">
+                         <h4>    
+                            <label for="input" class="col-sm-offset-1 col-sm-10 label label-primary">
+                                <center>Problem Description</center>
+                            </label>
+                        </h4>
+
+                        <div class="col-xs-offset-1">
                             <div class="col-xs-10">
                                 <br>
                                 <h4 class="text-primary">Description</h4>
@@ -97,35 +116,35 @@
                             </div>
                         </div>
                         
-                        <div class="col-xs-offset-1 col-xs-10">
-                            <div class="panel panel-primary text-center">
-                               <span class="text-info">Problem Data</span>
-                            </div>
-                        </div>
+                        <h4>    
+                            <label for="input" class="col-sm-offset-1 col-sm-10 label label-primary">
+                                <center>Problem Data</center>
+                            </label>
+                        </h4>
                         
                         <div class="col-xs-offset-2 col-xs-8">
                             <br>
                             <table class="table table-condensed table-responsive table-bordered">
                                 <tbody>
                                     <tr>
-                                        <td><strong>Author:</strong></td>
-                                        <td>{{ $problem->source->name }}</td>
+                                        <td class="info"><strong>Author:</strong></td>
+                                        <td class="active">{{ $problem->source->name }}</td>
                                     </tr>
                                     <tr>
-                                        <td><strong>Added by:</strong></td>
-                                        <td>{{ $problem->user->nickname }}</td>
+                                        <td class="info"><strong>Added by:</strong></td>
+                                        <td class="active">{{ $problem->user->nickname }}</td>
                                     </tr>
                                     <tr>
-                                        <td><strong>Points</strong></td>
-                                        <td>{{ $problem->points }}</td>
+                                        <td class="info"><strong>Points</strong></td>
+                                        <td class="active">{{ $problem->points }}</td>
                                     </tr>
                                     <tr>
-                                        <td><strong>Date Added:</strong></td>
-                                        <td>{{ $problem->created_at }}</td>
+                                        <td class="info"><strong>Date Added:</strong></td>
+                                        <td class="active">{{ $problem->created_at }}</td>
                                     </tr>
                                     <tr>
-                                        <td><strong>Languages:</strong></td>
-                                        <td>
+                                        <td class="info"><strong>Languages:</strong></td>
+                                        <td class="active">
                                             @foreach($problem->languages as $language)
                                                 @if($loop->last)
                                                     {{ $language->name }}

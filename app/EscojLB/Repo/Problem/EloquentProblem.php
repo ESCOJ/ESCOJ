@@ -3,7 +3,7 @@
 use Illuminate\Database\Eloquent\Model;
 use EscojLB\Repo\Tag\TagInterface;
 use EscojLB\Repo\Language\LanguageInterface;
-
+use Illuminate\Support\Facades\DB;
 class EloquentProblem implements ProblemInterface {
 
     protected $problem;
@@ -244,8 +244,95 @@ class EloquentProblem implements ProblemInterface {
      * @return LengthAwarePaginator with the problems to paginate
      */
     public function getAllPaginate($limit=10){
-        return $this->problem->paginate($limit);
+        return $this->problem->where('enable', 1)->paginate($limit);
     }
+
+     /**
+     * Get filter paginated problems
+     *
+     * @param int $limit Results per page
+     * @param array  Data that contains the filters to apply to the query.
+     * @return LengthAwarePaginator with the problems to paginate
+     */
+    public function getAllPaginateFiltered($limit=10, array $data){
+        if( $data['tag'] )
+        {
+            $problems = $this->tag->findById($data['tag'])->problems();
+
+            if( $data['level'] )
+                $problems->wherePivot('level', $data['level']);
+
+            if( !empty($data['name']) )
+                $problems->where('name', 'like', '%'. $data['name'] . '%');
+            
+            return $problems->where('enable',1)->paginate($limit);
+        }
+
+        else if( $data['level']){
+
+            $problems_id = DB::select('select distinct problem_id from problem_tag where level = ?', [$data['level']]);
+            
+            $problems_id = array_map(function($object){
+                return array_values((array) $object);
+            }, $problems_id);
+
+            $problems = $this->problem->whereIn('id', $problems_id);
+
+            if( !empty($data['name']) )
+                $problems->where('name', 'like', '%'. $data['name'] . '%');
+
+            return $problems->where('enable',1)->paginate($limit);
+
+            /*$tags = $this->tag->getAllWithProblemsByLevel( $data['level'] );
+
+            foreach($tags as $tag){
+                $problems = $tag->problems()->wherePivot('level', $data['level']);
+                if( !empty($data['name']) )
+                    $problems->where('name', 'like', '%'. $data['name'] . '%');
+                
+                dd($problems->where('enable',1)->get());
+
+            }
+
+            if( $data['level'] )
+            {
+                $problems->wherePivot('level', $data['level']);
+            }
+            if( !empty($data['name']) )
+            {
+                $problems->where('name', 'like', '%'. $data['name'] . '%');
+            }
+            
+            $problems->where('enable',1)->paginate($limit);
+            dd('shi');*/
+        }
+
+        return $this->problem->where('enable',1)->where('name', 'like', '%'. $data['name'] . '%')->paginate($limit);
+    }
+
+    /**
+     * Get problems by their tag
+     *
+     * @param int  ID of tag
+     * @param int Number of problems per page
+     * @return StdClass Object with $items and $totalItems for pagination
+     */
+    public function byTag($tag_id, $limit=10)
+    {
+
+        $foundTag = $this->tag->findById($tag_id);
+
+        $problems = $foundTag->problems()
+            ->wherePivot('level',3)
+            ->where('enable',1)
+            //->where('name', 'like', '%'. $data['name'] . '%')
+            ->paginate($limit);//->where('enable', 1)->get();
+
+        dd($problems);
+
+        return $problems->all();
+    }
+
 
 
 }

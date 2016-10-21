@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Tag extends Model
 {
-     protected $fillable = [ 'name','abbreviation',];
+     protected $fillable = [ 'name',];
      public $timestamps = false;
     //building relationships
 
