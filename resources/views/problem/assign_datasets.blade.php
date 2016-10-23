@@ -20,8 +20,18 @@
 
                             <div class="form-group">
                                 <div class="col-md-2 col-md-offset-5 row">
-                                    {!!Form::submit('Save',['class'=>'form-control btn btn-primary'])!!}
+                                    {!!Form::button('<span class="glyphicon glyphicon-save"></span> Save', array('type' => 'submit', 'class' => 'form-control btn btn-primary'))!!}<br><br>
                                 </div>
+                                
+                                @if(!is_null($flag_update))
+                                    <div class="col-md-2 col-md-offset-5 row">
+                                         {!!Html::decode(link_to_route('problem.problems', $title='<i class="fa fa-reply" aria-hidden="true"></i> Go Back',$parameters = [] , $attributes = ['id'=>'your_problems', 'class'=>'form-control btn btn-primary']))!!}
+                                    </div>   
+                                @elseif( session('done') )  
+                                    <div class="col-md-2 col-md-offset-5 row">
+                                        {!!Html::decode(link_to_route('problem.problems', $title='<i class="fa fa-share" aria-hidden="true"></i> Go problems',$parameters = [] , $attributes = ['id'=>'your_problems', 'class'=>'form-control btn btn-primary']))!!}
+                                    </div>  
+                                @endif                         
                             </div>
 
                         {!!Form::close()!!}

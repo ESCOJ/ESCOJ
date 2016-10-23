@@ -18,24 +18,20 @@
                 <div class="panel-body">
 					
 					@if($problem->dataset)
-	                  	<div class="form-group{{ $errors->has('dataset') ? ' has-error' : '' }}">
+	                  	<div class="form-group">
 						    {!!Form::label('existing_dataset','Existing Dataset:',['class' => 'col-md-3 control-label file'])!!}
 						    <div class="col-md-7">
 						        <div class="input-group">
 									<input id = "existing_dataset" name = "existing_dataset" type="text" class="form-control" value="{{ 'problem_' .$problem->id. '_dataset.zip'}}" disabled="disabled">
 									<div class="input-group-btn">
 										<!--Delete-->
-										{!! Html::decode(link_to_action('ProblemController@deleteDatasets', $title = '<span class="glyphicon glyphicon-trash"></span> Delete', $parameters = ['id'=> $problem->id ], $attributes = [ 'class' => 'btn btn-danger' ])) !!}
+										{!! Html::decode(link_to_route('problem.deleteDatasets', $title = '<span class="glyphicon glyphicon-trash"></span> Delete', $parameters = ['id'=> $problem->id ], $attributes = [ 'class' => 'btn btn-danger' ])) !!}
 										<!--Download-->
 										{!! Html::decode(link_to_action('ProblemController@downloadDatasets', $title = '<span class="glyphicon glyphicon-download"></span> Download', $parameters = ['id'=> $problem->id ], $attributes = [ 'class' => 'btn btn-primary' ])) !!}
 										
 									</div>
 								</div>
-						        @if ($errors->has('dataset'))
-						            <span class="help-block">
-						                <strong>{{ $errors->first('dataset') }}</strong>
-						            </span>
-						        @endif
+
 						     </div>
 						</div>
 					@endif

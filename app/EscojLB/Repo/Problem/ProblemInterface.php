@@ -21,6 +21,14 @@ interface ProblemInterface {
     public function update(array $data, $id);
 
      /**
+     * Delete an existing Problem
+     *
+     * @param  int $id       Problem ID
+     * @return boolean 
+     */
+    public function delete($id);
+
+     /**
      * Update the flag of an existing Problem that indicates whether the probles has or not dataset.
      *
      * @param int  flag to update the dataset flag of the problem 0 or 1.
@@ -72,7 +80,7 @@ interface ProblemInterface {
      * @param int $limit Results per page
      * @return LengthAwarePaginator with the problems to paginate
      */
-    public function getAllPaginate($limit=10);
+    public function getAllPaginate($limit = 10, $enable = true);
 
     /**
      * Get filter paginated problems
@@ -81,6 +89,6 @@ interface ProblemInterface {
      * @param array  Data that contains the filters to apply to the query.
      * @return LengthAwarePaginator with the problems to paginate
      */
-    public function getAllPaginateFiltered($limit=10, array $data);
+    public function getAllPaginateFiltered($limit = 10, array $data, $enable = true);
 
 }

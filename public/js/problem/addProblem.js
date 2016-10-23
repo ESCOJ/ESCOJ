@@ -76,9 +76,12 @@ function createProblemDescription(){
 			$("#div_success").fadeIn();
 			$('#div_success').focus();
 
-			setTimeout(function () {
-                window.location.replace(msj.redirect);
-			}, 3500);
+			if(msj.redirect != 'not')
+				setTimeout(function () {
+	                window.location.replace(msj.redirect);
+				}, 3500);
+			else
+				$('div.alert').delay(5000).fadeOut(350);
 
 
 		},

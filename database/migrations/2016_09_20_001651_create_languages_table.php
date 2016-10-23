@@ -42,7 +42,7 @@ class CreateLanguagesTable extends Migration
 
 
             $table->foreign('language_id')->references('id')->on('languages');
-            $table->foreign('problem_id')->references('id')->on('problems');
+            $table->foreign('problem_id')->references('id')->on('problems')->onDelete('cascade');
         });
     }
 

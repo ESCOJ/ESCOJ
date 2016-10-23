@@ -141,7 +141,7 @@ class ProblemController extends Controller
             if($request->action === Constants::UPDATE_PROBLEM){
                 $problem_id = $this->problem->update($request->all(),$id);
                 if($problem_id){
-                    $url = '/problem/limits/'.$id;
+                    $url = 'not';
 
                     return response()->json([
                         'message' => 'The problem has been updated successfully.',
@@ -171,7 +171,7 @@ class ProblemController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function limits($id)
+    public function limits($id, $flag_update = null)
     {
         $problem = $this->problem->findById($id);
         $languages = $this->problem->getAllLanguages($id);
@@ -179,7 +179,9 @@ class ProblemController extends Controller
         foreach($languages as $language){
             $ids[] = $language->id;
         }
-        return view('problem.assign_limits',['problem' => $problem, 'languages' => $languages, 'ids' => $ids]);
+
+        return view('problem.assign_limits',['problem' => $problem, 'languages' => $languages, 'ids' => $ids, 'flag_update' => $flag_update]);
+
     }
 
     /**
@@ -209,10 +211,10 @@ class ProblemController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function datasets($id)
+    public function datasets($id, $flag_update = null)
     {
         $problem = $this->problem->findById($id);
-        return view('problem.assign_datasets',['problem' => $problem]);
+        return view('problem.assign_datasets',['problem' => $problem, 'flag_update' => $flag_update]);
     }
 
     /**
@@ -242,7 +244,7 @@ class ProblemController extends Controller
 
         flash('The datasets has been loaded successfully.','success')->important();
 
-        return back();
+        return back()->with(['done' => 'true']);
 
     }
 
@@ -253,9 +255,8 @@ class ProblemController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function deleteDatasets(Request $request, $id)
+    public function deleteDatasets($id)
     {
-        
         if(Storage::disk('datasets')->deleteDirectory('problem_'.$id)){
             flash('The datasets has been removed successfully.','success')->important();
             $this->problem->addOrDeleteDataset( 0, $id);
@@ -316,7 +317,14 @@ class ProblemController extends Controller
      */
     public function destroy($id)
     {
-        //
+        //dd('shi');
+        $this->problem->delete($id);
+        if(Storage::disk('datasets')->deleteDirectory('problem_'.$id)){
+            flash('The problem has been removed successfully.','success')->important();
+        }
+        else
+            flash('The problem could not be removed.','warning')->important();
+        return back();
     }
 
     /**
@@ -340,6 +348,33 @@ class ProblemController extends Controller
         }
 
         return $tags_classification;
+    }
+
+
+
+    /**
+     * Display a listing of the problem.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function problemSetterProblems(Request $request)
+    {
+        if( $request->has('name') )
+            $problems = $this->problem->getAllPaginateFiltered(5, $request->all(),false);   
+        else
+            $problems = $this->problem->getAllPaginate(5,false);
+
+        $tags = $this->tag->getKeyValueAll('id','name');
+
+        $levels = [
+                '1' => 'Easy',
+                '2' => 'Very Easy',
+                '3' => 'Medium',
+                '4' => 'Hard',
+                '5' => 'Very Hard',
+            ];
+        $request->flash();
+        return view('problem.admin.index',['problems' => $problems, 'tags' => $tags, 'levels' => $levels]);
     }
 
 }

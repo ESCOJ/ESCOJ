@@ -20,11 +20,13 @@ class UsersTableSeeder extends Seeder
             'email' => 'esc.onlinejudge@gmail.com',
             'password' => bcrypt('123456'),
             'register_date' => date("Y/m/d"),
-            'institution_id' => 1,
             'type' => 'admin',
+            'institution_id' => 1,
+            'institution_id' => 1,
             'country_id' => 1,
-            'country_id' => 1,
+            'avatar' => 'user_default.jpg',
             'confirmed' => 1,
+
         ));
         /*User::create(array(
             'name' => 'Miguel Angel',
@@ -33,9 +35,8 @@ class UsersTableSeeder extends Seeder
             'email' => 'mickemandu@outlook.com',
             'password' => bcrypt('123456'),
             'register_date' => date("Y/m/d"),
-            'institution_id' => 1,
             'type' => 'admin',
-            'country_id' => 1,
+            'institution_id' => 1,
             'country_id' => 1,
             'confirmed' => 1,
         ));*/

@@ -3,7 +3,7 @@
 	<div class="container-fluid">
 		<ul class="nav navbar-nav">
 			<li><a href="{{ url('/') }}" style="height:50px;"><img src="{{ asset('images/escoj7.png') }}" style=" width:210px; height:50px; position: relative; top:-14px; left: -30px;"></a></li>
-			<li><a href="./problems.php">Problems <span class="sr-only">(current)</span></a></li>
+			<li><a href="{{ route('problem.index') }}">Problems <span class="sr-only">(current)</span></a></li>
 			<li><a href="./sentencias.php">Verdicts</a></li>
 			<li><a href="#">Ranks</a></li>
 			<li><a href="./concursos.php">Contests</a></li>
@@ -19,12 +19,12 @@
 								<div class="col-md-12">
 									Login via
 									<div class="social-buttons">
-									<a href="{{ url('/auth/redirect/facebook') }}" class="btn btn-social btn-facebook">
-										<span class="fa fa-facebook"></span>Facebook
-									</a>
-									<a href="{{ url('/auth/redirect/github') }}"class="btn btn-social btn-github">
-										<span class="fa fa-github"></span>Github
-									</a>
+										<a href="{{ url('/auth/redirect/facebook') }}" class="btn btn-social btn-facebook">
+											<span class="fa fa-facebook"></span>Facebook
+										</a>
+										<a href="{{ url('/auth/redirect/github') }}" class="btn btn-social btn-github">
+											<span class="fa fa-github"></span>Github
+										</a>
 									</div>
 									or
 									<form class="form" role="form" method="POST" action="{{ url('/login') }}" accept-charset="UTF-8" id="login-nav"> {{ csrf_field() }}
@@ -71,22 +71,34 @@
 				<li><p class="navbar-text" style="margin-left:40em;"></p></li>
 				<li class="dropdown"style="margin-left:.5em;">
 					<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
-						{{ Auth::user()->nickname }} <span class="caret"></span>
+						<img src="{{ asset('images/user_avatar/'.Auth::user()->avatar) }}" style=" width:40px; height:24px;  top:-8px; left: -30px;">
+						&nbsp;{{ Auth::user()->nickname }} <span class="caret"></span>
 					</a>
 					
 					<ul class="dropdown-menu">
-						<li><a href="{{ url('/contestant/profile') }}">Your profile</a></li>
-						<li><a href="{{ url('/contestant/edit') }}">Edit account</a></li>
+						<li><a href="{{ url('/contestant/profile') }}"><i class="fa fa-user" aria-hidden="true"></i>
+ Your profile</a></li>
+						<li><a href="{{ url('/contestant/edit') }}"><i class="fa fa-pencil-square-o" aria-hidden="true"></i>
+ Edit account</a></li>
 						<li><a href="#">Something else here</a></li>
+
+						@if(Auth::user()->type === 'admin')
+							<li role="separator" class="divider"></li>
+							<li class="dropdown-header" style="font-size:100%;">Administrator Options</li>
+							<li><a href="{{ route('problem.create') }}"><i class="fa fa-upload" aria-hidden="true"></i>
+ Add problem</a></li>
+							<li><a href="{{ route('problem.problems') }}"><i class="fa fa-folder-open" aria-hidden="true"></i>
+ Problems</a></li>
+							<li><a href="#"><i class="fa fa-exchange" aria-hidden="true"></i>
+ Change user type</a></li>							
+						@endif
+
 						<li role="separator" class="divider"></li>
-						<li><a href="#">Separated link</a></li>
-						<li role="separator" class="divider"></li>
-						<li><a href="#">One more separated link</a></li>
 						<li>
 							<a href="{{ url('/logout') }}"
 							    onclick="event.preventDefault();
 							             document.getElementById('logout-form').submit();">
-							    Logout
+							    <i class="fa fa-power-off" aria-hidden="true"></i> Logout
 							</a>
 
 							<form id="logout-form" action="{{ url('/logout') }}" method="POST" style="display: none;">

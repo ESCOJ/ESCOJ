@@ -24,7 +24,9 @@
                             <div class="form-group">
                                 <div class="col-md-2 col-md-offset-5">
                                     {{-- {!!link_to('#', $title='Save', $attributes = ['id'=>'register_problem_description', 'class'=>'form-control btn btn-primary',' onclick' => 'createProblemDescription()'], $secure = null)!!}--}}
-                                    <button onclick = "createProblemDescription()" id="register_problem_description" class="form-control btn btn-primary" type="button">Save</button>
+                                    <button onclick = "createProblemDescription()" id="register_problem_description" class="form-control btn btn-primary" type="button">
+                                        <span class="glyphicon glyphicon-save"></span>Save
+                                    </button>
 
                                 </div>
                             </div>

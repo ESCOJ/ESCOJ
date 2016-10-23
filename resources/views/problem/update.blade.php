@@ -23,8 +23,13 @@
 
                             <div class="form-group">
                                 <div class="col-md-2 col-md-offset-5">
-                                      <button onclick = "createProblemDescription()" id="register_problem_description" class="form-control btn btn-primary" type="button">Save</button>
+                                    <button onclick = "createProblemDescription()" id="register_problem_description" class="form-control btn btn-primary" type="button">
+                                        <span class="glyphicon glyphicon-save"></span> Save
+                                    </button><br><br>
                                 </div>
+                                <div class="col-md-2 col-md-offset-5 row">
+                                     {!! Html::decode(link_to_route('problem.problems', $title='<i class="fa fa-reply" aria-hidden="true"></i> Go Back',$parameters = [] , $attributes = ['id'=>'add_datasets', 'class'=>'form-control btn btn-primary']))!!}
+                                </div>   
                             </div>
 
                         {!!Form::close()!!}

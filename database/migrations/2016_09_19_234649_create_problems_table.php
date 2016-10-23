@@ -31,7 +31,6 @@ class CreateProblemsTable extends Migration
             $table->boolean('multidata');//Indicates when the problem has more than one datasets
             $table->boolean('dataset')->nullable();//Indicates when the problem has or not an dataset
 
-
             $table->string('slug')->nullable();
             $table->timestamps();
 
@@ -51,7 +50,7 @@ class CreateProblemsTable extends Migration
             $table->integer('problem_id')->unsigned();
             $table->integer('tag_id')->unsigned();
 
-            $table->foreign('problem_id')->references('id')->on('problems');
+            $table->foreign('problem_id')->references('id')->on('problems')->onDelete('cascade');
             $table->foreign('tag_id')->references('id')->on('tags');
         });
 
@@ -62,7 +61,7 @@ class CreateProblemsTable extends Migration
             $table->integer('problem_id')->unsigned();
             $table->integer('user_id')->unsigned();
 
-            $table->foreign('problem_id')->references('id')->on('problems');
+            $table->foreign('problem_id')->references('id')->on('problems')->onDelete('cascade');
             $table->foreign('user_id')->references('id')->on('users');
         });
     }

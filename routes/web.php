@@ -42,19 +42,22 @@ Route::group(['prefix' => 'problem'], function (){
 	//update
 	Route::get('/{problem}/edit', 'ProblemController@edit')->name('problem.edit');
 	Route::put('/update/{problem}', 'ProblemController@update')->name('problem.update');
+	//delete
+	Route::delete('/{problem}', 'ProblemController@destroy')->name('problem.destroy');	
 	//limits
-	Route::get('/limits/{problem}', 'ProblemController@limits')->name('problem.limits');
+	Route::get('/limits/{problem}/{flag_update?}', 'ProblemController@limits')->name('problem.limits');
 	Route::put('/limits/{problem}', 'ProblemController@assignLimits')->name('problem.assignLimits');
 	//datasets
-	Route::get('/datasets/{problem}', 'ProblemController@datasets')->name('problem.datasets');
 	Route::put('/datasets/{problem}', 'ProblemController@assignDatasets')->name('problem.assignDatasets');
 	Route::get('/datasets/{problem}/delete', 'ProblemController@deleteDatasets')->name('problem.deleteDatasets');	
 	Route::get('/datasets/{problem}/download', 'ProblemController@downloadDatasets')->name('problem.downloadDatasets');
+	Route::get('/datasets/{problem}/{flag_update?}', 'ProblemController@datasets')->name('problem.datasets');
+
 	//display
 	Route::get('', 'ProblemController@index')->name('problem.index');
-	Route::get('/{problem}', 'ProblemController@show')->name('problem.show');	
-
-
+	Route::get('/gym/{problem}', 'ProblemController@show')->name('problem.show');	
+	//admin
+	Route::get('/admin', 'ProblemController@problemSetterProblems')->name('problem.problems');
 
 });
 

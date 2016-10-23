@@ -19,11 +19,19 @@
 
                             <div class="form-group">
                                 <div class="col-md-2 col-md-offset-5 row">
-                                    {!!Form::submit('Save',['class'=>'form-control btn btn-primary'])!!}
-                                    @if(session('addDatasets'))
+                                    {!!Form::button('<span class="glyphicon glyphicon-save"></span> Save', array('type' => 'submit', 'class' => 'form-control btn btn-primary'))!!}
+                                   
+                                    @if(!is_null($flag_update))
+                                        @if(session('addDatasets'))
+                                            <br><br>
+                                            {!!Html::decode(link_to_route('problem.datasets', $title='<i class="fa fa-plus" aria-hidden="true"></i> Add Datasets',$parameters = ['id' => $problem->id, 'flag_update' => 'update'] , $attributes = ['id'=>'add_datasets', 'class'=>'form-control btn btn-primary']))!!}
+                                        @endif 
                                         <br><br>
-                                        {!!link_to_route('problem.datasets', $title='Add Datasets',$parameters = [$problem->id] , $attributes = ['id'=>'add_datasets', 'class'=>'form-control btn btn-primary'])!!}
-                                    @endif 
+                                        {!! Html::decode(link_to_route('problem.problems', $title='<i class="fa fa-reply" aria-hidden="true"></i> Go Back',$parameters = [] , $attributes = ['id'=>'add_datasets', 'class'=>'form-control btn btn-primary']))!!}
+                                    @elseif(session('addDatasets'))
+                                            <br><br>
+                                            {!!Html::decode(link_to_route('problem.datasets', $title='<i class="fa fa-plus" aria-hidden="true"></i> Add Datasets',$parameters = [$problem->id] , $attributes = ['id'=>'add_datasets', 'class'=>'form-control btn btn-primary']))!!}
+                                    @endif
                                 </div>
                             </div>
 
@@ -39,6 +47,6 @@
 @section('scripts')
     {!!Html::script('js/problem/assignLimits.js')!!}
     <script>
-        $('div.alert').delay(600000).fadeOut(350);
+        $('div.alert').delay(60000).fadeOut(350);
     </script>
 @endsection
