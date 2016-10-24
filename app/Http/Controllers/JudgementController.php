@@ -7,6 +7,7 @@ use ESCOJ\Http\Requests\JudgmentAddRequest;
 use ESCOJ\Http\Requests;
 use EscojLB\Repo\Language\LanguageInterface;
 use EscojLB\Repo\Tag\TagInterface;
+use EscojLB\Repo\Judgment\JudgmentInterface;
 use ESCOJ\EscojLB\EvaluateTool;
 
 class JudgementController extends Controller
@@ -15,9 +16,10 @@ class JudgementController extends Controller
     protected $language;
     protected $tag;
 
-    public function __construct(LanguageInterface $language,TagInterface $tag){
+    public function __construct(LanguageInterface $language,TagInterface $tag, JudgmentInterface $judgment){
         $this->language = $language;
         $this->tag = $tag;
+        $this->judgment = $judgment;
     }
     /**
      * Display a listing of the resource.

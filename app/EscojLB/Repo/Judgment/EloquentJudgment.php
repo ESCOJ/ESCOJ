@@ -2,7 +2,7 @@
 
 use Illuminate\Database\Eloquent\Model;
 
-class EloquentLanguage implements JudgmentInterface {
+class EloquentJudgment implements JudgmentInterface {
 
     protected $judgment;
 
