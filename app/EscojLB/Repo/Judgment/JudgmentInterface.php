@@ -11,7 +11,7 @@ interface JudgmentInterface {
     public function create(array $data);
 
     /**
-     * Get all languages as key-value array 
+     * Get all judgments as key-value array 
      *
      * @param   
      * @return array    Associative Array with all the judgements ordered by date

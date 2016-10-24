@@ -18,7 +18,7 @@ interface TagInterface {
      * @return Object    Tag model object
      */
     public function findById($id);
-   
+
     /**
      * Retrieve all Tags with eager loading of problems
      * @param  int $level   level of the tag asocciated to a problem
@@ -26,6 +26,15 @@ interface TagInterface {
      */
     public function getAllWithProblemsByLevel($level);
 
+    public function find(array $tags);
+        
+    /**
+     * Get all the tags existing
+     *
+     * @param  string $key  key to associate
+     * @param  string $value  value to associate 
+     * @return array Array or Arrayable collection of Tag objects
+     */
     public function getAll($value, $key);
 
 }

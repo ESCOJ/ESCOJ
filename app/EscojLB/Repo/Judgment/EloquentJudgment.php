@@ -36,7 +36,7 @@ class EloquentLanguage implements JudgmentInterface {
 
 
     /**
-     * Get all languages as key-value array 
+     * Get all judgments as key-value array 
      *
      * @param  
      * @return array    Associative Array with all judgments
