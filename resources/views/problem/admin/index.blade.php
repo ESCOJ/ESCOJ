@@ -29,15 +29,13 @@
                                         <div class="col-md-5">
                                         {!! Html::decode(link_to_route('problem.create', $title = '<i class="fa fa-plus" aria-hidden="true"></i> Add problem', $parameters = [], $attributes = [ 'class' => 'btn btn-primary'])) !!}
                                         </div>
-                                        <div class="col-md-2">
+                                        <div class="col-md-3">
                                             {!!Form::text('name',null,['id'=>'name','class'=>'form-control ','placeholder'=>'Title or ID'])!!}
                                         </div>
-                                        <div class="col-sm-2">
-                                            <span class="pull-right">
-                                                <button type="submit" class="btn btn-default">
-                                                    <i class="fa fa fa-search" aria-hidden="true"></i> Search
-                                                </button>
-                                            </span>
+                                        <div class="col-md-2">
+                                            <button type="submit" class="btn btn-default">
+                                                <i class="fa fa fa-search" aria-hidden="true"></i> Search
+                                            </button>
                                         </div>
                                     </div>
                                 </div><br>

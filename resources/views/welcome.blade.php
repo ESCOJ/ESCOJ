@@ -19,7 +19,19 @@
                         <div class="text-center"><br>
                             <strong id="total-submissions">16873478</strong> submissions, <strong>419448</strong> usuarios registrados, <strong>5955</strong> problemas públicos
                         </div><br>
-                        <div class="text-center"><br><a class="btn btn-lg btn-primary" href="{{ url('/register') }}">Registrate &amp; Empieza a codiguear!</a></div>
+                        
+                        @if (Auth::guest())
+
+                            <div class="col-md-4 col-md-offset-4 text-center">
+                                <br>
+                                <h5>
+                                    {!!Html::decode(link_to('/register', $title='<i class="fa fa-users" aria-hidden="true"></i> Register and start coding!', $attributes = ['class'=>' btn btn-lg btn-default']))!!}
+                                </h5>
+                                <br>
+
+                            </div>
+                        @endif
+
 
                     <br><br>
 
@@ -27,15 +39,9 @@
             </div>
         </div>
 
-        <div class="col-md-12 text-center"> 
-            <h5>
-                <button class="btn btn-success" style="margin:0;" >
-                    <a style="text-decoration:none;color:white;" href="./problems.php">
-                    Ir a Problemas 
-                    <span class="glyphicon glyphicon-education" aria-hidden="true"></span>
-                    </a>
-                </button>
-            </h5>
+        <div class="col-md-2 col-md-offset-5 text-center"> 
+
+            {!!Html::decode(link_to_route('problem.index', $title='<i class="fa fa-book" aria-hidden="true"></i> Go problems',$parameters = [] , $attributes = ['class'=>'form-control btn btn-primary']))!!}
         </div>
         <br>
     </form>

@@ -67,8 +67,9 @@ Route::resource('judgment','JudgementController');
 //Other Routes
 Route::get('/', function () {
     return view('welcome');
-});
-Route::get('/home', 'HomeController@index');
+})->name('welcome');
+
+Route::get('/home', 'HomeController@index')->name('home');
 
 
 //Testing Route

@@ -18,9 +18,10 @@
 						{!!Form::model($user,['action'=> 'Auth\RegisterController@update','method'=>'PUT','files' => true,'class' => 'form-horizontal'])!!}
 							@include('user.partials.user')
 							<div class="form-group">
-                            	<div class="col-md-6 col-md-offset-4">
-									{!!Form::submit('Update',['class'=>'btn btn-primary'])!!}
-	                            </div>
+                            	<div class="col-md-2 col-md-offset-5 row">
+                                    <br>
+                                    {!!Form::button('<span class="glyphicon glyphicon-save"></span> Update', array('type' => 'submit', 'class' => 'form-control btn btn-primary'))!!}<br><br>
+                                </div>
                         	</div>
 						{!!Form::close()!!}
    					</div>

@@ -11,7 +11,12 @@
 <div class="container">
 	<div class="row">
 		<div class="col-md-offset-2 col-md-8 col-lg-offset-3 col-lg-6">
-						@include('flash::message')
+
+			<div class="text-center">
+		        <h5>
+		            @include('flash::message')
+		        </h5>
+	    	</div> 
 		
 	    	 <div class="well profile">
 	            <div class="col-sm-12">
@@ -97,4 +102,10 @@
 	</div>
 </div>
 
+@endsection
+
+@section('scripts')
+    <script>
+        $('div.alert').delay(10000).fadeOut(350);
+    </script>
 @endsection
