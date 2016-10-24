@@ -10,4 +10,6 @@ interface TagInterface {
      */
     public function find(array $tags);
 
+    public function getAll($value, $key);
+
 }

@@ -20,6 +20,10 @@ class Judgment extends Model
         return $this->belongsTo('EscojLB\Repo\User\User');
     }
 
+    public function tags(){
+        return $this->belongsTo('EscojLB\Repo\Tag\Tag');
+    }
+
     public function problems(){
         return $this->belongsTo('EscojLB\Repo\Problem\Problem');
     }

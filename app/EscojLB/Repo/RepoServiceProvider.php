@@ -10,8 +10,10 @@ use EscojLB\Repo\User\EloquentUser;
 use EscojLB\Repo\User\User;
 use EscojLB\Repo\Language\EloquentLanguage;
 use EscojLB\Repo\Language\Language;
-use EscojLB\Repo\Language\EloquentLJudgment;
+use EscojLB\Repo\Judgment\EloquentJudgment;
 use EscojLB\Repo\Judgment\Judgment;
+use EscojLB\Repo\Tag\Tag;
+use EscojLB\Repo\Tag\EloquentTag;
 
 use Illuminate\Support\ServiceProvider;
 
@@ -70,14 +72,12 @@ class RepoServiceProvider extends ServiceProvider
             return $judgment;
 
         });
-        /*$app->bind('Impl\Repo\Tag\TagInterface', function($app)
+        $app->bind('EscojLB\Repo\Tag\TagInterface', function($app)
         {
-            return new EloquentTag(
-                new Tag,
-                new LaravelCache($app['cache'], 'tags', 10)
-            );
+            $tag = new EloquentTag(new Tag);
+            return $tag;
         });
-
+        /*
         $app->bind('Impl\Repo\Status\StatusInterface', function($app)
         {
             return new EloquentStatus(

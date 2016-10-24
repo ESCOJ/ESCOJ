@@ -19,7 +19,7 @@ class EloquentTag implements TagInterface {
      * @return array        Array or Arrayable collection of Tag objects
      */
     public function find(array $tags)
-    {
+    {   
         $foundTags = $this->tag->whereIn('name', $tags)->get();
 
         $returnTags = array();
@@ -42,4 +42,14 @@ class EloquentTag implements TagInterface {
         return $returnTags;
     }
 
+    /**
+     * Get all the tags existing
+     *
+     * @param  string $key  key to associate
+     * @param  string $value  value to associate 
+     * @return array Array or Arrayable collection of Tag objects
+     */
+    public function getAll($value,$key){
+        return $this->tag->pluck($value,$key);
+    }
 }

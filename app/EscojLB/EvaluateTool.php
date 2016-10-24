@@ -46,7 +46,7 @@ class EvaluateTool{
 
     */
 	static function evaluateCode($file,$language,$problem_id,$id_user){
-
+        
         self::buildResultArray($language);
         self::$RESULTS["problem_id"] = $problem_id;
         self::$RESULTS["user_id"] = $id_user;
