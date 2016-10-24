@@ -72,5 +72,10 @@ return [
           'root'   => storage_path('/datasets'),
         ],
 
+        'judgements' => [
+          'driver' => 'local',
+          'root'   => public_path(),
+        ],
+
     ],
 ];

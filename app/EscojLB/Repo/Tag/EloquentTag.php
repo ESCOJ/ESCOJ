@@ -44,4 +44,39 @@ class EloquentTag implements TagInterface {
         }])->get();
     }
 
+    public function find(array $tags)
+    {   
+        $foundTags = $this->tag->whereIn('name', $tags)->get();
+
+        $returnTags = array();
+
+        if( $foundTags )
+        {
+            foreach( $foundTags as $tag )
+            {
+                $pos = array_search($tag->tag, $tags);
+
+                // Add returned tags to array
+                if( $pos !== false )
+                {
+                    $returnTags[] = $tag;
+                    unset($tags[$pos]);
+                }
+            }
+        }
+
+        return $returnTags;
+
+    }
+
+    /**
+     * Get all the tags existing
+     *
+     * @param  string $key  key to associate
+     * @param  string $value  value to associate 
+     * @return array Array or Arrayable collection of Tag objects
+     */
+    public function getAll($value,$key){
+        return $this->tag->pluck($value,$key);
+    }
 }

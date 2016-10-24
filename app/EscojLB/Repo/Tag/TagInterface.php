@@ -26,4 +26,6 @@ interface TagInterface {
      */
     public function getAllWithProblemsByLevel($level);
 
+    public function getAll($value, $key);
+
 }

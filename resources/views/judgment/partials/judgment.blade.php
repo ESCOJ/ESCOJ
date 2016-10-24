@@ -39,7 +39,7 @@
 <div class="form-group{{ $errors->has('your_code_in_the_editor') ? ' has-error' : '' }}">
     <div id="editor"></div>
     <div class="col-md-7 col-md-offset-3">
-        <input type="hidden" name="your_code_in_the_editor" id = "your_code_in_the_editor">
+        <input type="hidden" name="your_code_in_the_editor" id="your_code_in_the_editor">
         @if ($errors->has('code'))
             <span class="help-block">
                 <strong>{{ $errors->first('your_code_in_the_editor') }}</strong>

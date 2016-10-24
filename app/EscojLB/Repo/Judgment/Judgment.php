@@ -10,6 +10,7 @@ class Judgment extends Model
         protected $fillable = [
         	'submitted_at','language','memory','time','judgment','file_size','problem_id','user_id',
     	];
+        public $timestamps = false;
 
 
 
@@ -17,6 +18,10 @@ class Judgment extends Model
 
     public function users(){
         return $this->belongsTo('EscojLB\Repo\User\User');
+    }
+
+    public function tags(){
+        return $this->belongsTo('EscojLB\Repo\Tag\Tag');
     }
 
     public function problems(){

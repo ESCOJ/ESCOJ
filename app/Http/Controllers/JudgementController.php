@@ -6,14 +6,18 @@ use Illuminate\Http\Request;
 use ESCOJ\Http\Requests\JudgmentAddRequest;
 use ESCOJ\Http\Requests;
 use EscojLB\Repo\Language\LanguageInterface;
+use EscojLB\Repo\Tag\TagInterface;
+use ESCOJ\EscojLB\EvaluateTool;
 
 class JudgementController extends Controller
 {
 
     protected $language;
+    protected $tag;
 
-    public function __construct(LanguageInterface $language){
+    public function __construct(LanguageInterface $language,TagInterface $tag){
         $this->language = $language;
+        $this->tag = $tag;
     }
     /**
      * Display a listing of the resource.
@@ -22,7 +26,9 @@ class JudgementController extends Controller
      */
     public function index()
     {
-
+        $tags = $this->tag->getAll('name','id');
+        $languages = $this->language->getKeyValueAll('id','name');
+        return view('judgment.index',['languages' => $languages],['tags' => $tags]);
     }
 
     /**
@@ -48,8 +54,29 @@ class JudgementController extends Controller
      */
     public function store(JudgmentAddRequest $request)
     {
-        //
-        dd($request->all());
+        $code = $request->input('your_code_in_the_editor');
+        $language = $request->input('language');
+        $problem_id = $request->input('problem_id');
+        $file = $request->file('code');
+        //This has to be substituted by the id of the contestant
+        //with Auth::user()->id;
+        $id_user = "Adri";
+
+        if($request->hasFile('code')){
+
+            $file_name = $file->getClientOriginalName();
+            $file_splited = explode('.',$file_name);
+            $name = $id_user."_".$problem_id . "." . $file_splited[1]; 
+            $file_temp = $file->storeAs('temp',$name,"judgements");
+            
+            $RESULTS = EvaluateTool::evaluateCode($file_temp,$language,$problem_id,$id_user);
+
+            var_dump($RESULTS);
+        }else{
+            $file_temp = EvaluateTool::buildCodeFile($file,$language,$problem_id,$code,$id_user);
+            $real_name_file = 'temp/'.$file_temp;
+            $RESULTS = EvaluateTool::evaluateCode($real_name_file,$language,$problem_id,$id_user);
+        }
     }
 
     /**

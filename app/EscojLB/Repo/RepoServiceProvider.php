@@ -16,6 +16,8 @@ use EscojLB\Repo\Problem\EloquentProblem;
 use EscojLB\Repo\Problem\Problem;
 use EscojLB\Repo\Source\EloquentSource;
 use EscojLB\Repo\Source\Source;
+use EscojLB\Repo\Judgment\EloquentJudgment;
+use EscojLB\Repo\Judgment\Judgment;
 
 use Illuminate\Support\ServiceProvider;
 
@@ -68,6 +70,7 @@ class RepoServiceProvider extends ServiceProvider
 
         });
 
+
         $app->bind('EscojLB\Repo\Tag\TagInterface', function($app)
         {
             $tag =  new EloquentTag(new Tag);
@@ -86,10 +89,17 @@ class RepoServiceProvider extends ServiceProvider
 
         });
 
-       $app->bind('EscojLB\Repo\Source\SourceInterface', function($app)
+        $app->bind('EscojLB\Repo\Source\SourceInterface', function($app)
         {
             $source =  new EloquentSource(new Source);
             return $source;
+
+        });
+
+        $app->bind('EscojLB\Repo\Judgment\JudgmentInterface', function($app)
+        {
+            $judgment =  new EloquentJudgment(new Judgment);
+            return $judgment;
 
         });
 
