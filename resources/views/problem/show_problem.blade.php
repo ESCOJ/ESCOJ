@@ -1,6 +1,6 @@
 @extends('layouts.main')
 
-@section('title' , 'Add Submit')
+@section('title' , 'Problem')
 
 @section('styles')
 @endsection

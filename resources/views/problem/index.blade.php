@@ -1,6 +1,6 @@
 @extends('layouts.main')
 
-@section('title' , 'Add Submit')
+@section('title' , 'Problems')
 
 @section('styles')
     {!!Html::style('plugins/chosen/chosen.css')!!}

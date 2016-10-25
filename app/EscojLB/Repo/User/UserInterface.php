@@ -80,7 +80,31 @@ interface UserInterface {
      */
     public function getEmail($id);
 
+    /**
+     * Get paginated users
+     *
+     * @param int $limit Results per page
+     * @return LengthAwarePaginator with the users to paginate
+     */
+    public function getAllPaginate($limit = 10);
 
+    /**
+     * Get filter paginated users
+     *
+     * @param int $limit Results per page
+     * @param int  $nickname that is the filter to apply to the query.
+     * @return LengthAwarePaginator with the users to paginate
+     */
+    public function getAllPaginateFilteredByNickname($limit = 10, $nickname);
+
+    /**
+     * Update an existing User when the role change
+     *
+     * @param int $id      User ID
+     * @param string       $role the value of the new role
+     * @return boolean
+     */
+    public function changeRole($id, $role);
 
 
 }

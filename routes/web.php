@@ -32,6 +32,11 @@ Route::group(['prefix' => 'contestant'], function (){
 	Route::put('update','Auth\RegisterController@update');
 	Route::get('institutions/{id}','Auth\RegisterController@getInstitutions');
 	Route::get('contestant/institutions/{id}','Auth\RegisterController@getInstitutions');
+	//admin
+	Route::get('/admin/users', 'Auth\RegisterController@users')->name('user.users');
+	Route::put('/admin/users', 'Auth\RegisterController@changeUserType')->name('user.changeUserType');
+
+
 });
 
 //The Problem Routes
@@ -68,8 +73,6 @@ Route::resource('judgment','JudgementController');
 Route::get('/', function () {
     return view('welcome');
 })->name('welcome');
-
-Route::get('/home', 'HomeController@index')->name('home');
 
 
 //Testing Route

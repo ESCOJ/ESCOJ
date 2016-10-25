@@ -40,7 +40,7 @@ class RegisterController extends Controller
      *
      * @var string
      */
-    protected $redirectTo = '/home';
+    protected $redirectTo = '/';
 
     protected $country;
     protected $institution;
@@ -55,7 +55,11 @@ class RegisterController extends Controller
  
     public function __construct(CountryInterface $country,InstitutionInterface $institution,UserInterface $user)
     {
-        $this->middleware('guest', ['except' => ['profile','edit','update','getInstitutions']]);
+        $this->middleware('guest', ['except' => ['profile','edit','update','getInstitutions','users','changeUserType']]);
+        $this->middleware('auth', ['only' => ['profile','edit','update','users','changeUserType']]);
+        $this->middleware('admin', ['only' => ['users', 'changeUserType']]);
+
+
         $this->country = $country;
         $this->institution = $institution;
         $this->user = $user;
@@ -272,7 +276,7 @@ class RegisterController extends Controller
         return Validator::make($data, [
             'name' => 'required|max:30',
             'last_name' => 'required|max:30',
-            'nickname' => 'required|max:30|unique:users',
+            'nickname' => 'required|max:30|alpha_dash|unique:users',
             'email' => 'required|email|max:60|confirmed|unique:users',
             'password' => 'required|min:6|confirmed',
             'country' => 'required',
@@ -296,6 +300,43 @@ class RegisterController extends Controller
         $request->session()->flush();
 
         $request->session()->regenerate();
+    }
+
+    /**
+     * Display a listing of the users.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function users(Request $request)
+    {
+        if( $request->has('nickname') )
+            $users = $this->user->getAllPaginateFilteredByNickname(5, $request->get('nickname'),false);   
+        else
+            $users = $this->user->getAllPaginate(5,false);
+
+        $roles = [
+                'admin' => 'Admin',
+                'coach' => 'Coach',
+                'contestant' => 'Contestant',
+            ];
+        $request->flash();
+        return view('user.admin.users',['users' => $users, 'roles' => $roles]);
+    }
+
+    /**
+     * Change the user type.
+     *
+     * @param  Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function changeUserType(Request $request)
+    {
+		if($this->user->changeRole($request->id, $request->type))
+			flash('The user role of ' . $request->nickname . ' has been changed successfully to ' . $request->type . '.', 'success')->important();
+		else
+			flash('The user role of ' . $request->nickname . ' it has not been changed.', 'warning')->important();
+		return back();
+
     }
 
 }

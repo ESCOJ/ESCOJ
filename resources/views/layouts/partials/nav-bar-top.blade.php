@@ -11,8 +11,8 @@
 			<!--_________________________________Aqui_______________________________________-->
 			@if (Auth::guest())
 				<li><p class="navbar-text" style="margin-left:28em;">Already have an account?</p></li>
-				<li class="dropdown" style="margin-left:.5em;">
-					<a href="#" class="dropdown-toggle " data-toggle="dropdown"><b>Login</b> <span class="caret"></span></a>
+				<li id="drop_login" class="dropdown" style="margin-left:.5em;">
+					<a id="a_login" href="#" class="dropdown-toggle " data-toggle="dropdown"><b>Login</b> <span class="caret"></span></a>
 					<ul id="login-dp" class="dropdown-menu">
 						<li>
 							<div class="row">
@@ -30,7 +30,7 @@
 									<form class="form" role="form" method="POST" action="{{ url('/login') }}" accept-charset="UTF-8" id="login-nav"> {{ csrf_field() }}
 										<div class="form-group {{ $errors->has('email') ? ' has-error' : '' }}">
 											<label class="sr-only" for="exampleInputEmail2">Email address</label>
-											<input type="text" class="form-control" id="exampleInputEmail2" placeholder="Email address" name="email" value="{{ old('email') }}">
+											<input type="text" class="form-control" id="exampleInputEmail2" placeholder="Nickname or E-mail" name="email" value="{{ old('email') }}">
 										    @if ($errors->has('email'))
 			                                    <span class="help-block">
 			                                        <strong>{{ $errors->first('email') }}</strong>
@@ -89,7 +89,7 @@
  Add problem</a></li>
 							<li><a href="{{ route('problem.problems') }}"><i class="fa fa-folder-open" aria-hidden="true"></i>
  Problems</a></li>
-							<li><a href="#"><i class="fa fa-exchange" aria-hidden="true"></i>
+							<li><a href="{{ route('user.users') }}"><i class="fa fa-exchange" aria-hidden="true"></i>
  Change user type</a></li>							
 						@endif
 

@@ -9,6 +9,8 @@ use EscojLB\Repo\Tag\TagInterface;
 use EscojLB\Repo\Problem\ProblemInterface;
 use EscojLB\Repo\Source\SourceInterface;
 use EscojLB\Repo\Language\LanguageInterface;
+use EscojLB\Repo\User\UserInterface;
+
 use Illuminate\Support\Facades\Auth;
 use ESCOJ\Http\Requests\ProblemDescriptionRequest;
 use ESCOJ\Http\Requests\ProblemAssignLimitsRequest;
@@ -16,7 +18,6 @@ use ESCOJ\Http\Requests\ProblemAssignDatasetsRequest;
 use ESCOJ\Constants;
 use Validator;
 use Storage;
-use EscojLB\Repo\Problem\Problem;
 
 class ProblemController extends Controller
 {
@@ -25,17 +26,27 @@ class ProblemController extends Controller
     protected $problem;
     protected $source;
     protected $language;
+    protected $user;
+
 
     /**
      * Create a new controller instance.
      *
      * @return void
      */
-    public function __construct(TagInterface $tag,ProblemInterface $problem,SourceInterface $source,LanguageInterface $language){
+    public function __construct(TagInterface $tag,ProblemInterface $problem,
+        SourceInterface $source,LanguageInterface $language, UserInterface $user){
+
+        $this->middleware('auth', ['except' => ['index', 'show']]);
+        $this->middleware('admin', ['except' => ['index', 'show']]);
+
+
         $this->tag = $tag;
         $this->problem = $problem;
         $this->source = $source;
         $this->language = $language;
+        $this->user = $user;
+
     }
 
     /**

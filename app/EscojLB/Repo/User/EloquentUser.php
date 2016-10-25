@@ -146,4 +146,40 @@ class EloquentUser implements UserInterface {
         return $this->user->find($id)->email;
     }
 
+    /**
+     * Get paginated users
+     *
+     * @param int $limit Results per page
+     * @return LengthAwarePaginator with the users to paginate
+     */
+    public function getAllPaginate($limit = 10){
+        return $this->user->paginate($limit);
+    }
+
+
+    /**
+     * Get filter paginated users
+     *
+     * @param int $limit Results per page
+     * @param int  $nickname that is the filter to apply to the query.
+     * @return LengthAwarePaginator with the users to paginate
+     */
+    public function getAllPaginateFilteredByNickname($limit = 10, $nickname){
+
+        return $this->user->where('nickname', 'like', '%'. $nickname . '%')->paginate($limit);
+    }
+
+    /**
+     * Update an existing User when the role change
+     *
+     * @param int $id      User ID
+     * @param string       $role the value of the new role
+     * @return boolean
+     */
+    public function changeRole($id, $role){
+        $user = $this->findById($id);
+        $user->type = $role;
+        return $user->save();
+    }
+
 }
