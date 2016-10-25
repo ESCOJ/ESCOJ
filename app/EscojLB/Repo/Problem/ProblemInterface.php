@@ -75,6 +75,14 @@ interface ProblemInterface {
     public function findById($id);
 
     /**
+     * Get the limits for the problem
+     *
+     * @param  int $id       Problem ID
+     * @return Object    Problem model object
+     */
+    public function findLimitsById($id);
+
+    /**
      * Get paginated problems
      *
      * @param int $limit Results per page

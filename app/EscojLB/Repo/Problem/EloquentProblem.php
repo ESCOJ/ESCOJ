@@ -365,6 +365,14 @@ class EloquentProblem implements ProblemInterface {
         return $problems->all();*/
     }
 
-
+    /**
+     * Get the limits for the problem
+     *
+     * @param  int $id       Problem ID
+     * @return Object    Problem model object
+     */
+    public function findLimitsById($id){
+        return $this->problem->select('ml','sl','tlpc','ttl')->where('id',$id)->get();
+    }
 
 }

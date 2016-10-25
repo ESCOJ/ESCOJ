@@ -63,6 +63,7 @@ Route::group(['prefix' => 'problem'], function (){
 
 //The Judgements Routes
 Route::resource('judgment','JudgementController');
+Route::get('judgment/create/{id}', 'JudgementController@create')->name('judgment.create');
 
 //Other Routes
 Route::get('/', function () {

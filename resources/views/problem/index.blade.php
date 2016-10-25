@@ -47,12 +47,12 @@
                                 <thead>
                                     <tr>
                                         <th style="text-align: center;">ID</th>
-                                        <th style="text-align: center;" >TITLE</th>
-                                        <th style="text-align: center;" >SCORE</th>
-                                        <th style="text-align: center;" >ACCURACY</th>
-                                        <th style="text-align: center;" >SOLVED</th>
-                                        <th style="text-align: center;" >SUBMISSIONS</th>
-                                        <th style="text-align: center;" >SUBMIT</th>
+                                        <th style="text-align: center;">TITLE</th>
+                                        <th style="text-align: center;">SCORE</th>
+                                        <th style="text-align: center;">ACCURACY</th>
+                                        <th style="text-align: center;">SOLVED</th>
+                                        <th style="text-align: center;">SUBMISSIONS</th>
+                                        <th style="text-align: center;">SUBMIT</th>
 
                                     </tr>
                                 </thead>
@@ -66,7 +66,7 @@
                                             <td>0.0 %</td>
                                             <td>0</td>
                                             <td>0</td>
-                                            <td>{!! Html::decode(link_to_action('ProblemController@index', $title = '<i class="fa fa-paper-plane" aria-hidden="true"></i>', $parameters = [], $attributes = [ ])) !!}</td>
+                                            <td>{!! Html::decode(link_to_action('JudgementController@create', $title = '<i class="fa fa-paper-plane" aria-hidden="true"></i>', $parameters = ['problem_id'=> $problem->id ], $attributes = [ ])) !!}</td>
                                         </tr>
                                     @endforeach
                                 </tbody>

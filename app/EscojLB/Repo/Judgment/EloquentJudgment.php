@@ -1,6 +1,8 @@
 <?php namespace EscojLB\Repo\Judgment;
 
 use Illuminate\Database\Eloquent\Model;
+use EscojLB\Repo\User\UserInterface;
+use Illuminate\Support\Facades\DB;
 
 class EloquentJudgment implements JudgmentInterface {
 
@@ -22,18 +24,17 @@ class EloquentJudgment implements JudgmentInterface {
     {
         // Create the a user
         return $this->judgment->create(array(
-            'submitted_at' => date('Y-m-d h:i:s \G\M\T'),
+            'submitted_at' => date('Y-m-d h:i:s'),
             'language' => $data['language'],
-            'memory' => $data['memory'],
-            'time' => $data['time'],
+            'memory' => (int)$data['memory'],
+            'time' => (float)$data['time'],
             'judgment' => $data['judgment'],
-            'file_size' => $data['file_size'],
-            'problem_id' => $data['problem_id'],
-            'user_id' => $data['user_id'],
+            'file_size' => (int)$data['file_size'],
+            'problem_id' => (int)$data['problem_id'],
+            'user_id' => (int)$data['user_id'],
         ));
 
     }
-
 
     /**
      * Get all judgments as key-value array 
@@ -41,9 +42,21 @@ class EloquentJudgment implements JudgmentInterface {
      * @param  
      * @return array    Associative Array with all judgments
      */
-    public function findAll()
+    public function getAllOrderedBySubmitted($limit = 10)
     { 
-      return $this->judgment->orderBy('submitted_at','desc')->get();
+      return $this->judgment->orderBy('submitted_at','desc')->paginate($limit);
+      
+    }
+
+    /**
+     * Get filter paginated problems
+     *
+     * @param int $limit Results per page
+     * @param array  Data that contains the filters to apply to the query.
+     * @return LengthAwarePaginator with the problems to paginate
+     */
+    public function getAllPaginateFiltered($limit = 10, array $data, $enable = true){
+        return $this->judgment->orderBy('submitted_at','desc')->paginate($limit);
     }
 
 }

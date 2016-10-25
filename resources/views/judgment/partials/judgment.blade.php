@@ -3,7 +3,7 @@
 <div class="form-group{{ $errors->has('problem_id') ? ' has-error' : '' }}">
     {!!Form::label('problem_id','Problem ID:',['class' => 'col-md-3 control-label'])!!}
     <div class="col-md-7">
-        {!!Form::text('problem_id',null,['class'=>'form-control','placeholder'=>'ID Problem'])!!}
+        {!!Form::text('problem_id',$id_problem,['class'=>'form-control','placeholder'=>'ID Problem'])!!}
          @if ($errors->has('problem_id'))
             <span class="help-block">
                 <strong>{{ $errors->first('problem_id') }}</strong>

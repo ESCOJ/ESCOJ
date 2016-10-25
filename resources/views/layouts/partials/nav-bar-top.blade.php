@@ -4,7 +4,7 @@
 		<ul class="nav navbar-nav">
 			<li><a href="{{ url('/') }}" style="height:50px;"><img src="{{ asset('images/escoj7.png') }}" style=" width:210px; height:50px; position: relative; top:-14px; left: -30px;"></a></li>
 			<li><a href="{{ route('problem.index') }}">Problems <span class="sr-only">(current)</span></a></li>
-			<li><a href="./sentencias.php">Verdicts</a></li>
+			<li><a href="{{ route('judgment.index') }}">Verdicts</a></li>
 			<li><a href="#">Ranks</a></li>
 			<li><a href="./concursos.php">Contests</a></li>
 

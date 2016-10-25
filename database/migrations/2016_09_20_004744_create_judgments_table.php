@@ -18,7 +18,7 @@ class CreateJudgmentsTable extends Migration
             $table->dateTime('submitted_at');
             $table->string('language',8);
             $table->integer('memory');
-            $table->integer('time');
+            $table->float('time');
             $table->string('judgment',40); // the submit´s verdict
             $table->integer('file_size');
             $table->integer('problem_id')->unsigned();
