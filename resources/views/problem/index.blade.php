@@ -67,11 +67,13 @@
                                             <td>0.0 %</td>
                                             <td>0</td>
                                             <td>0</td>
+
                                             @if(Auth::check())
                                                 <td>
                                                     {!! Html::decode(link_to_action('JudgementController@create', $title = '<i class="fa fa-paper-plane" aria-hidden="true"></i>', $parameters = ['problem_id'=> $problem->id ], $attributes = [ ])) !!}
                                                 </td>
                                             @endif
+
                                         </tr>
                                     @endforeach
                                 </tbody>

@@ -163,6 +163,7 @@
                                 {!! Html::decode(link_to_action('JudgementController@create', $title = '<strong>Submit </strong><i class="fa fa-paper-plane" aria-hidden="true"></i>', $parameters = ['problem_id'=> $problem->id ], $attributes = ['class' => 'btn btn-primary' ])) !!}
                             </div>
                         @endif
+
                     </div>
             </div>
         </div>

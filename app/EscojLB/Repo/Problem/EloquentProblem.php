@@ -328,14 +328,4 @@ class EloquentProblem implements ProblemInterface {
                                 })->paginate($limit);
     }
 
-    /**
-     * Get the limits for the problem
-     *
-     * @param  int $id       Problem ID
-     * @return Object    Problem model object
-     */
-    public function findLimitsById($id){
-        return $this->problem->select('ml','sl','tlpc','ttl')->where('id',$id)->get();
-    }
-
 }
