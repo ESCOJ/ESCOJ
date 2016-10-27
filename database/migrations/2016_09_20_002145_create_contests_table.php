@@ -16,7 +16,6 @@ class CreateContestsTable extends Migration
         Schema::create('contests', function (Blueprint $table) {
             $table->increments('id');
             $table->string('name');
-            $table->string('author');
             $table->dateTime('start_date');
             $table->dateTime('end_date');
             $table->mediumText('description');
@@ -28,6 +27,10 @@ class CreateContestsTable extends Migration
             $table->dateTime('offcontest_end_date');
             $table->integer('offcontest_penalization'); // penalization time 
             $table->timestamps();
+
+            $table->integer('organization_id')->unsigned();
+
+            $table->foreign('organization_id')->references('id')->on('organizations');
         });
 
         //Pivot table to manage the relationship many to many between contests and problems

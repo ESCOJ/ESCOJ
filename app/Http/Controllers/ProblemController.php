@@ -7,8 +7,6 @@ use Illuminate\Http\Request;
 use ESCOJ\Http\Requests;
 use EscojLB\Repo\Tag\TagInterface;
 use EscojLB\Repo\Problem\ProblemInterface;
-use EscojLB\Repo\Problem\Problem;
-
 use EscojLB\Repo\Source\SourceInterface;
 use EscojLB\Repo\Language\LanguageInterface;
 use EscojLB\Repo\User\UserInterface;

@@ -18,6 +18,8 @@ use EscojLB\Repo\Source\EloquentSource;
 use EscojLB\Repo\Source\Source;
 use EscojLB\Repo\Judgment\EloquentJudgment;
 use EscojLB\Repo\Judgment\Judgment;
+use EscojLB\Repo\Organization\EloquentOrganization;
+use EscojLB\Repo\Organization\Organization;
 
 use Illuminate\Support\ServiceProvider;
 
@@ -100,6 +102,13 @@ class RepoServiceProvider extends ServiceProvider
         {
             $judgment =  new EloquentJudgment(new Judgment);
             return $judgment;
+
+        });
+
+        $app->bind('EscojLB\Repo\Organization\OrganizationInterface', function($app)
+        {
+            $organization =  new EloquentOrganization(new organization);
+            return $organization;
 
         });
 

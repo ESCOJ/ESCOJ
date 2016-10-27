@@ -1,4 +1,3 @@
-
 <nav class="navbar navbar-default navbar-fixed-top navbar-inverse" style="background-color:blue;">
 	<div class="container-fluid">
 		<ul class="nav navbar-nav">
@@ -13,7 +12,7 @@
 				<li><p class="navbar-text" style="margin-left:28em;">Already have an account?</p></li>
 				<li id="drop_login" class="dropdown" style="margin-left:.5em;">
 					<a id="a_login" href="#" class="dropdown-toggle " data-toggle="dropdown"><b>Login</b> <span class="caret"></span></a>
-					<ul id="login-dp" class="dropdown-menu">
+					<ul id="login-dp" class="dropdown-menu dropdown-menu-us">
 						<li>
 							<div class="row">
 								<div class="col-md-12">
@@ -68,14 +67,13 @@
 					</ul>
 				</li>
 			@else
-				<li><p class="navbar-text" style="margin-left:40em;"></p></li>
+				<li><p class="navbar-text" style="margin-left:35em;"></p></li>
 				<li class="dropdown"style="margin-left:.5em;">
-					<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
-						<img src="{{ asset('images/user_avatar/'.Auth::user()->avatar) }}" style=" width:40px; height:24px;  top:-8px; left: -30px;">
-						&nbsp;{{ Auth::user()->nickname }} <span class="caret"></span>
+					<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false" style="height:50px;  ">
+						<img src="{{ asset('images/user_avatar/'.Auth::user()->avatar) }}" class="img-circle" style=" width:45px; height:45px; left: -5px; position: relative; top:-12px;"> <span style="position: relative; top:-12px;">{{ Auth::user()->nickname }} <span class="caret" ></span></span>
 					</a>
 					
-					<ul class="dropdown-menu">
+					<ul class="dropdown-menu dropdown-menu-us">
 						<li><a href="{{ url('/contestant/profile') }}"><i class="fa fa-user" aria-hidden="true"></i>
  Your profile</a></li>
 						<li><a href="{{ url('/contestant/edit') }}"><i class="fa fa-pencil-square-o" aria-hidden="true"></i>

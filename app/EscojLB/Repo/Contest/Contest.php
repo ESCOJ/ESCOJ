@@ -8,12 +8,16 @@ class Contest extends Model
 {
     //
     protected $fillable = [
-        'name','author','start_date' 'end_date','description','acces_type','penalization','frozen_time','offcontest','offcontes_start_date','offcontest_end_date','offcontest_penalization',
+        'name','organization_id','start_date' 'end_date','description','acces_type','penalization','frozen_time','offcontest','offcontes_start_date','offcontest_end_date','offcontest_penalization',
     ];
 
 
 
     //building relationships
+
+     public function organization(){
+        return $this->belongsTo('EscojLB\Repo\Organization\Organization');
+    }
 
     public function users(){
         return $this->belongsToMany('EscojLB\Repo\User\User');

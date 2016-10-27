@@ -220,7 +220,7 @@ class RegisterController extends Controller
             $avatar_prev = $this->user->getAvatar(Auth::user()->id);
             $flag = $this->user->update(Auth::user()->id,$request->all(),$pass,$avatar);
 
-            if($flag){
+            if($flag and $avatar_prev != 'user_default.png'){
                 if(File::exists(public_path().'/images/user_avatar/'. $avatar_prev))
                     File::delete(public_path().'/images/user_avatar/'.$avatar_prev);
                 $image->storeAs('/images/user_avatar/', $avatar, "uploads"); 
