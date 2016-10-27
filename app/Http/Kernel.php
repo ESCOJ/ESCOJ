@@ -53,5 +53,9 @@ class Kernel extends HttpKernel
         'guest' => \ESCOJ\Http\Middleware\RedirectIfAuthenticated::class,
         'throttle' => \Illuminate\Routing\Middleware\ThrottleRequests::class,
         'admin' => \ESCOJ\Http\Middleware\Admin::class,
+        'adminOrProblemSetter' => \ESCOJ\Http\Middleware\AdminOrProblemSetter::class,
+        'problemAuthorize' => \ESCOJ\Http\Middleware\ProblemAuthorize::class,
+
+
     ];
 }

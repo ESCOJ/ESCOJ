@@ -23,11 +23,11 @@ class CreateUsersTable extends Migration
             $table->string('email')->unique();
             $table->string('password');
             $table->date('register_date');
-            $table->enum('type',['contestant', 'coach', 'admin'])->default('contestant');
+            $table->enum('role',['contestant', 'coach', 'problem_setter', 'admin'])->default('contestant');
             $table->integer('institution_id')->unsigned();
             $table->integer('country_id')->unsigned();
             $table->double('points')->default('0');
-            $table->string('avatar')->default('user_default.jpg');
+            $table->string('avatar')->default('user_default.png');
             $table->boolean('confirmed')->default(0);
             $table->string('confirmation_code')->nullable();
             $table->string('provider')->nullable();

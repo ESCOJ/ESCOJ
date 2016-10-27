@@ -16,6 +16,6 @@ interface JudgmentInterface {
      * @param   
      * @return array    Associative Array with all the judgements ordered by date
      */
-    public function findAll();
+    public function getAllOrderedBySubmitted();
 
 }

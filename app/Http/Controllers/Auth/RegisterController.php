@@ -55,9 +55,9 @@ class RegisterController extends Controller
  
     public function __construct(CountryInterface $country,InstitutionInterface $institution,UserInterface $user)
     {
-        $this->middleware('guest', ['except' => ['profile','edit','update','getInstitutions','users','changeUserType']]);
-        $this->middleware('auth', ['only' => ['profile','edit','update','users','changeUserType']]);
-        $this->middleware('admin', ['only' => ['users', 'changeUserType']]);
+        $this->middleware('guest', ['except' => ['profile','edit','update','getInstitutions','users','changeUserRole']]);
+        $this->middleware('auth', ['only' => ['profile','edit','update','users','changeUserRole']]);
+        $this->middleware('admin', ['only' => ['users', 'changeUserRole']]);
 
 
         $this->country = $country;
@@ -139,7 +139,7 @@ class RegisterController extends Controller
             $flag = true;
         }
         else{
-            $avatar = 'user_defaul.jpg';
+            $avatar = 'user_default.png';
         }
         $user = $this->user->create($data,$confirmation_code,$avatar,$provider);  
         if( !is_null($user)  and  $flag){
@@ -317,22 +317,24 @@ class RegisterController extends Controller
         $roles = [
                 'admin' => 'Admin',
                 'coach' => 'Coach',
+                'problem_setter' => 'Problem Setter',
                 'contestant' => 'Contestant',
+
             ];
         $request->flash();
         return view('user.admin.users',['users' => $users, 'roles' => $roles]);
     }
 
     /**
-     * Change the user type.
+     * Change the user role.
      *
      * @param  Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function changeUserType(Request $request)
+    public function changeUserRole(Request $request)
     {
-		if($this->user->changeRole($request->id, $request->type))
-			flash('The user role of ' . $request->nickname . ' has been changed successfully to ' . $request->type . '.', 'success')->important();
+		if($this->user->changeRole($request->id, $request->role))
+			flash('The user role of ' . $request->nickname . ' has been changed successfully to ' . $request->role . '.', 'success')->important();
 		else
 			flash('The user role of ' . $request->nickname . ' it has not been changed.', 'warning')->important();
 		return back();

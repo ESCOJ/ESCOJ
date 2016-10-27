@@ -70,17 +70,19 @@
                                             </td>
                                             <!--Role-->
                                             <td>
-                                                @if($user->type === 'admin')
-                                                    <span class="label label-primary">{{ $user->type }}</span>
-                                                @elseif($user->type === 'coach')
-                                                    <span class="label label-info">{{ $user->type }}</span>
+                                                @if($user->role === 'admin')
+                                                    <span class="label label-primary">{{ $user->role }}</span>
+                                                @elseif($user->role === 'problem_setter')
+                                                    <span class="label label-info">{{ $user->role }}</span>
+                                                @elseif($user->role === 'coach')
+                                                    <span class="label label-success">{{ $user->role }}</span>
                                                 @else
-                                                    <span class="label label-default">{{ $user->type }}</span>
+                                                    <span class="label label-default">{{ $user->role }}</span>
                                                 @endif
                                             </td>
                                             <!--Edit-->
                                             <td>
-                                                <button value="{{ $user->id . ' ' . $user->nickname . ' ' . $user->type }}" OnClick='Mostrar(this);' class='btn btn-primary' data-toggle='modal' data-target='#myModal'>
+                                                <button value="{{ $user->id . ' ' . $user->nickname . ' ' . $user->role }}" OnClick='Mostrar(this);' class='btn btn-primary' data-toggle='modal' data-target='#myModal'>
                                                     <i class="fa fa-pencil-square-o" aria-hidden="true"></i>
                                                 </button>
                                             </td>
@@ -115,16 +117,16 @@
             $("#id").val(res[0]);
             $("#nickname").val(res[1]);
 
-            $('#type option').each(function() {
+            $('#role option').each(function() {
                 $(this).removeAttr('selected');
             });
 
-            $("#type option[value=" +res[2]+ "]").attr('selected','selected');
+            $("#role option[value=" +res[2]+ "]").attr('selected','selected');
 
-            $('#type').chosen({
+            $('#role').chosen({
                 width: "100%"
             });
-            $("#type").trigger("chosen:updated");
+            $("#role").trigger("chosen:updated");
         }
 
 

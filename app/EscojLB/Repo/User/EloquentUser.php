@@ -178,7 +178,7 @@ class EloquentUser implements UserInterface {
      */
     public function changeRole($id, $role){
         $user = $this->findById($id);
-        $user->type = $role;
+        $user->role = $role;
         return $user->save();
     }
 

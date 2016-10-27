@@ -247,32 +247,40 @@ class EloquentProblem implements ProblemInterface {
         return $this->problem->find($id);
     }
 
-      /**
+ /**
      * Get paginated problems
      *
      * @param int $limit Results per page
+     * @param bool $enable indicates if problems will be filtered by enable field.
+     * @param int $problem_setter indicates if problems will be filtered by added_by field.
      * @return LengthAwarePaginator with the problems to paginate
      */
-    public function getAllPaginate($limit = 10, $enable = true){
+    public function getAllPaginate($limit = 10, $enable = true, $problem_setter = 0){
+        $problems = $this->problem->getQuery();
         if($enable)
-            return $this->problem->where('enable', 1)->paginate($limit);
-        return $this->problem->paginate($limit);
+             $problems->where('enable', 1);
+        if($problem_setter)
+             $problems->where('added_by', $problem_setter);
+        return $problems->paginate($limit);
     }
 
-     /**
+    /**
      * Get filter paginated problems
      *
      * @param int $limit Results per page
      * @param array  Data that contains the filters to apply to the query.
+     * @param bool $enable indicates if problems will be filtered by enable field.
+     * @param int $problem_setter indicates if problems will be filtered by added_by field.
      * @return LengthAwarePaginator with the problems to paginate
      */
-    public function getAllPaginateFiltered($limit = 10, array $data, $enable = true){
+    public function getAllPaginateFiltered($limit = 10, array $data, $enable = true, $problem_setter = 0){
         if( isset($data['tag']) and $data['tag'] )
         {
             $problems = $this->tag->findById($data['tag'])->problems();
             if($enable)
                 $problems->where('enable', 1);
-
+            if($problem_setter)
+                $problems->where('added_by', $problem_setter);
             if( $data['level'] )
                 $problems->wherePivot('level', $data['level']);
             if( !empty($data['name']) )
@@ -295,7 +303,8 @@ class EloquentProblem implements ProblemInterface {
             
             if($enable)
                 $problems->where('enable', 1);
-
+            if($problem_setter)
+                $problems->where('added_by', $problem_setter);
             if( !empty($data['name']) )
                 $problems->where(function ($query) use ($data) {
                         $query->where('name', 'like', '%'. $data['name'] . '%')
@@ -304,67 +313,29 @@ class EloquentProblem implements ProblemInterface {
 
             return $problems->paginate($limit);
 
-            /*$tags = $this->tag->getAllWithProblemsByLevel( $data['level'] );
-
-            foreach($tags as $tag){
-                $problems = $tag->problems()->wherePivot('level', $data['level']);
-                if( !empty($data['name']) )
-                    $problems->where('name', 'like', '%'. $data['name'] . '%');
-                
-                dd($problems->where('enable',1)->get());
-
-            }
-
-            if( $data['level'] )
-            {
-                $problems->wherePivot('level', $data['level']);
-            }
-            if( !empty($data['name']) )
-            {
-                $problems->where('name', 'like', '%'. $data['name'] . '%');
-            }
-            
-            $problems->where('enable',1)->paginate($limit);
-            dd('shi');*/
         }
 
-        if($enable){
-            return $this->problem->where('enable', 1)
-                                 ->where(function ($query) use ($data) {
-                                        $query->where('name', 'like', '%'. $data['name'] . '%')
-                                              ->orWhere('problems.id', 'like', '%'. $data['name'] . '%');
-                                    })->paginate($limit);
-        }
+        $problems = $this->problem->getQuery();
 
-        return $this->problem->where(function ($query) use ($data) {
+        if($enable)
+            $problems->where('enable', 1);
+        if($problem_setter)
+            $problems->where('added_by', $problem_setter);
+
+        return $problems->where(function ($query) use ($data) {
                                     $query->where('name', 'like', '%'. $data['name'] . '%')
                                           ->orWhere('problems.id', 'like', '%'. $data['name'] . '%');
                                 })->paginate($limit);
     }
 
     /**
-     * Get problems by their tag
+     * Get the limits for the problem
      *
-     * @param int  ID of tag
-     * @param int Number of problems per page
-     * @return StdClass Object with $items and $totalItems for pagination
+     * @param  int $id       Problem ID
+     * @return Object    Problem model object
      */
-    public function byTag($tag_id, $limit=10)
-    {
-
-        /*$foundTag = $this->tag->findById($tag_id);
-
-        $problems = $foundTag->problems()
-            ->wherePivot('level',3)
-            ->where('enable',1)
-            //->where('name', 'like', '%'. $data['name'] . '%')
-            ->paginate($limit);//->where('enable', 1)->get();
-
-        dd($problems);
-
-        return $problems->all();*/
+    public function findLimitsById($id){
+        return $this->problem->select('ml','sl','tlpc','ttl')->where('id',$id)->get();
     }
-
-
 
 }

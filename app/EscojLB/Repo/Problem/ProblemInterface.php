@@ -75,20 +75,32 @@ interface ProblemInterface {
     public function findById($id);
 
     /**
+     * Get the limits for the problem
+     *
+     * @param  int $id       Problem ID
+     * @return Object    Problem model object
+     */
+    public function findLimitsById($id);
+
+    /**
      * Get paginated problems
      *
      * @param int $limit Results per page
+     * @param bool $enable indicates if problems will be filtered by enable field.
+     * @param int $problem_setter indicates if problems will be filtered by added_by field.
      * @return LengthAwarePaginator with the problems to paginate
      */
-    public function getAllPaginate($limit = 10, $enable = true);
+    public function getAllPaginate($limit = 10, $enable = true, $problem_setter = 0);
 
     /**
      * Get filter paginated problems
      *
      * @param int $limit Results per page
      * @param array  Data that contains the filters to apply to the query.
+     * @param bool $enable indicates if problems will be filtered by enable field.
+     * @param int $problem_setter indicates if problems will be filtered by added_by field.
      * @return LengthAwarePaginator with the problems to paginate
      */
-    public function getAllPaginateFiltered($limit = 10, array $data, $enable = true);
+    public function getAllPaginateFiltered($limit = 10, array $data, $enable = true, $problem_setter = 0);
 
 }

@@ -20,11 +20,11 @@ class UsersTableSeeder extends Seeder
             'email' => 'esc.onlinejudge@gmail.com',
             'password' => bcrypt('123456'),
             'register_date' => date("Y/m/d"),
-            'type' => 'admin',
+            'role' => 'admin',
             'institution_id' => 1,
             'institution_id' => 1,
             'country_id' => 1,
-            'avatar' => 'user_default.jpg',
+            'avatar' => 'user_default.png',
             'confirmed' => 1,
 
         ));

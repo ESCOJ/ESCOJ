@@ -7,6 +7,8 @@ use Illuminate\Http\Request;
 use ESCOJ\Http\Requests;
 use EscojLB\Repo\Tag\TagInterface;
 use EscojLB\Repo\Problem\ProblemInterface;
+use EscojLB\Repo\Problem\Problem;
+
 use EscojLB\Repo\Source\SourceInterface;
 use EscojLB\Repo\Language\LanguageInterface;
 use EscojLB\Repo\User\UserInterface;
@@ -38,8 +40,8 @@ class ProblemController extends Controller
         SourceInterface $source,LanguageInterface $language, UserInterface $user){
 
         $this->middleware('auth', ['except' => ['index', 'show']]);
-        $this->middleware('admin', ['except' => ['index', 'show']]);
-
+        $this->middleware('adminOrProblemSetter', ['except' => ['index', 'show']]);
+        $this->middleware('problemAuthorize', ['except' => ['index', 'create', 'store', 'show','inputToSelectTags', 'problemSetterProblems']]);
 
         $this->tag = $tag;
         $this->problem = $problem;
@@ -63,10 +65,10 @@ class ProblemController extends Controller
             $problems = $this->problem->getAllPaginate(5);
 
         $tags = $this->tag->getKeyValueAll('id','name');
-
+        
         $levels = [
-                '1' => 'Easy',
-                '2' => 'Very Easy',
+                '1' => 'Very Easy',
+                '2' => 'Easy',
                 '3' => 'Medium',
                 '4' => 'Hard',
                 '5' => 'Very Hard',
@@ -119,7 +121,7 @@ class ProblemController extends Controller
     public function edit($id)
     {
         $problem = $this->problem->findById($id);
-        
+
         $problem_languages = $problem->languages;
         $languages_selected = array();
         foreach ($problem_languages as $language) {
@@ -185,6 +187,7 @@ class ProblemController extends Controller
     public function limits($id, $flag_update = null)
     {
         $problem = $this->problem->findById($id);
+
         $languages = $this->problem->getAllLanguages($id);
         $ids = array();
         foreach($languages as $language){
@@ -204,6 +207,7 @@ class ProblemController extends Controller
      */
     public function assignLimits(ProblemAssignLimitsRequest $request, $id)
     {
+
         $languages = $this->problem->getKeyValueAllLanguages('name', 'id', $id);
 
         $request['languages'] = $languages->toArray();
@@ -237,7 +241,7 @@ class ProblemController extends Controller
      */
     public function assignDatasets(ProblemAssignDatasetsRequest $request, $id)
     {
-        
+
         $dataset = $request->file('dataset');
         
         Storage::disk('datasets')->deleteDirectory('problem_'.$id);
@@ -287,7 +291,6 @@ class ProblemController extends Controller
      */
     public function downloadDatasets(Request $request, $id)
     {
-        
         $path_dir = storage_path('datasets/problem_'.$id.'/');
 
         $file_name = 'problem_' .$id. '_dataset.zip';
@@ -329,6 +332,7 @@ class ProblemController extends Controller
     public function destroy($id)
     {
         //dd('shi');
+
         $this->problem->delete($id);
         if(Storage::disk('datasets')->deleteDirectory('problem_'.$id)){
             flash('The problem has been removed successfully.','success')->important();
@@ -370,22 +374,14 @@ class ProblemController extends Controller
      */
     public function problemSetterProblems(Request $request)
     {
+        $id = (Auth::user()->role === 'problem_setter')? Auth::user()->id : 0;
         if( $request->has('name') )
-            $problems = $this->problem->getAllPaginateFiltered(5, $request->all(),false);   
+            $problems = $this->problem->getAllPaginateFiltered(5, $request->all(),false,$id);   
         else
-            $problems = $this->problem->getAllPaginate(5,false);
+            $problems = $this->problem->getAllPaginate(5,false,$id);
 
-        $tags = $this->tag->getKeyValueAll('id','name');
-
-        $levels = [
-                '1' => 'Easy',
-                '2' => 'Very Easy',
-                '3' => 'Medium',
-                '4' => 'Hard',
-                '5' => 'Very Hard',
-            ];
         $request->flash();
-        return view('problem.admin.index',['problems' => $problems, 'tags' => $tags, 'levels' => $levels]);
+        return view('problem.admin.index',['problems' => $problems]);
     }
 
 }

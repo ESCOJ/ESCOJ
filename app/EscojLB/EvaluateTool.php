@@ -19,8 +19,9 @@ class EvaluateTool{
 	private static $SYSTEM_WORDS = array('thread','exec','system','fork','pthread_t','pthread_create','fopen');
     private static $LOOPS_TO_TIME =  5;
     private static $SIZE_LIMIT = 0;
-    private static $TIME_LIMIT = 20000;
-    private static $MEMORY_LIMIT = 20000;
+    private static $TIME_LIMIT = 0;
+    private static $MEMORY_LIMIT = 0;
+    private static $TOTAL_TIME_LIMIT = 0;
 	private static $ERROR_SYSTEM_WORDS = array(
         "Invalid Function",
         "Compilation Error",
@@ -45,7 +46,12 @@ class EvaluateTool{
         user_id
 
     */
-	static function evaluateCode($file,$language,$problem_id,$id_user){
+	static function evaluateCode($file,$language,$problem_id,$id_user,$limits){
+        
+        self::$MEMORY_LIMIT = (int)$limits[0]['ml'];
+        self::$SIZE_LIMIT = (int)$limits[0]['sl'];
+        self::$TIME_LIMIT = (float)$limits[0]['tlpc'];
+        self::$TOTAL_TIME_LIMIT = (float)$limits[0]['ttl'];
         
         self::buildResultArray($language);
         self::$RESULTS["problem_id"] = $problem_id;
@@ -110,7 +116,7 @@ class EvaluateTool{
 
                     self::checkRunTimeError($output_file);
                     $time = self::getAverageTime($output_file);
-                    $memory = self::measureMemmory($output_file);
+                    $memory = self::measureMemory($output_file);
 
                     self::evaluateTimeMemory($time,$memory);
                 }
@@ -135,7 +141,7 @@ class EvaluateTool{
                     $output_file = self::$JAVA.public_path() . '/temp ' . $replace;
 
                     $time = self::getAverageTime($output_file);
-                    $memory = self::measureMemmory($output_file);
+                    $memory = self::measureMemory($output_file);
 
                     self::evaluateTimeMemory($time,$memory);
 
@@ -151,7 +157,7 @@ class EvaluateTool{
                 $sentence_to_execute = self::$PYTHON.realpath($file);
                 
                 $time = self::getAverageTime($sentence_to_execute);
-                $memory = self::measureMemmory($sentence_to_execute);
+                $memory = self::measureMemory($sentence_to_execute);
 
                 self::evaluateTimeMemory($time,$memory);
 

@@ -4,7 +4,7 @@
 		<ul class="nav navbar-nav">
 			<li><a href="{{ url('/') }}" style="height:50px;"><img src="{{ asset('images/escoj7.png') }}" style=" width:210px; height:50px; position: relative; top:-14px; left: -30px;"></a></li>
 			<li><a href="{{ route('problem.index') }}">Problems <span class="sr-only">(current)</span></a></li>
-			<li><a href="./sentencias.php">Verdicts</a></li>
+			<li><a href="{{ route('judgment.index') }}">Judgments</a></li>
 			<li><a href="#">Ranks</a></li>
 			<li><a href="./concursos.php">Contests</a></li>
 
@@ -82,15 +82,46 @@
  Edit account</a></li>
 						<li><a href="#">Something else here</a></li>
 
-						@if(Auth::user()->type === 'admin')
+						@if(Auth::user()->role != 'contestant')
 							<li role="separator" class="divider"></li>
-							<li class="dropdown-header" style="font-size:100%;">Administrator Options</li>
-							<li><a href="{{ route('problem.create') }}"><i class="fa fa-upload" aria-hidden="true"></i>
- Add problem</a></li>
-							<li><a href="{{ route('problem.problems') }}"><i class="fa fa-folder-open" aria-hidden="true"></i>
- Problems</a></li>
-							<li><a href="{{ route('user.users') }}"><i class="fa fa-exchange" aria-hidden="true"></i>
- Change user type</a></li>							
+							<li class="dropdown-header" style="font-size:100%;">
+								@if(Auth::user()->role === 'admin')
+									Administrator Options
+								@elseif(Auth::user()->role === 'problem_setter')
+									Problem Setter Options
+								@else
+									Coach Options
+								@endif
+							</li>
+							@if(Auth::user()->role === 'admin' or Auth::user()->role === 'problem_setter')
+								<li>
+									<a href="{{ route('problem.create') }}">
+										<i class="fa fa-upload" aria-hidden="true"></i> Add problem
+									</a>
+								</li>
+								<li>
+									<a href="{{ route('problem.problems') }}">
+									<i class="fa fa-folder-open" aria-hidden="true"></i> Problems
+									</a>
+								</li>
+								@if(Auth::user()->role === 'admin')
+									<li>
+										<a href="{{ route('user.users') }}">
+											<i class="fa fa-exchange" aria-hidden="true"></i> Change user role
+										</a>
+									</li>
+								@endif
+ 							@endif
+							<li>
+								<a href="{{ route('problem.create') }}">
+									<i class="fa fa-upload" aria-hidden="true"></i> Create Contest
+								</a>
+							</li>
+							<li>
+								<a href="{{ route('problem.problems') }}">
+								<i class="fa fa-folder-open" aria-hidden="true"></i> Contests
+								</a>
+							</li>							
 						@endif
 
 						<li role="separator" class="divider"></li>

@@ -1,4 +1,4 @@
-{!!Form::open(['route' => 'user.changeUserType', 'method' => 'PUT'])!!}
+{!!Form::open(['route' => 'user.changeUserRole', 'method' => 'PUT'])!!}
 
 <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
 	<div class="modal-dialog" role="document">
@@ -18,7 +18,7 @@
 
 				<div class="form-group">
 					{!!Form::label('nickname','NickName:',[])!!}
-					{!! Form::select('type',$roles,null,['placeholder' => 'Select a role','id'=>'type', 'class' => 'form-control']) !!}
+					{!! Form::select('role',$roles,null,['placeholder' => 'Select a role','id'=>'role', 'class' => 'form-control']) !!}
 				</div>
 
 

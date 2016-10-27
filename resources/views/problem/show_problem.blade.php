@@ -157,11 +157,12 @@
                                 </tbody>
                             </table>
                         </div>
-                        
-                       <div class="col-xs-offset-2 col-xs-8" style=" text-align: center;">
 
-                       {!! Html::decode(link_to_action('ProblemController@downloadDatasets', $title = '<i class="fa fa-paper-plane" aria-hidden="true"></i> Submit', $parameters = ['id'=> $problem->id ], $attributes = [ 'class' => 'btn btn-primary' ])) !!}
-                       <div>
+                        @if(Auth::check())
+                            <div class="col-xs-offset-2 col-xs-8" style=" text-align: center;">
+                                {!! Html::decode(link_to_action('JudgementController@create', $title = '<strong>Submit </strong><i class="fa fa-paper-plane" aria-hidden="true"></i>', $parameters = ['problem_id'=> $problem->id ], $attributes = ['class' => 'btn btn-primary' ])) !!}
+                            </div>
+                        @endif
                     </div>
             </div>
         </div>

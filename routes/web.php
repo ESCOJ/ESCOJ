@@ -34,7 +34,7 @@ Route::group(['prefix' => 'contestant'], function (){
 	Route::get('contestant/institutions/{id}','Auth\RegisterController@getInstitutions');
 	//admin
 	Route::get('/admin/users', 'Auth\RegisterController@users')->name('user.users');
-	Route::put('/admin/users', 'Auth\RegisterController@changeUserType')->name('user.changeUserType');
+	Route::put('/admin/users', 'Auth\RegisterController@changeUserRole')->name('user.changeUserRole');
 
 
 });
@@ -68,6 +68,7 @@ Route::group(['prefix' => 'problem'], function (){
 
 //The Judgements Routes
 Route::resource('judgment','JudgementController');
+Route::get('judgment/create/{id}', 'JudgementController@create')->name('judgment.create');
 
 //Other Routes
 Route::get('/', function () {

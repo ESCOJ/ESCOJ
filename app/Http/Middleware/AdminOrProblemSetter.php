@@ -2,10 +2,10 @@
 
 namespace ESCOJ\Http\Middleware;
 use Illuminate\Contracts\Auth\Guard;
-use Closure;
-use Session;
 
-class Admin
+use Closure;
+
+class AdminOrProblemSetter
 {
     protected $auth;
 
@@ -21,7 +21,9 @@ class Admin
      */
     public function handle($request, Closure $next)
     {
-        if($this->auth->user()->role != 'admin'){
+        $role = $this->auth->user()->role;
+
+        if($role != 'admin' and $role != 'problem_setter'){
             flash('Some permissions are required to perform this operation.','info')->important();
             return redirect()->route('welcome');
         }
