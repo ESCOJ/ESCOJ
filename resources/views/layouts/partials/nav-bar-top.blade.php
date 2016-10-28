@@ -102,24 +102,24 @@
 									<i class="fa fa-folder-open" aria-hidden="true"></i> Problems
 									</a>
 								</li>
-								@if(Auth::user()->role === 'admin')
-									<li>
-										<a href="{{ route('user.users') }}">
-											<i class="fa fa-exchange" aria-hidden="true"></i> Change user role
-										</a>
-									</li>
-								@endif
  							@endif
 							<li>
-								<a href="{{ route('problem.create') }}">
+								<a href="{{ route('contest.create') }}">
 									<i class="fa fa-upload" aria-hidden="true"></i> Create Contest
 								</a>
 							</li>
 							<li>
-								<a href="{{ route('problem.problems') }}">
+								<a href="{{ route('contest.contests') }}">
 								<i class="fa fa-folder-open" aria-hidden="true"></i> Contests
 								</a>
-							</li>							
+							</li>
+							@if(Auth::user()->role === 'admin')
+								<li>
+									<a href="{{ route('user.users') }}">
+										<i class="fa fa-exchange" aria-hidden="true"></i> Change user role
+									</a>
+								</li>
+							@endif							
 						@endif
 
 						<li role="separator" class="divider"></li>

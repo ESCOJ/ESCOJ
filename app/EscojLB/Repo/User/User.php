@@ -54,6 +54,10 @@ class User extends Authenticatable
         return $this->belongsToMany('EscojLB\Repo\Problem\Problem')->withPivot('status');
     }
 
+    public function contests_added(){
+        return $this->hasMany('EscojLB\Repo\Contest\Contest', 'added_by');
+    }
+
     /**
      * Send the password reset notification.
      *

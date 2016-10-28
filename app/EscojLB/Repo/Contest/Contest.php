@@ -8,7 +8,7 @@ class Contest extends Model
 {
     //
     protected $fillable = [
-        'name','organization_id','start_date' 'end_date','description','acces_type','penalization','frozen_time','offcontest','offcontes_start_date','offcontest_end_date','offcontest_penalization',
+        'name','organization_id', 'added_by', 'penalization', 'frozen_time', 'access_type', 'description','start_date', 'end_date', 'offcontest', 'offcontest_penalization', 'offcontest_start_date', 'offcontest_end_date',
     ];
 
 
@@ -21,6 +21,10 @@ class Contest extends Model
 
     public function users(){
         return $this->belongsToMany('EscojLB\Repo\User\User');
+    }
+
+    public function user(){
+        return $this->belongsTo('EscojLB\Repo\User\User', 'added_by');
     }
 
     public function problems(){

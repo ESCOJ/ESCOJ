@@ -61,7 +61,7 @@ class EloquentProblem implements ProblemInterface {
      * @param array  $tags
      * @return void
      */
-    protected function synctags(Model $problem, array $tags)
+    protected function syncTags(Model $problem, array $tags)
     {
 
         $tagIds = array();
@@ -326,6 +326,19 @@ class EloquentProblem implements ProblemInterface {
                                     $query->where('name', 'like', '%'. $data['name'] . '%')
                                           ->orWhere('problems.id', 'like', '%'. $data['name'] . '%');
                                 })->paginate($limit);
+    }
+
+    /**
+     * Get all Problems as key-value array 
+     *
+     * @param  string $key  key to associate
+     * @param  string $value  value to associate
+     * @param  string $order_by  value used to order the results
+     * @return array    Associative Array with all Problems
+     */
+    public function getKeyValueAllOrderBy($key,$value,$order_by)
+    { 
+      return $this->problem->orderBy($order_by)->pluck($value,$key);
     }
 
 }

@@ -20,6 +20,8 @@ use EscojLB\Repo\Judgment\EloquentJudgment;
 use EscojLB\Repo\Judgment\Judgment;
 use EscojLB\Repo\Organization\EloquentOrganization;
 use EscojLB\Repo\Organization\Organization;
+use EscojLB\Repo\Contest\EloquentContest;
+use EscojLB\Repo\Contest\Contest;
 
 use Illuminate\Support\ServiceProvider;
 
@@ -109,6 +111,13 @@ class RepoServiceProvider extends ServiceProvider
         {
             $organization =  new EloquentOrganization(new organization);
             return $organization;
+
+        });
+
+        $app->bind('EscojLB\Repo\Contest\ContestInterface', function($app)
+        {
+            $contest =  new EloquentContest(new Contest);
+            return $contest;
 
         });
 

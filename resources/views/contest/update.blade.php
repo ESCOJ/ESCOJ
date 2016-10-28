@@ -1,6 +1,6 @@
 @extends('layouts.main')
 
-@section('title' , 'Add constest')
+@section('title' , 'Update constest')
 
 @section('styles')
     {!! Html::style('plugins/trumbowyg/ui/trumbowyg.css') !!}
@@ -14,12 +14,13 @@
     <div class="row">
         <div class="col-md-10 col-md-offset-1">
             <div class="panel panel-primary">
-                <div class="panel-heading"><strong><center>Add Contest</center></strong></div>
+                <div class="panel-heading"><strong><center>Update Contest</center></strong></div>
                     <div class="panel-body">
-                        {!!Form::open(['route' => 'contest.store', 'method' => 'POST', 'class' => 'form-horizontal'])!!}
+                        {!!Form::model($contest,['route'=> ['contest.update',$contest->id],'method'=>'PUT','class' => 'form-horizontal'])!!}
 
                             @include('contest.partials.contest')
-
+                            <input type="hidden" name="id" value="{{ $contest->id }}">
+                            
                             <div class="form-group">
                                 <div class="col-md-2 col-md-offset-5 row">
                                     {!!Form::button('<span class="glyphicon glyphicon-save"></span> Save', array('type' => 'submit', 'class' => 'form-control btn btn-primary'))!!}
@@ -55,12 +56,14 @@
         $(function () {
             $('#start_date_datetimepicker').datetimepicker({
                 format : 'DD-MM-YYYY, h:mm a',
+                extraFormats: [ 'YYYY-MM-DD, HH:mm:ss'], 
                 sideBySide: true,
                 useCurrent: false,
                 minDate: moment() 
             });
             $('#end_date_datetimepicker').datetimepicker({
                 format : 'DD-MM-YYYY, h:mm a',
+                extraFormats: [ 'YYYY-MM-DD, HH:mm:ss'], 
                 sideBySide: true,
                 useCurrent: false,
                 minDate: moment()  
@@ -78,6 +81,7 @@
         $(function () {
             $('#offcontest_start_date_datetimepicker').datetimepicker({
                 format : 'DD-MM-YYYY, h:mm a',
+                extraFormats: [ 'YYYY-MM-DD, HH:mm:ss'], 
                 sideBySide: true,
                 useCurrent: false,
                 minDate: moment() 
@@ -85,6 +89,7 @@
             });
             $('#offcontest_end_date_datetimepicker').datetimepicker({
                 format : 'DD-MM-YYYY, h:mm a',
+                extraFormats: [ 'YYYY-MM-DD, HH:mm:ss'], 
                 sideBySide: true,
                 useCurrent: false, //Important! See issue #1085
                 minDate: moment() 

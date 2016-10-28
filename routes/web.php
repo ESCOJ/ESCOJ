@@ -76,12 +76,14 @@ Route::group(['prefix' => 'contest'], function (){
 	//create
 	Route::get('/create', 'ContestController@create')->name('contest.create');
 	Route::post('', 'ContestController@store')->name('contest.store');
-	/*//update
-	Route::get('/{contest}/edit', 'contestController@edit')->name('contest.edit');
-	Route::put('/update/{contest}', 'contestController@update')->name('contest.update');
+	//admin
+	Route::get('/admin', 'ContestController@contests')->name('contest.contests');
+	//update
+	Route::get('/{contest}/edit', 'ContestController@edit')->name('contest.edit');
+	Route::put('/update/{contest}', 'ContestController@update')->name('contest.update');
 	//delete
-	Route::delete('/{contest}', 'contestController@destroy')->name('contest.destroy');	
-	//limits
+	Route::delete('/{contest}', 'ContestController@destroy')->name('contest.destroy');	
+	/*//limits
 	Route::get('/limits/{contest}/{flag_update?}', 'contestController@limits')->name('contest.limits');
 	Route::put('/limits/{contest}', 'contestController@assignLimits')->name('contest.assignLimits');
 	//datasets

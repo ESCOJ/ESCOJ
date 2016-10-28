@@ -16,21 +16,25 @@ class CreateContestsTable extends Migration
         Schema::create('contests', function (Blueprint $table) {
             $table->increments('id');
             $table->string('name');
-            $table->dateTime('start_date');
-            $table->dateTime('end_date');
-            $table->mediumText('description');
-            $table->string('acces_type',2); // Indicates whether the contest is private or not
+            $table->integer('organization_id')->unsigned();
+            $table->integer('added_by')->unsigned();
             $table->integer('penalization'); // penalization time 
             $table->integer('frozen_time'); //  time during the score is frozen
-            $table->string('offcontest',2); // Indicates whether the contest is in real time or not
-            $table->dateTime('offcontes_start_date');
-            $table->dateTime('offcontest_end_date');
-            $table->integer('offcontest_penalization'); // penalization time 
+            $table->enum('access_type',['public', 'private']); // Indicates whether the contest is private or not
+            $table->mediumText('description');
+            $table->dateTime('start_date');
+            $table->dateTime('end_date');
+
+            $table->boolean('offcontest')->default('0'); // Indicates whether the contest is in real time or not
+            $table->integer('offcontest_penalization')->nullable(); // penalization time 
+            $table->dateTime('offcontest_start_date')->nullable();
+            $table->dateTime('offcontest_end_date')->nullable();
+
             $table->timestamps();
 
-            $table->integer('organization_id')->unsigned();
-
             $table->foreign('organization_id')->references('id')->on('organizations');
+            $table->foreign('added_by')->references('id')->on('users');
+            
         });
 
         //Pivot table to manage the relationship many to many between contests and problems
@@ -40,7 +44,7 @@ class CreateContestsTable extends Migration
             $table->integer('contest_id')->unsigned();
             $table->integer('problem_id')->unsigned();
 
-            $table->foreign('contest_id')->references('id')->on('contests');
+            $table->foreign('contest_id')->references('id')->on('contests')->onDelete('cascade');
             $table->foreign('problem_id')->references('id')->on('problems');
         });
 
@@ -50,7 +54,7 @@ class CreateContestsTable extends Migration
             $table->integer('contest_id')->unsigned();
             $table->integer('user_id')->unsigned();
 
-            $table->foreign('contest_id')->references('id')->on('contests');
+            $table->foreign('contest_id')->references('id')->on('contests')->onDelete('cascade');;
             $table->foreign('user_id')->references('id')->on('users');
         });
     }

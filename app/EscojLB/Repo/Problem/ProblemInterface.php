@@ -96,4 +96,14 @@ interface ProblemInterface {
      */
     public function getAllPaginateFiltered($limit = 10, array $data, $enable = true, $problem_setter = 0);
 
+    /**
+     * Get all Problems as key-value array 
+     *
+     * @param  string $key  key to associate
+     * @param  string $value  value to associate
+     * @param  string $order_by  value used to order the results
+     * @return array    Associative Array with all Problems
+     */
+    public function getKeyValueAllOrderBy($key,$value,$order_by);
+
 }
