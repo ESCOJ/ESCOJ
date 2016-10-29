@@ -40,6 +40,31 @@ class ContestController extends Controller
     }
 
     /**
+     * Display a listing of the contest.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function index(Request $request)
+    {
+    	//dd(date_format(date_create(),"Y-m-d H:i:s"));
+        if( $request->has('name') or $request->has('organization') or $request->has('time') )
+            $contests = $this->contest->getAllPaginateFiltered(5, $request->all());   
+        else
+            $contests = $this->contest->getAllPaginate(5);
+
+        $organizations = $this->organization->getKeyValueAll('id','name');
+
+        $times = [
+                'future' => 'Future contests',
+                'current' => 'Current contests',
+                'past' => 'Past contests',
+            ];
+
+        $request->flash();
+        return view('contest.index',['contests' => $contests, 'organizations' => $organizations, 'times' => $times]);
+    }
+
+    /**
      * Show the form for creating a new contest.
      *
      * @return \Illuminate\Http\Response
@@ -115,6 +140,19 @@ class ContestController extends Controller
         else
             flash('The contest could not be removed.','warning')->important();
         return back();
+    }
+
+     /**
+     * Display the specified contest.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function show($id)
+    {
+        //
+        $contest = $this->contest->findById($id);
+        return view('contest.show',['contest' => $contest]);
     }
 
      /**

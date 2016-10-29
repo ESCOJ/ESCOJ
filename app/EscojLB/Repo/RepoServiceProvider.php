@@ -116,7 +116,7 @@ class RepoServiceProvider extends ServiceProvider
 
         $app->bind('EscojLB\Repo\Contest\ContestInterface', function($app)
         {
-            $contest =  new EloquentContest(new Contest);
+            $contest =  new EloquentContest(new Contest, $app->make('EscojLB\Repo\Organization\OrganizationInterface'));
             return $contest;
 
         });

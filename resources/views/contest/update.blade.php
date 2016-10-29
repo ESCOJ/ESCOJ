@@ -56,17 +56,15 @@
         $(function () {
             $('#start_date_datetimepicker').datetimepicker({
                 format : 'DD-MM-YYYY, h:mm a',
-                extraFormats: [ 'YYYY-MM-DD, HH:mm:ss'], 
+                extraFormats: [ 'YYYY-MM-DD HH:mm:ss'], 
                 sideBySide: true,
                 useCurrent: false,
-                minDate: moment() 
             });
             $('#end_date_datetimepicker').datetimepicker({
                 format : 'DD-MM-YYYY, h:mm a',
-                extraFormats: [ 'YYYY-MM-DD, HH:mm:ss'], 
+                extraFormats: [ 'YYYY-MM-DD HH:mm:ss'], 
                 sideBySide: true,
                 useCurrent: false,
-                minDate: moment()  
             });
             $("#start_date_datetimepicker").on("dp.change", function (e) {
                 $('#end_date_datetimepicker').data("DateTimePicker").minDate(e.date);
@@ -81,18 +79,16 @@
         $(function () {
             $('#offcontest_start_date_datetimepicker').datetimepicker({
                 format : 'DD-MM-YYYY, h:mm a',
-                extraFormats: [ 'YYYY-MM-DD, HH:mm:ss'], 
+                extraFormats: [ 'YYYY-MM-DD HH:mm:ss'], 
                 sideBySide: true,
                 useCurrent: false,
-                minDate: moment() 
 
             });
             $('#offcontest_end_date_datetimepicker').datetimepicker({
                 format : 'DD-MM-YYYY, h:mm a',
-                extraFormats: [ 'YYYY-MM-DD, HH:mm:ss'], 
+                extraFormats: [ 'YYYY-MM-DD HH:mm:ss'], 
                 sideBySide: true,
                 useCurrent: false, //Important! See issue #1085
-                minDate: moment() 
             });
             $("#offcontest_start_date_datetimepicker").on("dp.change", function (e) {
                 $('#offcontest_end_date_datetimepicker').data("DateTimePicker").minDate(e.date);

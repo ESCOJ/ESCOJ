@@ -1,16 +1,22 @@
 <?php namespace EscojLB\Repo\Contest;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Builder;
+
 use Illuminate\Support\Facades\DB;
+
+use EscojLB\Repo\Organization\OrganizationInterface;
+
 class EloquentContest implements ContestInterface {
 
     protected $contest;
+    protected $organization;
 
     // Class expects an Eloquent model
-    public function __construct(Model $contest)
+    public function __construct(Model $contest, OrganizationInterface $organization)
     {
         $this->contest = $contest;
-
+        $this->organization = $organization;
     }
 
     /**
@@ -146,10 +152,9 @@ class EloquentContest implements ContestInterface {
      * @return LengthAwarePaginator with the contests to paginate
      */
     public function getAllPaginate($limit = 10, $no_admin = 0){
-        $contests = $this->contest->getQuery();
         if($no_admin)
-             $contests->where('added_by', $no_admin);
-        return $contests->paginate($limit);
+            $this->contest = $this->contest->where('added_by', $no_admin);
+        return $this->contest->with('organization')->paginate($limit);
     }
 
     /**
@@ -161,14 +166,23 @@ class EloquentContest implements ContestInterface {
      * @return LengthAwarePaginator with the contests to paginate
      */
     public function getAllPaginateFiltered($limit = 10, array $data, $no_admin = 0){
-        $contests = $this->contest->getQuery();
-        if($no_admin)
-            $contests->where('added_by', $no_admin);
 
-        return $contests->where(function ($query) use ($data) {
-                                    $query->where('name', 'like', '%'. $data['name'] . '%')
-                                          ->orWhere('id', 'like', '%'. $data['name'] . '%');
-                                })->paginate($limit);
+        if( isset($data['organization']) and $data['organization'] )
+            $queryBuilder = $this->filterByOrganization($data['organization'])->getQuery();
+
+        if( ! isset($queryBuilder) )
+                $queryBuilder = $this->contest->with('organization');
+
+        if( isset($data['time']) and $data['time'])
+            $queryBuilder = $this->filterByTime($queryBuilder,$data['time']);
+
+        if( !empty($data['name']) )
+            $queryBuilder = $this->filterByName($queryBuilder,$data['name']);
+
+        if($no_admin)
+            $queryBuilder->where('added_by', $no_admin);
+
+        return $queryBuilder->paginate($limit);
     }
 
     /**
@@ -199,6 +213,57 @@ class EloquentContest implements ContestInterface {
      */
     public function getSelectedUsers(Model $contest){
         return $contest->users()->pluck('users.id')->toArray();
+    }
+
+    /**
+     * Filter by time (future-now-past)
+     *
+     * @param \Illuminate\Database\Eloquent\Builder  $queryBuilder
+     * @param string  $time
+     * @return Builder
+     */
+    protected function filterByTime(Builder $queryBuilder, $time)
+    {
+        $now = date_format(date_create(),"Y-m-d H:i:s");
+        
+        switch ($time) {
+            case 'future':
+                    return $queryBuilder->where('start_date', '>', $now);
+                break;
+
+            case 'current':
+                    return $queryBuilder->where('start_date', '<=', $now)->where('end_date', '>', $now);
+                break; 
+            case 'past':
+                    return $queryBuilder->where('end_date', '<', $now);
+                break;                   
+        }
+    }
+
+    /**
+     * Filter by Name 
+     *
+     * @param \Illuminate\Database\Eloquent\Builder  $queryBuilder
+     * @param string  $name
+     * @return Builder
+     */
+    protected function filterByName(Builder $queryBuilder, $name)
+    {
+        return  $queryBuilder->where(function ($query) use ($name) {
+                    $query->where('name', 'like', '%'. $name . '%')
+                          ->orWhere('contests.id', 'like', '%'. $name . '%');
+                });
+    }
+
+    /**
+     * Filter by Organization
+     *
+     * @param string  $organization
+     * @return Builder
+     */
+    protected function filterByOrganization($organization)
+    {
+        return  $this->organization->findById($organization)->contests()->with('organization');
     }
 
 }
