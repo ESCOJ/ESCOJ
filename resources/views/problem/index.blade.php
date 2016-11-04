@@ -1,6 +1,6 @@
 @extends('layouts.main')
 
-@section('title' , 'Add Submit')
+@section('title' , 'Problems')
 
 @section('styles')
     {!!Html::style('plugins/chosen/chosen.css')!!}
@@ -52,8 +52,9 @@
                                         <th style="text-align: center;">ACCURACY</th>
                                         <th style="text-align: center;">SOLVED</th>
                                         <th style="text-align: center;">SUBMISSIONS</th>
-                                        <th style="text-align: center;">SUBMIT</th>
-
+                                        @if(Auth::check())
+                                            <th style="text-align: center;">SUBMIT</th>
+                                        @endif
                                     </tr>
                                 </thead>
 
@@ -66,7 +67,13 @@
                                             <td>0.0 %</td>
                                             <td>0</td>
                                             <td>0</td>
-                                            <td>{!! Html::decode(link_to_action('JudgementController@create', $title = '<i class="fa fa-paper-plane" aria-hidden="true"></i>', $parameters = ['problem_id'=> $problem->id ], $attributes = [ ])) !!}</td>
+
+                                            @if(Auth::check())
+                                                <td>
+                                                    {!! Html::decode(link_to_action('JudgementController@create', $title = '<i class="fa fa-paper-plane" aria-hidden="true"></i>', $parameters = ['problem_id'=> $problem->id ], $attributes = [ ])) !!}
+                                                </td>
+                                            @endif
+
                                         </tr>
                                     @endforeach
                                 </tbody>

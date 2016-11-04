@@ -40,7 +40,7 @@ class RegisterController extends Controller
      *
      * @var string
      */
-    protected $redirectTo = '/home';
+    protected $redirectTo = '/';
 
     protected $country;
     protected $institution;
@@ -55,7 +55,11 @@ class RegisterController extends Controller
  
     public function __construct(CountryInterface $country,InstitutionInterface $institution,UserInterface $user)
     {
-        $this->middleware('guest', ['except' => ['profile','edit','update','getInstitutions']]);
+        $this->middleware('guest', ['except' => ['profile','edit','update','getInstitutions','users','changeUserRole']]);
+        $this->middleware('auth', ['only' => ['profile','edit','update','users','changeUserRole']]);
+        $this->middleware('admin', ['only' => ['users', 'changeUserRole']]);
+
+
         $this->country = $country;
         $this->institution = $institution;
         $this->user = $user;
@@ -135,7 +139,7 @@ class RegisterController extends Controller
             $flag = true;
         }
         else{
-            $avatar = 'user_defaul.jpg';
+            $avatar = 'user_default.png';
         }
         $user = $this->user->create($data,$confirmation_code,$avatar,$provider);  
         if( !is_null($user)  and  $flag){
@@ -216,7 +220,7 @@ class RegisterController extends Controller
             $avatar_prev = $this->user->getAvatar(Auth::user()->id);
             $flag = $this->user->update(Auth::user()->id,$request->all(),$pass,$avatar);
 
-            if($flag){
+            if($flag and $avatar_prev != 'user_default.png'){
                 if(File::exists(public_path().'/images/user_avatar/'. $avatar_prev))
                     File::delete(public_path().'/images/user_avatar/'.$avatar_prev);
                 $image->storeAs('/images/user_avatar/', $avatar, "uploads"); 
@@ -272,7 +276,7 @@ class RegisterController extends Controller
         return Validator::make($data, [
             'name' => 'required|max:30',
             'last_name' => 'required|max:30',
-            'nickname' => 'required|max:30|unique:users',
+            'nickname' => 'required|max:30|alpha_dash|unique:users',
             'email' => 'required|email|max:60|confirmed|unique:users',
             'password' => 'required|min:6|confirmed',
             'country' => 'required',
@@ -296,6 +300,45 @@ class RegisterController extends Controller
         $request->session()->flush();
 
         $request->session()->regenerate();
+    }
+
+    /**
+     * Display a listing of the users.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function users(Request $request)
+    {
+        if( $request->has('nickname') )
+            $users = $this->user->getAllPaginateFilteredByNickname(5, $request->get('nickname'),false);   
+        else
+            $users = $this->user->getAllPaginate(5,false);
+
+        $roles = [
+                'admin' => 'Admin',
+                'coach' => 'Coach',
+                'problem_setter' => 'Problem Setter',
+                'contestant' => 'Contestant',
+
+            ];
+        $request->flash();
+        return view('user.admin.users',['users' => $users, 'roles' => $roles]);
+    }
+
+    /**
+     * Change the user role.
+     *
+     * @param  Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function changeUserRole(Request $request)
+    {
+		if($this->user->changeRole($request->id, $request->role))
+			flash('The user role of ' . $request->nickname . ' has been changed successfully to ' . $request->role . '.', 'success')->important();
+		else
+			flash('The user role of ' . $request->nickname . ' it has not been changed.', 'warning')->important();
+		return back();
+
     }
 
 }

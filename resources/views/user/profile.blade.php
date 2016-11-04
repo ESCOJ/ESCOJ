@@ -86,7 +86,7 @@
 	                        <span class="caret"></span>
 	                        <span class="sr-only">Toggle Dropdown</span>
 	                      </button>
-	                      <ul class="dropdown-menu text-left" role="menu">
+	                      <ul class="dropdown-menu dropdown-menu-us text-left" role="menu">
 	                        <li><a href="#"><span class="fa fa-envelope pull-right"></span> Send an email </a></li>
 	                        <li><a href="#"><span class="fa fa-list pull-right"></span> Add or remove from a list  </a></li>
 	                        <li class="divider"></li>

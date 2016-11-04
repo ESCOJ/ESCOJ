@@ -21,7 +21,11 @@ class JudgementController extends Controller
     protected $problem;
     protected $user;
 
+
     public function __construct(LanguageInterface $language,TagInterface $tag, JudgmentInterface $judgment, ProblemInterface $problem,UserInterface $user){
+
+        $this->middleware('auth', ['except' => ['index']]);
+
         $this->language = $language;
         $this->tag = $tag;
         $this->problem = $problem;

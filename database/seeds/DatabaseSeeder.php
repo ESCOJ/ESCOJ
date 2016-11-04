@@ -18,6 +18,8 @@ class DatabaseSeeder extends Seeder
          $this->call(LanguagesTableSeeder::class);
          $this->call(SourcesTableSeeder::class);
          $this->call(UsersTableSeeder::class);
+         $this->call(OrganizationsTableSeeder::class);
+
 
 
     }

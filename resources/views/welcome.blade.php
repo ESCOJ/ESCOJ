@@ -2,7 +2,7 @@
 @section('content')
 <div class="container-fluid">
     <div id="divEspacio1" class="rox marg-main" style="margin-top:60px;"></div>
-    <div class="col-md-8 col-md-offset-2 text-center">
+    <div class="col-md-6 col-md-offset-3 text-center">
         <h4>
             @include('flash::message')
         </h4>
@@ -47,4 +47,13 @@
     </form>
 </div>         
 
+@endsection
+
+@section('scripts')
+    @if(isset($login) or session('login'))
+        <script type="text/javascript">
+            $('#drop_login').addClass('open');
+            $('#a_login').attr("aria-expanded","true");
+        </script>
+    @endif
 @endsection

@@ -25,7 +25,10 @@ class SocialAuthController extends Controller
  
     public function __construct(UserInterface $user)
     {
+        $this->middleware('guest');
+
         $this->user = $user;
+
     }
 
     /**
@@ -51,7 +54,7 @@ class SocialAuthController extends Controller
         } catch (Exception $e) {
             return Redirect::to('auth/redirect/' . $provider);
         }
-        if ( $authUser =$this->user->findByProvider($provider,$socialUser->id ) ) {
+        if ( $authUser = $this->user->findByProvider($provider,$socialUser->id ) ) {
             Auth::login($authUser);
             return redirect('/');
         }

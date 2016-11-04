@@ -22,10 +22,6 @@
                                     {!!Form::button('<span class="glyphicon glyphicon-save"></span> Save', array('type' => 'submit', 'class' => 'form-control btn btn-primary'))!!}
                                    
                                     @if(!is_null($flag_update))
-                                        @if(session('addDatasets'))
-                                            <br><br>
-                                            {!!Html::decode(link_to_route('problem.datasets', $title='<i class="fa fa-plus" aria-hidden="true"></i> Add Datasets',$parameters = ['id' => $problem->id, 'flag_update' => 'update'] , $attributes = ['id'=>'add_datasets', 'class'=>'form-control btn btn-primary']))!!}
-                                        @endif 
                                         <br><br>
                                         {!! Html::decode(link_to_route('problem.problems', $title='<i class="fa fa-reply" aria-hidden="true"></i> Go Back',$parameters = [] , $attributes = ['id'=>'add_datasets', 'class'=>'form-control btn btn-primary']))!!}
                                     @elseif(session('addDatasets'))

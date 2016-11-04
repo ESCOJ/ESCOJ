@@ -32,6 +32,11 @@ Route::group(['prefix' => 'contestant'], function (){
 	Route::put('update','Auth\RegisterController@update');
 	Route::get('institutions/{id}','Auth\RegisterController@getInstitutions');
 	Route::get('contestant/institutions/{id}','Auth\RegisterController@getInstitutions');
+	//admin
+	Route::get('/admin/users', 'Auth\RegisterController@users')->name('user.users');
+	Route::put('/admin/users', 'Auth\RegisterController@changeUserRole')->name('user.changeUserRole');
+
+
 });
 
 //The Problem Routes
@@ -65,12 +70,43 @@ Route::group(['prefix' => 'problem'], function (){
 Route::resource('judgment','JudgementController');
 Route::get('judgment/create/{id}', 'JudgementController@create')->name('judgment.create');
 
+
+//The Contest Routes
+Route::group(['prefix' => 'contest'], function (){
+	//create
+	Route::get('/create', 'ContestController@create')->name('contest.create');
+	Route::post('', 'ContestController@store')->name('contest.store');
+	/*//update
+	Route::get('/{contest}/edit', 'contestController@edit')->name('contest.edit');
+	Route::put('/update/{contest}', 'contestController@update')->name('contest.update');
+	//delete
+	Route::delete('/{contest}', 'contestController@destroy')->name('contest.destroy');	
+	//limits
+	Route::get('/limits/{contest}/{flag_update?}', 'contestController@limits')->name('contest.limits');
+	Route::put('/limits/{contest}', 'contestController@assignLimits')->name('contest.assignLimits');
+	//datasets
+	Route::put('/datasets/{contest}', 'contestController@assignDatasets')->name('contest.assignDatasets');
+	Route::get('/datasets/{contest}/delete', 'contestController@deleteDatasets')->name('contest.deleteDatasets');	
+	Route::get('/datasets/{contest}/download', 'contestController@downloadDatasets')->name('contest.downloadDatasets');
+	Route::get('/datasets/{contest}/{flag_update?}', 'contestController@datasets')->name('contest.datasets');
+
+	//display
+	Route::get('', 'contestController@index')->name('contest.index');
+	Route::get('/gym/{contest}', 'contestController@show')->name('contest.show');	
+	//admin
+	Route::get('/admin', 'contestController@contestSettercontests')->name('contest.problems');*/
+
+});
+
+
+
+
+
+
 //Other Routes
 Route::get('/', function () {
     return view('welcome');
 })->name('welcome');
-
-Route::get('/home', 'HomeController@index')->name('home');
 
 
 //Testing Route
@@ -78,3 +114,4 @@ Route::get('test',function(){
 	
 	return view('testing.test');
 });
+

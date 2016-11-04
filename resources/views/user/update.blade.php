@@ -20,7 +20,7 @@
 							<div class="form-group">
                             	<div class="col-md-2 col-md-offset-5 row">
                                     <br>
-                                    {!!Form::button('<span class="glyphicon glyphicon-save"></span> Update', array('type' => 'submit', 'class' => 'form-control btn btn-primary'))!!}<br><br>
+                                    {!!Form::button('<span class="glyphicon glyphicon-save"></span> Update', array('type' => 'submit', 'class' => 'form-control btn btn-primary'))!!}
                                 </div>
                         	</div>
 						{!!Form::close()!!}
