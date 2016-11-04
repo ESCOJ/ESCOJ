@@ -80,7 +80,13 @@ interface UserInterface {
      */
     public function getEmail($id);
 
-
+    /**
+     * Get a user nickname by ID
+     *
+     * @param  int $id       User ID
+     * @return string    user nickname
+     */
+    public function getNickname($id);
 
 
 }

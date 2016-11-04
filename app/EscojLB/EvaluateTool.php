@@ -4,12 +4,13 @@ namespace ESCOJ\EscojLB;
 
 class EvaluateTool{
 
+    private static $STORAGE_PATH = '';
 	private static $LIMIT_EXCECUTION_SERVER_SEGS=60;
 	private static $RESULTS = array();
 	private static $PYTHON = "python ";
     private static $RTE_SENTENCE = "timeout 60 ";
     private static $OPTIMIZED_COMPILATION = "";
-    private static $TIME_SENTENCE = "/usr/bin/time timeout 60 ";
+    private static $TIME_SENTENCE = "time timeout 60 ";
     private static $MEMORY_SENTENCE = "/usr/bin/time -f '%M ' timeout 60 ";
 	private static $GCC = "/usr/bin/clang ";
 	private static $GCCPLUSPLUS = "/usr/bin/clang++ -std=c++11 ";
@@ -46,20 +47,20 @@ class EvaluateTool{
         user_id
 
     */
-	static function evaluateCode($file,$language,$problem_id,$id_user,$limits){
-        
-        self::$MEMORY_LIMIT = (int)$limits[0]['ml'];
-        self::$SIZE_LIMIT = (int)$limits[0]['sl'];
-        self::$TIME_LIMIT = (float)$limits[0]['tlpc'];
-        self::$TOTAL_TIME_LIMIT = (float)$limits[0]['ttl'];
+	static function evaluateCode($file,$language,$problem_id,$id_user,$limits,$nickname_user){
+        self::$STORAGE_PATH = storage_path() . "/datasets/problem_".$problem_id.'/';
+          
+        self::$MEMORY_LIMIT = (int)$limits['ml'];
+        self::$SIZE_LIMIT = (int)$limits['sl'];
+        self::$TIME_LIMIT = (int)$limits['tlpc'];
+        self::$TOTAL_TIME_LIMIT = (int)$limits['ttl'];
         
         self::buildResultArray($language);
         self::$RESULTS["problem_id"] = $problem_id;
         self::$RESULTS["user_id"] = $id_user;
         $size_file = filesize(public_path() . '/' . $file);
         self::$RESULTS["file_size"] = (string)$size_file;
-        //var_dump($size_file);
-
+        
 		$wordsFounded = self::searchSystemWords($file);
 		if(!empty($wordsFounded)){
             self::deleteCode(public_path() . '/' . $file);
@@ -79,89 +80,137 @@ class EvaluateTool{
 			case '1':
 				# C
 				$output_file = $id_user."_".$problem_id.".out";
-                $sentence_to_compile = self::$GCC . realpath($file) . " -o " . public_path() . "/temp/" . $output_file .self::$OPTIMIZED_COMPILATION.self::$REDIRECT_OUTPUT;
 
-                exec($sentence_to_compile,$output);
+                $sentence_to_compile = self::$GCC . realpath($file) . " -o " . self::$STORAGE_PATH . $output_file .self::$OPTIMIZED_COMPILATION.self::$REDIRECT_OUTPUT;
+
+                exec($sentence_to_compile,$output1);
                 
-                if(empty($output)){
+                if(empty($output1)){
                 	
-                    $output_file = public_path() . '/temp/' . $output_file;
+                    $output_file = self::$STORAGE_PATH . $output_file;
 
                     self::checkRunTimeError($output_file);
+                    
                     $time = self::getAverageTime($output_file);
                     $memory = self::measureMemory($output_file);
 
-                    self::$RESULTS["memory"] = (string)$memory;
-                    self::$RESULTS["time"] = (string)$time;
+                    self::$RESULTS["memory"] = (int)$memory;
+                    self::$RESULTS["time"] = (int)$time;
 
                     self::evaluateTimeMemory($time,$memory);
+
+                    if(self::$RESULTS["judgment"] == ""){
+                        
+                        self::evaluateWA($output_file,$problem_id,$language,$id_user);
+                        
+                    }
+                    
                 }
                 else{
                     #COMPILATION ERROR!!!
-                    self::$RESULTS["judgment"] = $ERROR_SYSTEM_WORDS[1];
+                    self::$RESULTS["judgment"] = self::$ERROR_SYSTEM_WORDS[1];
                 }
                 self::deleteCode(public_path() . '/' . $file);
-                self::deleteExecutableforC(public_path(). '/' . $file);
+                self::deleteExecutableforC($output_file);
 				break;
 			case '2':
 				# C++
 				$output_file = $id_user."_".$problem_id.".out";
-                $sentence_to_compile = self::$GCCPLUSPLUS . realpath($file) . " -o " . public_path() . "/temp/" . $output_file .self::$OPTIMIZED_COMPILATION.self::$REDIRECT_OUTPUT;
 
-                exec($sentence_to_compile,$output);
+                $sentence_to_compile = self::$GCCPLUSPLUS . realpath($file) . " -o " . self::$STORAGE_PATH . $output_file .self::$OPTIMIZED_COMPILATION.self::$REDIRECT_OUTPUT;
+
+                exec($sentence_to_compile,$output1);
                 
-                if(empty($output)){
-                	
-                    $output_file = public_path() . '/temp/' . $output_file;
+                if(empty($output1)){
+                    
+                    $output_file = self::$STORAGE_PATH . $output_file;
 
                     self::checkRunTimeError($output_file);
+                    
                     $time = self::getAverageTime($output_file);
                     $memory = self::measureMemory($output_file);
 
+                    self::$RESULTS["memory"] = (int)$memory;
+                    self::$RESULTS["time"] = (int)$time;
+
                     self::evaluateTimeMemory($time,$memory);
+
+                    if(self::$RESULTS["judgment"] == ""){
+                        
+                        self::evaluateWA($output_file,$problem_id,$language,$id_user);
+                        
+                    }
+                    
                 }
                 else{
                     #COMPILATION ERROR!!!
-                    self::$RESULTS["judgment"] = $ERROR_SYSTEM_WORDS[1];
+                    self::$RESULTS["judgment"] = self::$ERROR_SYSTEM_WORDS[1];
                 }
                 self::deleteCode(public_path() . '/' . $file);
-                self::deleteExecutableforC(public_path() . '/' . $file);
+                self::deleteExecutableforC($output_file);
 				break;
 			case '3':
 				# JAVA
-                $replace = $id_user."_".$problem_id;
+                $replace = $nickname_user.'_'.$id_user."_".$problem_id;
+
                 self::renameClassForJava($file,$replace);
-                $sentence_to_compile = self::$JAVAC. realpath($file) . self::$REDIRECT_OUTPUT;
+                $sentence_to_compile = self::$JAVAC. realpath($file) .' -d '.self::$STORAGE_PATH. self::$REDIRECT_OUTPUT;
 
                 exec($sentence_to_compile,$output);
                 
-                
                 if(empty($output)){
 
-                    $output_file = self::$JAVA.public_path() . '/temp ' . $replace;
+                    $output_file = self::$JAVA.self::$STORAGE_PATH. $replace;
 
-                    $time = self::getAverageTime($output_file);
-                    $memory = self::measureMemory($output_file);
+                    self::checkRunTimeError($output_file);
+
+                    $time = self::getAverageTimeJava($output_file);
+                    $memory = self::measureMemoryJava($output_file);
+
+                    self::$RESULTS["memory"] = (int)$memory;
+                    self::$RESULTS["time"] = (int)$time;
 
                     self::evaluateTimeMemory($time,$memory);
 
+                    if(self::$RESULTS["judgment"] == ""){
+                        
+                        self::evaluateWAJava($replace,$output_file,$problem_id,$language,$id_user);
+                        
+                    }
+
                 }else{
                     #COMPILATION ERROR!!!
-                    self::$RESULTS["judgment"] = $ERROR_SYSTEM_WORDS[1];
+                    self::$RESULTS["judgment"] = self::$ERROR_SYSTEM_WORDS[1];
                 }
                 self::deleteCode(public_path() . '/' . $file);
-                self::deleteExecutableforJava(public_path() . '/' . $file);
+                self::deleteExecutableforJava(self::$STORAGE_PATH.$replace);
 				break;
 			case '4':
 				# PYTHON
-                $sentence_to_execute = self::$PYTHON.realpath($file);
+                $name = explode('/',$file);
+                $output_file = self::$STORAGE_PATH.$name[1];
+                $cp = "cp ".realpath($file) . ' '.$output_file;
+                exec($cp);
+
+                $sentence_to_execute = self::$PYTHON.$output_file;
                 
+                self::checkRunTimeError($sentence_to_execute);
+
                 $time = self::getAverageTime($sentence_to_execute);
                 $memory = self::measureMemory($sentence_to_execute);
+                //dd(self::$MEMORY_LIMIT);
+                self::$RESULTS["memory"] = (int)$memory;
+                self::$RESULTS["time"] = (int)$time;
 
                 self::evaluateTimeMemory($time,$memory);
 
+                if(self::$RESULTS["judgment"] == ""){
+                    
+                    self::evaluateWA($sentence_to_execute,$problem_id,$language,$id_user);
+                    
+                }
                 self::deleteCode(public_path() . '/' . $file);
+                self::deleteCode($output_file);
 				break;	
 		}
 
@@ -171,13 +220,93 @@ class EvaluateTool{
 	}
 
     /**
+     * This function evluate the Wrong Answer or Accepted verdict 
+     * and compare the two both out files
+     * 
+     * @param  string $id_problem 
+     * @return  
+    */
+    static function evaluateWAJava($name_file,$exec_file,$problem_id,$language,$id_user){
+        
+        $path = self::$STORAGE_PATH;
+        $in_files = glob($path . "*.in");
+        $index = 1;
+        
+        foreach($in_files as $in_file){
+            $outputname_file = $index.'_'.$problem_id.'_'.$language.'_'.$id_user.'.out';
+            $index = $index + 1;
+            $cd = 'cd '.self::$STORAGE_PATH . ' && ';
+            
+            $sentence_to_evaluate_wa = $cd . self::$RTE_SENTENCE. 'java -Djava.compiler=NONE ' .$name_file.' <'.$in_file
+                                            .' >' . $outputname_file;
+            //dd($sentence_to_evaluate_wa);
+            exec($sentence_to_evaluate_wa);
+            
+            $out_file = explode('.',$in_file);
+            $s1 = file_get_contents($out_file[0].'.out');
+            $s2 = file_get_contents($path.$outputname_file);
+            $ans = strcmp($s1,$s2);
+     
+            if($ans != 0){//Wrong Answer judgement
+                self::$RESULTS["judgment"] = self::$ERROR_SYSTEM_WORDS[10];
+                unlink($path.$outputname_file);
+                break;
+            }
+            else{//Accepted judgement
+                self::$RESULTS["judgment"] = self::$ERROR_SYSTEM_WORDS[11];
+                unlink($path.$outputname_file);
+            }   
+        }
+        
+    }
+
+    /**
+     * This function evluate the Wrong Answer or Accepted verdict 
+     * and compare the two both out files
+     * 
+     * @param  string $id_problem 
+     * @return  
+    */
+    static function evaluateWA($exec_file,$problem_id,$language,$id_user){
+        
+        $path = self::$STORAGE_PATH;
+        $in_files = glob($path . "*.in");
+        $index = 1;
+        
+        foreach($in_files as $in_file){
+            $outputname_file = $index.'_'.$problem_id.'_'.$language.'_'.$id_user.'.out';
+            $index = $index + 1;
+            $sentence_to_evaluate_wa = self::$RTE_SENTENCE.$exec_file.' <'.$in_file
+                                            .' >'.self::$STORAGE_PATH. $outputname_file;
+            
+            exec($sentence_to_evaluate_wa);
+            dd($sentence_to_evaluate_wa);
+            $out_file = explode('.',$in_file);
+            $s1 = file_get_contents($out_file[0].'.out');
+            $s2 = file_get_contents($path.$outputname_file);
+            $ans = strcmp($s1,$s2);
+     
+            if($ans != 0){//Wrong Answer judgement
+                self::$RESULTS["judgment"] = self::$ERROR_SYSTEM_WORDS[10];
+                //unlink($path.$outputname_file);
+                break;
+            }
+            else{//Accepted judgement
+                self::$RESULTS["judgment"] = self::$ERROR_SYSTEM_WORDS[11];
+                //unlink($path.$outputname_file);
+            }   
+        }
+        
+    }
+
+    /**
      * Function to return to the view the verdict from the evaluatetool 
      *
      * @param  float $time $memory
      * @return the view 
     */
     static function evaluateTimeMemory($time,$memory){
-        if($memory > self::$MEMORY_LIMIT){
+        if($memory*1024 > self::$MEMORY_LIMIT){
             self::$RESULTS["judgment"] = self::$ERROR_SYSTEM_WORDS[7];
         }
         if($time > self::$TIME_LIMIT){
@@ -227,13 +356,57 @@ class EvaluateTool{
      * @return float $time_average the total time averaged
     */
     static function getAverageTime($exec_file){
-        $partial_time = 0.0;
-        for($i=0;$i<self::$LOOPS_TO_TIME;$i++)
-            $partial_time = $partial_time + (float)(self::measureTime($exec_file));
+        $path = self::$STORAGE_PATH;
+        $in_files = glob($path . "*.in");
+        $ans = false;
+        $real_time_total = 0;
+        foreach ($in_files as $in_file){
+            $partial_time = 0.0;
+            for($i=0;$i<self::$LOOPS_TO_TIME;$i++)
+                $partial_time = $partial_time + (float)(self::measureTime($exec_file,$in_file));
+            //time evaluated multiple times per case
+            $time_average = $partial_time / self::$LOOPS_TO_TIME;
+            //Time per case in miliseconds
+            $real_time_per_case = $time_average * 1000;
+            if($real_time_per_case>self::$TIME_LIMIT){ 
+                self::$RESULTS['judgment'] = self::$ERROR_SYSTEM_WORDS[6];
+                break;
+            }
+            //total time for every entry of the problem
+            $real_time_total = $real_time_total + $real_time_per_case;
+        }
         
-        $time_average = $partial_time / self::$LOOPS_TO_TIME;
-        //var_dump("Tiempo de ejecución: ".$time_average." seg");
-        return $time_average;
+        return $real_time_total;
+    }
+
+    /**
+     * Function to get the average time of execution of the program using time comand mutiple times
+     *
+     * @param  string $execfile name file
+     * @return float $time_average the total time averaged
+    */
+    static function getAverageTimeJava($exec_file){
+        $path = self::$STORAGE_PATH;
+        $in_files = glob($path . "*.in");
+        $ans = false;
+        $real_time_total = 0;
+        foreach ($in_files as $in_file){
+            $partial_time = 0.0;
+            for($i=0;$i<self::$LOOPS_TO_TIME;$i++)
+                $partial_time = $partial_time + (float)(self::measureTimeJava($exec_file,$in_file));
+            //time evaluated multiple times per case
+            $time_average = $partial_time / self::$LOOPS_TO_TIME;
+            //Time per case in miliseconds
+            $real_time_per_case = $time_average * 1000;
+            if($real_time_per_case>self::$TIME_LIMIT){ 
+                self::$RESULTS['judgment'] = self::$ERROR_SYSTEM_WORDS[6];
+                break;
+            }
+            //total time for every entry of the problem
+            $real_time_total = $real_time_total + $real_time_per_case;
+        }
+        
+        return $real_time_total;
     }
 
     /**
@@ -244,12 +417,19 @@ class EvaluateTool{
      * @return 
     */
     static function checkRunTimeError($exec_file){
-        $sentence_to_evaluate_time = self::$RTE_SENTENCE.$exec_file.self::$REDIRECT_OUTPUT;
-        exec($sentence_to_evaluate_time,$evaluated_time_output);
-        
-        if(!empty($evaluated_time_output)){
-            self::runTimeErrorSorter($evaluated_time_output);
+        $path = self::$STORAGE_PATH;
+        $in_files = glob($path . "*.in");
+        foreach ($in_files as $in_file) {
+            $sentence_to_evaluate_time = self::$RTE_SENTENCE.$exec_file.' <'.$in_file.' >'.$path.'temp '.self::$REDIRECT_OUTPUT;
+            //The file temp is only for to redirect the output to a file and to know that the program doesnt 
+            // generate a output with a Runtime Error
+            exec($sentence_to_evaluate_time,$evaluated_time_output);
+            if(!empty($evaluated_time_output)){
+                self::runTimeErrorSorter($evaluated_time_output);
+            }
+            unlink($path.'temp');
         }
+        
     }
 
     /**
@@ -263,14 +443,11 @@ class EvaluateTool{
         switch ($rte) {
             case 'Segmentation fault':
                 //var_dump('Segmentation fault');
-                self::$RESULTS["judgment"] = $ERROR_SYSTEM_WORDS[5];
+                self::$RESULTS["judgment"] = self::$ERROR_SYSTEM_WORDS[5];
                 break;
             case 'Floating point exception':
                 //var_dump('Floating point exception');
-                self::$RESULTS["judgment"] = $ERROR_SYSTEM_WORDS[5];
-                break;
-            default:
-                self::$RESULTS["judgment"] = $ERROR_SYSTEM_WORDS[5];
+                self::$RESULTS["judgment"] = self::$ERROR_SYSTEM_WORDS[5];
                 break;
         }
     }
@@ -281,15 +458,48 @@ class EvaluateTool{
      * @param  string $execution name file
      * @return string $time 
     */
-    static function measureTime($exec_file){
+    static function measureTime($exec_file,$in_file){
+        $path = self::$STORAGE_PATH;
+        $sentence_to_evaluate_time = '('.self::$TIME_SENTENCE.$exec_file.') 2>'.$path.'temp'.' <'.$in_file;
         
-        $sentence_to_evaluate_time = self::$TIME_SENTENCE.$exec_file.self::$REDIRECT_OUTPUT;
+        exec($sentence_to_evaluate_time,$evaluated_time_output);
+        $usr_time = (float)file_get_contents($path.'temp');
+        dd($usr_time);
+        unlink($path.'temp');
+        return $usr_time; 
+    }
+
+    /**
+     * Uses the time command to measure the time of a program
+     *
+     * @param  string $execution name file
+     * @return string $time 
+    */
+    static function measureTimeJava($exec_file,$in_file){
+        $path = self::$STORAGE_PATH;
+        $sentence_to_evaluate_time = '('.self::$TIME_SENTENCE.$exec_file.') 2>'.$path.'temp'.' <'.$in_file;
+        
         exec($sentence_to_evaluate_time,$evaluated_time_output);
 
-        $all_time = explode(' ',$evaluated_time_output[0]);
-        $usr_time = explode('u',$all_time[0]);
-        
-        return $usr_time[0]; 
+        $temp = fopen($path.'temp','r');
+        $usr_time = 0.0;
+        $flag = false;
+        while (!feof($temp)) {
+            $line = fgets($temp);
+            if($flag){
+                $split1 = explode(' ',$line);
+                $split2 = explode('u',$split1[0]);
+                $usr_time = (float)$split2[0];
+                break;
+            }
+            if(strpos($line,'Command exited with non-zero status 1') !== false){
+                $flag = true;
+            }
+
+        }
+        fclose($temp);
+        unlink($path.'temp');
+        return $usr_time; 
     }
 
     /**
@@ -299,12 +509,55 @@ class EvaluateTool{
      * @return string $mem 
     */
     static function measureMemory($exec_file){
-        $sentence_to_evaluate_mem = self::$MEMORY_SENTENCE.$exec_file.self::$REDIRECT_OUTPUT;
-        exec($sentence_to_evaluate_mem,$evaluated_mem_output);
+        $path = self::$STORAGE_PATH;
+        $in_files = glob($path . "*.in");
+        foreach($in_files as $in_file){
+            $sentence_to_evaluate_mem = '('.self::$MEMORY_SENTENCE.$exec_file.') 2>'.$path.'temp'.' <'.$in_file;
+
+            exec($sentence_to_evaluate_mem,$evaluated_mem_output);
+            break;
+        }
         #This returns the memory used in Kb
-        $usr_mem = $evaluated_mem_output[0];
+        $usr_mem = (int)file_get_contents($path.'temp');
+        unlink($path.'temp');
         return $usr_mem;
-        //var_dump("Memoria usada en RAM por el programa: ".$usr_mem. " Kb");
+        
+    }
+
+    /**
+     * Uses the time command to measure the memory of a program
+     *
+     * @param  string $execution name file
+     * @return string $mem 
+    */
+    static function measureMemoryJava($exec_file){
+        $path = self::$STORAGE_PATH;
+        $in_files = glob($path . "*.in");
+        foreach($in_files as $in_file){
+            $sentence_to_evaluate_mem = '('.self::$MEMORY_SENTENCE.$exec_file.') 2>'.$path.'temp'.' <'.$in_file;
+            
+            exec($sentence_to_evaluate_mem,$evaluated_mem_output);
+            break;
+        }
+        #This returns the memory used in Kb
+        $temp = fopen($path.'temp','r');
+        $usr_mem = '';
+        $flag = false;
+        while (!feof($temp)) {
+            $line = fgets($temp);
+            if($flag){
+                $usr_mem = (int)$line;
+                break;
+            }
+            if(strpos($line,'Command exited with non-zero status 1') !== false){
+                $flag = true;
+            }
+
+        }
+        fclose($temp);
+        unlink($path.'temp');
+        return $usr_mem;
+        
     }
 
 	/**

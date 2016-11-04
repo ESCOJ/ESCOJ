@@ -27,7 +27,7 @@ class EloquentJudgment implements JudgmentInterface {
             'submitted_at' => date('Y-m-d h:i:s'),
             'language' => $data['language'],
             'memory' => (int)$data['memory'],
-            'time' => (float)$data['time'],
+            'time' => (int)$data['time'],
             'judgment' => $data['judgment'],
             'file_size' => (int)$data['file_size'],
             'problem_id' => (int)$data['problem_id'],
@@ -44,7 +44,7 @@ class EloquentJudgment implements JudgmentInterface {
      */
     public function getAllOrderedBySubmitted($limit = 10)
     { 
-      return $this->judgment->orderBy('submitted_at','desc')->paginate($limit);
+      return $this->judgment->orderBy('id','desc')->paginate($limit);
       
     }
 
@@ -56,7 +56,7 @@ class EloquentJudgment implements JudgmentInterface {
      * @return LengthAwarePaginator with the problems to paginate
      */
     public function getAllPaginateFiltered($limit = 10, array $data, $enable = true){
-        return $this->judgment->orderBy('submitted_at','desc')->paginate($limit);
+        return $this->judgment->orderBy('id','desc')->paginate($limit);
     }
 
 }

@@ -146,4 +146,13 @@ class EloquentUser implements UserInterface {
         return $this->user->find($id)->email;
     }
 
+    /**
+     * Get a user nickname by ID
+     *
+     * @param  int $id       User ID
+     * @return string    user nickname
+     */
+    public function getNickname($id){
+        return $this->user->find($id)->nickname;
+    }   
 }

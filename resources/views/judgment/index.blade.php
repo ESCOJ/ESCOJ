@@ -2,8 +2,7 @@
 
 @section('title' , 'Submits')
 @section('styles')
-    {!!Html::style('plugins/fileinput/css/fileinput.min.css')!!}
-    <style type="text/css" media="screen">
+    {!!Html::style('plugins/chosen/chosen.css')!!}    <style type="text/css" media="screen">
     
         table thead {
           color: #fff;
@@ -80,7 +79,7 @@
                                             @if($judgment->judgment != 'Accepted')
                                                 <td style="color:#FF0000;"><strong>{{ $judgment->judgment }}</strong></td>
                                             @else
-                                                <td style="color:#3ADF00;"><strong>{{ $judgment->judgment }}</strong></td>
+                                                <td style="color:#298A08;"><strong>{{ $judgment->judgment }}</strong></td>
                                             @endif
                                             <td>{{ $judgment->time }}</td>
                                             <td>{{ $judgment->memory }}</td>
@@ -102,4 +101,13 @@
     </div>
 </div>
 
+@endsection
+
+@section('scripts')
+    {!!Html::script('plugins/chosen/chosen.jquery.js')!!}
+    
+    <script type="text/javascript">  
+        $('.select-chosen').chosen({
+        });
+    </script>
 @endsection

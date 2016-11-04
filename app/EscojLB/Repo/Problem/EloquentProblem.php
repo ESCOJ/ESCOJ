@@ -365,14 +365,21 @@ class EloquentProblem implements ProblemInterface {
         return $problems->all();*/
     }
 
-    /**
+  /**
      * Get the limits for the problem
      *
      * @param  int $id       Problem ID
-     * @return Object    Problem model object
+     * @param  int $language       Language ID
+     * @return array    array with limits of a given problem and language
      */
-    public function findLimitsById($id){
-        return $this->problem->select('ml','sl','tlpc','ttl')->where('id',$id)->get();
+    public function findLimitsByIdAndLanguage($id, $language){
+        $lang =  $this->findById($id)->languages()->find($language);
+        return [
+            'ml' => $lang->pivot->ml,
+            'sl' => $lang->pivot->sl,
+            'tlpc' => $lang->pivot->tlpc,
+            'ttl' => $lang->pivot->ttl,
+        ];
     }
 
 }
