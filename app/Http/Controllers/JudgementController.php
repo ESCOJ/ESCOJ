@@ -9,6 +9,7 @@ use EscojLB\Repo\Language\LanguageInterface;
 use EscojLB\Repo\Tag\TagInterface;
 use EscojLB\Repo\Judgment\JudgmentInterface;
 use EscojLB\Repo\Problem\ProblemInterface;
+use EscojLB\Repo\User\UserInterface;
 use ESCOJ\EscojLB\EvaluateTool;
 use Illuminate\Support\Facades\Auth;
 
@@ -18,13 +19,18 @@ class JudgementController extends Controller
     protected $language;
     protected $tag;
     protected $problem;
+    protected $user;
 
-    public function __construct(LanguageInterface $language,TagInterface $tag, JudgmentInterface $judgment, ProblemInterface $problem){
+
+    public function __construct(LanguageInterface $language,TagInterface $tag, JudgmentInterface $judgment, ProblemInterface $problem,UserInterface $user){
+
         $this->middleware('auth', ['except' => ['index']]);
+
         $this->language = $language;
         $this->tag = $tag;
         $this->problem = $problem;
         $this->judgment = $judgment;
+        $this->user = $user;
     }
     /**
      * Display a listing of the resource.
@@ -33,10 +39,10 @@ class JudgementController extends Controller
      */
     public function index(Request $request)
     {
-        if( $request->has('user') or $request->has('problem') or $request->has('languages'))
-            $judgments = $this->judgment->getAllPaginateFiltered(5, $request->all());
-        else
-            $judgments = $this->judgment->getAllOrderedBySubmitted(5);
+        /*if( $request->has('user') or $request->has('problem') or $request->has('languages'))
+            $judgments = $this->judgment->getAllPaginateFiltered(10, $request->all());
+        else*/
+            $judgments = $this->judgment->getAllOrderedBySubmitted(10);
 
         $tags = $this->tag->getAll('name','id');
         $languages = $this->language->getKeyValueAll('id','name');
@@ -68,20 +74,23 @@ class JudgementController extends Controller
         $language = $request->input('language');
         $problem_id = $request->input('problem_id');
         $file = $request->file('code');
-        //This has to be substituted by the id of the contestant
-        //with Auth::user()->id;
+        
         $id_user = Auth::user()->id;
-        $limits = $this->problem->findLimitsById((int)$problem_id);
-        $limits = $limits->toArray();
+        $limits = $this->problem->findLimitsByIdAndLanguage((int)$id_user,(int)$language);
 
         if($request->hasFile('code')){
-
+            //This user nickname is only for java rename class
+            $nickname = $this->user->getNickname(1);
             $file_name = $file->getClientOriginalName();
             $file_splited = explode('.',$file_name);
-            $name = $id_user."_".$problem_id . "." . $file_splited[1]; 
+            if($language == '3')
+                $name = $nickname.'_'.$id_user."_".$problem_id . "." . $file_splited[1]; 
+            else
+                $name = $id_user."_".$problem_id . "." . $file_splited[1]; 
             $file_temp = $file->storeAs('temp',$name,"judgements");
+            
 
-            $RESULTS = EvaluateTool::evaluateCode($file_temp,$language,$problem_id,$id_user,$limits);
+            $RESULTS = EvaluateTool::evaluateCode($file_temp,$language,$problem_id,$id_user,$limits,$nickname);
             
             try{
                 $this->judgment->create($RESULTS);
@@ -95,7 +104,7 @@ class JudgementController extends Controller
         }else{
             $file_temp = EvaluateTool::buildCodeFile($file,$language,$problem_id,$code,$id_user);
             $real_name_file = 'temp/'.$file_temp;
-            $RESULTS = EvaluateTool::evaluateCode($real_name_file,$language,$problem_id,$id_user,$limits);
+            $RESULTS = EvaluateTool::evaluateCode($real_name_file,$language,$problem_id,$id_user,$limits,$nickname);
             try{
                 $this->judgment->create($RESULTS);
             }
@@ -104,7 +113,7 @@ class JudgementController extends Controller
                 $request->session()->flash('alert-success', $excep);
             }
             
-            //return redirect()->route("judgment.index");
+            return redirect()->route("judgment.index");
         }
     }
 

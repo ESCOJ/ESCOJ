@@ -76,6 +76,15 @@ interface ProblemInterface {
 
 
     /**
+     * Get the limits for the problem
+     *
+     * @param  int $id       Problem ID
+     * @param  int $language       Language ID
+     * @return Object    Problem model object
+     */
+    public function findLimitsByIdAndLanguage($id, $language);
+
+    /**
      * Get paginated problems
      *
      * @param int $limit Results per page

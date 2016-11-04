@@ -341,4 +341,44 @@ class EloquentProblem implements ProblemInterface {
       return $this->problem->orderBy($order_by)->pluck($value,$key);
     }
 
+    /**
+     * Get problems by their tag
+     *
+     * @param int  ID of tag
+     * @param int Number of problems per page
+     * @return StdClass Object with $items and $totalItems for pagination
+     */
+    public function byTag($tag_id, $limit=10)
+    {
+
+        /*$foundTag = $this->tag->findById($tag_id);
+
+        $problems = $foundTag->problems()
+            ->wherePivot('level',3)
+            ->where('enable',1)
+            //->where('name', 'like', '%'. $data['name'] . '%')
+            ->paginate($limit);//->where('enable', 1)->get();
+
+        dd($problems);
+
+        return $problems->all();*/
+    }
+
+  /**
+     * Get the limits for the problem
+     *
+     * @param  int $id       Problem ID
+     * @param  int $language       Language ID
+     * @return array    array with limits of a given problem and language
+     */
+    public function findLimitsByIdAndLanguage($id, $language){
+        $lang =  $this->findById($id)->languages()->find($language);
+        return [
+            'ml' => $lang->pivot->ml,
+            'sl' => $lang->pivot->sl,
+            'tlpc' => $lang->pivot->tlpc,
+            'ttl' => $lang->pivot->ttl,
+        ];
+    }
+    
 }
