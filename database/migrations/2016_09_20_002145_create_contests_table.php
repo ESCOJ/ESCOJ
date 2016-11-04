@@ -43,6 +43,7 @@ class CreateContestsTable extends Migration
             $table->increments('id');
             $table->integer('contest_id')->unsigned();
             $table->integer('problem_id')->unsigned();
+            $table->string('letter_id',1); // indicates the letter_id of a problem
 
             $table->foreign('contest_id')->references('id')->on('contests')->onDelete('cascade');
             $table->foreign('problem_id')->references('id')->on('problems');

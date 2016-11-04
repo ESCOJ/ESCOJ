@@ -128,7 +128,16 @@ class EloquentContest implements ContestInterface {
     protected function syncProblems(Model $contest, array $problems)
     {
         // Assign set problems to contest
-        $contest->problems()->sync($problems);
+
+        $problemsIds = array();
+        $i = 0;
+        foreach($problems as $problem)
+        {
+            $problemsIds[$problem] = array('letter_id' => chr(65 + $i++) ) ;
+        }
+
+        // Assign set problems to problem
+        $contest->problems()->sync($problemsIds);
     }
 
     /**

@@ -62,7 +62,7 @@
                                             </td>
                                             <!--Title-->
                                             <td>
-                                                {!!link_to_route('problem.show', $title = $contest->name, $parameters = ['id'=> $contest->id ], $attributes = [ ]) !!}
+                                                {!!link_to_route('contest.show', $title = $contest->name, $parameters = ['id'=> $contest->id ], $attributes = [ ]) !!}
                                             </td>
                                             <!--Start-->
                                             <td>

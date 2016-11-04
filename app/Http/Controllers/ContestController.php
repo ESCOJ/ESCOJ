@@ -9,6 +9,9 @@ use EscojLB\Repo\Organization\OrganizationInterface;
 use EscojLB\Repo\Contest\ContestInterface;
 use EscojLB\Repo\User\UserInterface;
 use EscojLB\Repo\Problem\ProblemInterface;
+use EscojLB\Repo\Judgment\JudgmentInterface;
+use EscojLB\Repo\Language\LanguageInterface;
+
 
 use Auth;
 
@@ -19,6 +22,9 @@ class ContestController extends Controller
     protected $user;
     protected $organization;
     protected $problem;
+    protected $judgment;
+    protected $language;
+
 
     /**
      * Create a new controller instance.
@@ -26,7 +32,8 @@ class ContestController extends Controller
      * @return void
      */
     public function __construct(OrganizationInterface $organization, ContestInterface $contest,
-    						    UserInterface $user , ProblemInterface $problem){
+    						    UserInterface $user , ProblemInterface $problem, JudgmentInterface $judgment,
+                                LanguageInterface $language){
 
         /*$this->middleware('auth', ['except' => ['index', 'show']]);
         $this->middleware('adminOrcontestSetter', ['except' => ['index', 'show']]);
@@ -35,8 +42,8 @@ class ContestController extends Controller
         $this->contest = $contest;
         $this->user = $user;
         $this->problem = $problem;
-
-
+        $this->judgment = $judgment;
+        $this->language = $language;
     }
 
     /**
@@ -91,7 +98,7 @@ class ContestController extends Controller
     }
 
      /**
-     * Show the form for eding a existing contest.
+     * Show the form for editing a existing contest.
      *
      * @return \Illuminate\Http\Response
      */
@@ -152,9 +159,40 @@ class ContestController extends Controller
     {
         //
         $contest = $this->contest->findById($id);
-        return view('contest.show',['contest' => $contest]);
+        return view('contest.show',['contest' => $contest , 'in_contest' => true]);
     }
 
+    /**
+     * Display the specified problem.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function showProblem(Request $request,$id)
+    {
+        $problem = $this->problem->findById($id);
+        if($request->ajax()){
+            return response()->json(view('contest.partials.show_contest.problem',['problem' => $problem])->render());
+        }
+    }
+
+    /**
+     * Display the specified problem.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function showJudgments(Request $request, $contest_id)
+    {
+        if( $request->has('user') or $request->has('problem') or $request->has('languages'))
+            $judgments = $this->judgment->getAllPaginateFiltered(5, $request->all());
+        else
+            $judgments = $this->judgment->getAllOrderedBySubmitted(5);
+
+        $languages = $this->language->getKeyValueAll('id','name');
+         if($request->ajax()){
+            return response()->json(view('contest.partials.show_contest.index_judgments',['languages' => $languages, 'judgments' => $judgments])->render());
+        }
+
+    }
      /**
      * Display a listing of the Contests.
      *

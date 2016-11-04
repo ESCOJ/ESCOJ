@@ -28,6 +28,6 @@ class Contest extends Model
     }
 
     public function problems(){
-        return $this->belongsToMany('EscojLB\Repo\Problem\Problem');
+        return $this->belongsToMany('EscojLB\Repo\Problem\Problem')->withPivot('letter_id');
     }
 }

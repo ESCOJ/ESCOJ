@@ -85,7 +85,11 @@ Route::group(['prefix' => 'contest'], function (){
 	Route::delete('/{contest}', 'ContestController@destroy')->name('contest.destroy');
 	//display
 	Route::get('', 'ContestController@index')->name('contest.index');
-	Route::get('/gym/{contest}', 'ContestController@show')->name('contest.show');		
+	Route::get('/gym/{contest}', 'ContestController@show')->name('contest.show');
+	Route::get('/gym/problem/{problem}', 'ContestController@showProblem')->name('contest.show.problem');
+	Route::get('/gym/judgments/{contest}', 'ContestController@showJudgments')->name('contest.show.judgments');	
+
+
 	/*//limits
 	Route::get('/limits/{contest}/{flag_update?}', 'contestController@limits')->name('contest.limits');
 	Route::put('/limits/{contest}', 'contestController@assignLimits')->name('contest.assignLimits');
