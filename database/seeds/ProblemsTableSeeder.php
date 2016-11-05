@@ -12,7 +12,26 @@ class ProblemsTableSeeder extends Seeder
      */
     public function run()
     {
-    	for ($i=0; $i < 10 ; $i++) { 
+    	$prob =  Problem::create(array(
+			    'name' => 'A +B Problem',
+			    'source_id' => '1',
+			    'points' => '50',
+			    'description' => 'For this problem you must calculate <strong>A + B</strong>, numbers given in the input. ',
+			    'input_specification' => 'The only line of input contain two space separated integers <strong>A, B (0 <= A, B <= 10).</strong> ',
+			    'output_specification' => 'The only line of output should contain one integer: the sum of <strong>A</strong> and <strong>B</strong>. ',
+			    'sample_input' => '1 2',
+			    'sample_output' => '3',
+			    'hints' => 'no se weno si se pero no te wa decir',
+			    'added_by' => '1',
+			    'enable' => '1',
+			    'multidata' => '1',
+			    'dataset' => 1,
+			));
+
+		$prob->tags()->sync([1 => ['level' => 1],2 => ['level' => 2]]);
+		$prob->languages()->sync([1,2]);
+
+    	for ($i=1; $i <= 10 ; $i++) { 
     		$prob =  Problem::create(array(
 			    'name' => 'Problema ' . $i,
 			    'source_id' => '1',

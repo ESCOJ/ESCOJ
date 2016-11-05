@@ -21,14 +21,23 @@ class CreateJudgmentsTable extends Migration
             $table->integer('time');
             $table->string('judgment',40); // the submit´s verdict
             $table->integer('file_size');
+
             $table->integer('problem_id')->unsigned();
             $table->integer('user_id')->unsigned();
 
-            $table->foreign('problem_id')->references('id')->on('problems');
-            $table->foreign('user_id')->references('id')->on('users');
+            $table->boolean('contest')->default('0'); // Indicates whether the judgment belongs to a contest
+            $table->integer('contest_id')->unsigned()->nullable();
+
+            $table->foreign('problem_id')->references('id')->on('problems')->onDelete('cascade');
+            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
+            $table->foreign('contest_id')->references('id')->on('contests')->onDelete('cascade');
+
             $table->timestamps();
         });
     }
+
+
+
 
     /**
      * Reverse the migrations.

@@ -68,7 +68,7 @@ Route::group(['prefix' => 'problem'], function (){
 
 //The Judgements Routes
 Route::resource('judgment','JudgementController');
-Route::get('judgment/create/{id}', 'JudgementController@create')->name('judgment.create');
+Route::get('judgment/create/{problem_id}', 'JudgementController@create')->name('judgment.create');
 
 
 //The Contest Routes
@@ -86,8 +86,10 @@ Route::group(['prefix' => 'contest'], function (){
 	//display
 	Route::get('', 'ContestController@index')->name('contest.index');
 	Route::get('/gym/{contest}', 'ContestController@show')->name('contest.show');
-	Route::get('/gym/problem/{problem}', 'ContestController@showProblem')->name('contest.show.problem');
+	Route::get('/gym/problem/{problem}/{contest}', 'ContestController@showProblem')->name('contest.show.problem');
 	Route::get('/gym/judgments/{contest}', 'ContestController@showJudgments')->name('contest.show.judgments');	
+	Route::get('/gym/scoreboard/{contest}', 'ContestController@showScoreBoard')->name('contest.show.scoreboard');	
+
 
 
 	/*//limits

@@ -20,7 +20,7 @@
                 <tr>
                     <td><span class="label label-primary">{{ $problem->pivot->letter_id }}</span></td>
                     <td>
-                    <a onclick = "showProblem({{ $problem->id }})" id="show_problem" style="cursor:pointer;">
+                    <a onclick = "showProblem({{ $problem->id }},  {{ $contest->id }})" id="show_problem" style="cursor:pointer;">
                         {{ $problem->name }}
                     </a>
                     </td>
@@ -30,7 +30,9 @@
 
                     @if(Auth::check())
                         <td>
-                            {!! Html::decode(link_to_action('JudgementController@create', $title = '<i class="fa fa-paper-plane" aria-hidden="true"></i>', $parameters = ['problem_id'=> $problem->id ], $attributes = [ ])) !!}
+                            <a onclick = "addJudgment({{ $problem->id }})" id="show_problem" style="cursor:pointer;">
+                                <i class="fa fa-paper-plane" aria-hidden="true"></i>
+                            </a>
                         </td>
                     @endif
 

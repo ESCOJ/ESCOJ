@@ -39,14 +39,16 @@ class JudgementController extends Controller
      */
     public function index(Request $request)
     {
-        /*if( $request->has('user') or $request->has('problem') or $request->has('languages'))
-            $judgments = $this->judgment->getAllPaginateFiltered(10, $request->all());
-        else*/
-            $judgments = $this->judgment->getAllOrderedBySubmitted(10);
+        
+        if( $request->has('user') or $request->has('problem') or $request->has('language'))
+            $judgments = $this->judgment->getAllPaginateFiltered(5, $request->all());
+        else
+            $judgments = $this->judgment->getAllPaginate(5);
 
         $tags = $this->tag->getAll('name','id');
-        $languages = $this->language->getKeyValueAll('id','name');
+        $languages = $this->language->getKeyValueAll('name','name');
         
+        $request->flash();
         return view('judgment.index',['languages' => $languages, 'tags' => $tags, 'judgments' => $judgments]);
     }
 
@@ -55,10 +57,10 @@ class JudgementController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function create($id)
+    public function create(Request $request, $problem_id)
     {
         $languages = $this->language->getKeyValueAll('id','name');
-        return view('judgment.add',['languages' => $languages,'id_problem' => $id]);
+        return view('judgment.add',['languages' => $languages,'id_problem' => $problem_id]);
     }
 
     /**
@@ -93,26 +95,38 @@ class JudgementController extends Controller
             $RESULTS = EvaluateTool::evaluateCode($file_temp,$language,$problem_id,$id_user,$limits,$nickname);
             
             try{
-                $this->judgment->create($RESULTS);
+                if($request->ajax()){
+                    $this->judgment->create($RESULTS, $request->contest_id);
+                    return response()->json([
+                        'message' => 'The submission has been sent successfully.',
+                    ]);
+                }
+                else
+                    $this->judgment->create($RESULTS);
             }
             catch(\Exception $e){
                 $excep = 'Error generated trying to submit';
                 $request->session()->flash('alert-success', $excep);
             }
-            
             return redirect()->route("judgment.index");
         }else{
             $file_temp = EvaluateTool::buildCodeFile($file,$language,$problem_id,$code,$id_user);
             $real_name_file = 'temp/'.$file_temp;
             $RESULTS = EvaluateTool::evaluateCode($real_name_file,$language,$problem_id,$id_user,$limits,$nickname);
             try{
-                $this->judgment->create($RESULTS);
+                if($request->ajax()){
+                    $this->judgment->create($RESULTS, $request->contest_id);
+                    return response()->json([
+                        'message' => 'The submission has been sent successfully.',
+                    ]);
+                }
+                else
+                    $this->judgment->create($RESULTS);
             }
             catch(\Exception $e){
                 $excep = 'Error generated trying to submit';
                 $request->session()->flash('alert-success', $excep);
             }
-            
             return redirect()->route("judgment.index");
         }
     }

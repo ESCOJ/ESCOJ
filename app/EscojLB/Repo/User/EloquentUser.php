@@ -53,6 +53,16 @@ class EloquentUser implements UserInterface {
     }
 
     /**
+     * Get a user by User Nickname
+     *
+     * @param  int $nickname       User nNckname
+     * @return Object    User model object
+     */
+    public function findByNickname($nickname){
+        return $this->user->where('nickname',$nickname)->first(['id']);
+    }
+
+    /**
      * Get a user by your provider name and provider ID
      * @param  string    $provider       social network provider  name
      * @param  int       $id       provider ID

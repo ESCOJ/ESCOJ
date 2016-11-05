@@ -280,7 +280,7 @@ class EvaluateTool{
                                             .' >'.self::$STORAGE_PATH. $outputname_file;
             
             exec($sentence_to_evaluate_wa);
-            dd($sentence_to_evaluate_wa);
+            //dd($sentence_to_evaluate_wa);
             $out_file = explode('.',$in_file);
             $s1 = file_get_contents($out_file[0].'.out');
             $s2 = file_get_contents($path.$outputname_file);
@@ -464,7 +464,7 @@ class EvaluateTool{
         
         exec($sentence_to_evaluate_time,$evaluated_time_output);
         $usr_time = (float)file_get_contents($path.'temp');
-        dd($usr_time);
+        //dd($usr_time);
         unlink($path.'temp');
         return $usr_time; 
     }

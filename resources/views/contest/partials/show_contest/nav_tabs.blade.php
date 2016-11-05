@@ -4,12 +4,13 @@
 		<div class="line"></div>
 
 		<div class="nav-black">
-			<ul class="nav nav-tabs nav-justified">
+			<ul id="ul_tab" class="nav nav-tabs nav-justified">
 				<li class="active"><a data-toggle="tab" href="#summary">Summary</a></li>
 				<li><a data-toggle="tab" href="#problems">Problems</a></li>
 				<li><a data-toggle="tab" href="#judgments" onclick = "showJudgments({{ $contest->id }})">Judgments</a></li>
+				<li><a data-toggle="tab" href="#submit">Submit</a></li>
 				<li><a data-toggle="tab" href="#clarifications">Clarifications</a></li>
-				<li><a data-toggle="tab" href="#ranking">Ranking</a></li>
+				<li><a data-toggle="tab" href="#scoreboard" onclick = "showScoreBoard({{ $contest->id }})">ScoreBoard</a></li>
 			</ul>
 		</div>
 		<br>
@@ -34,15 +35,20 @@
 				</div>
 			</div>
 
+			<!--submit tab-->
+			<div id="submit" class="tab-pane fade">
+				@include('contest.partials.show_contest.judgment')
+			</div>
+
 			<!--clarifications tab-->
 			<div id="clarifications" class="tab-pane fade">
 				hola 2
-
 			</div>
 
 			<!--ranking tab-->
-			<div id="ranking" class="tab-pane fade">
-				hola 3
+			<div id="scoreboard" class="tab-pane fade">
+				<div id="scoreboard_table">
+				</div>
 			</div>
 			
 

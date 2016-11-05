@@ -19,7 +19,6 @@ function assignMemoryLimit(){
 function assignSourceLimit(){
 
     if($('#use_multipliers').is(':checked') ){
-    	alert('shi');
 		$('#languages option').each(function() {
 		    var id = $(this).text();
 		    var val = $('#sl').val();

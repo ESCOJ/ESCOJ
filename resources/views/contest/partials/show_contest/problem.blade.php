@@ -150,7 +150,9 @@
 
                         @if(Auth::check())
                             <div class="col-xs-offset-2 col-xs-8" style=" text-align: center;">
-                                {!! Html::decode(link_to_action('JudgementController@create', $title = '<strong>Submit </strong><i class="fa fa-paper-plane" aria-hidden="true"></i>', $parameters = ['problem_id'=> $problem->id ], $attributes = ['class' => 'btn btn-primary' ])) !!}
+                                    <a onclick = "addJudgment({{ $problem->id }})" id="show_problem" style="cursor:pointer;" class="btn btn-primary">
+                                        <strong>Submit </strong><i class="fa fa-paper-plane" aria-hidden="true"></i>
+                                    </a>
                             </div>
                         @endif
 

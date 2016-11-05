@@ -12,6 +12,7 @@ interface UserInterface {
      * @return User Object
      */
     public function create(array $data , $confirmation_code = null, $avatar ,array $provider = null);
+    
     /**
      * Get a user by User ID
      *
@@ -19,6 +20,14 @@ interface UserInterface {
      * @return Object    User model object
      */
     public function findById($id);
+
+    /**
+     * Get a user by User Nickname
+     *
+     * @param  int $nickname       User nNckname
+     * @return Object    User model object
+     */
+    public function findByNickname($nickname);
 
     /**
      * Get a user by your provider name and provider ID

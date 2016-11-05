@@ -30,4 +30,15 @@ class Contest extends Model
     public function problems(){
         return $this->belongsToMany('EscojLB\Repo\Problem\Problem')->withPivot('letter_id');
     }
+
+    public function judgments(){
+        return $this->hasMany('EscojLB\Repo\Judgment\Judgment');
+    }
+    /**
+     * Retriebe all judgments of this contest
+     
+    public function posts()
+    {
+        return $this->hasManyThrough('EscojLB\Repo\Judgment\Judgment', 'EscojLB\Repo\Problem\Problem');
+    }*/
 }

@@ -29,7 +29,8 @@
                                 <div class="col-md-7 col-md-offset-5">
                                     <input type="button" value="Clear" onclick="clearBox()" class="btn btn-primary">
                                      
-                                    <input type="button" value="Submit" onclick="submitAndCopyTheCode()" class="btn btn-primary">  
+                                    <input type="button" value="Submit" onclick="submitAndCopyTheCode()" class="btn btn-primary">
+
                                 </div>
                             </div>
                         {!!Form::close()!!}

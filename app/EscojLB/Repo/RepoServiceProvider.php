@@ -102,7 +102,7 @@ class RepoServiceProvider extends ServiceProvider
 
         $app->bind('EscojLB\Repo\Judgment\JudgmentInterface', function($app)
         {
-            $judgment =  new EloquentJudgment(new Judgment);
+            $judgment =  new EloquentJudgment(new Judgment, $app->make('EscojLB\Repo\User\UserInterface'));
             return $judgment;
 
         });

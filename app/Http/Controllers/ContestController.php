@@ -159,7 +159,13 @@ class ContestController extends Controller
     {
         //
         $contest = $this->contest->findById($id);
-        return view('contest.show',['contest' => $contest , 'in_contest' => true]);
+        $languages = $this->language->getKeyValueAll('id','name');
+        $problems_map = array();
+        foreach($contest->problems()->orderBy('letter_id')->get() as $problem)
+            $problems_map[$problem->id] = $problem->pivot->letter_id;
+
+        return view('contest.show',['contest' => $contest , 'in_contest' => true, 'languages' => $languages,
+                                    'problems_map' => $problems_map]);
     }
 
     /**
@@ -167,11 +173,12 @@ class ContestController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function showProblem(Request $request,$id)
+    public function showProblem(Request $request,$problem_id,$contest_id)
     {
-        $problem = $this->problem->findById($id);
+        $problem = $this->problem->findById($problem_id);
         if($request->ajax()){
-            return response()->json(view('contest.partials.show_contest.problem',['problem' => $problem])->render());
+            return response()->json(view('contest.partials.show_contest.problem',
+                                            ['problem' => $problem, 'contest_id' => $contest_id])->render());
         }
     }
 
@@ -182,17 +189,37 @@ class ContestController extends Controller
      */
     public function showJudgments(Request $request, $contest_id)
     {
-        if( $request->has('user') or $request->has('problem') or $request->has('languages'))
-            $judgments = $this->judgment->getAllPaginateFiltered(5, $request->all());
+        if( $request->has('user') or $request->has('problem') or $request->has('language'))
+            $judgments = $this->judgment->getAllPaginateFiltered(5, $request->all(), $contest_id);
         else
-            $judgments = $this->judgment->getAllOrderedBySubmitted(5);
+            $judgments = $this->judgment->getAllPaginate(5, $contest_id);
 
-        $languages = $this->language->getKeyValueAll('id','name');
-         if($request->ajax()){
-            return response()->json(view('contest.partials.show_contest.index_judgments',['languages' => $languages, 'judgments' => $judgments])->render());
+        $languages = $this->language->getKeyValueAll('name','name');
+        $request->flash();
+        if($request->ajax()){
+            if($request->has('filter_or_paginate'))
+                return response()->json(view('contest.partials.show_contest.judgments_table',['languages' => $languages, 'judgments' => $judgments])->render());
+            return response()->json(view('contest.partials.show_contest.index_judgments',['languages' => $languages, 'judgments' => $judgments, 'contest_id' => $contest_id])->render());
         }
 
     }
+
+    /**
+     * Display the specified problem.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function showScoreBoard(Request $request,$contest_id)
+    {
+        $contest = $this->contest->findById($contest_id);
+        //dd($contest->users()->get(['users.id','nickname']));
+
+        if($request->ajax()){
+            return response()->json(view('contest.partials.show_contest.scoreboard',
+                                            ['contest' => $contest])->render());
+        }
+    }
+
      /**
      * Display a listing of the Contests.
      *
