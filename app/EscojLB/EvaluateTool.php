@@ -17,7 +17,7 @@ class EvaluateTool{
 	private static $JAVAC = "javac ";
 	private static $JAVA = "java -Djava.compiler=NONE -cp ";
 	private static $REDIRECT_OUTPUT = " 2>&1 ";
-	private static $SYSTEM_WORDS = array('thread','exec','system','fork','pthread_t','pthread_create','fopen');
+	private static $SYSTEM_WORDS = array('thread','exec','system','fork','pthread_t','pthread_create','fopen','for(;;)');
     private static $LOOPS_TO_TIME =  5;
     private static $SIZE_LIMIT = 0;
     private static $TIME_LIMIT = 0;
@@ -65,7 +65,7 @@ class EvaluateTool{
 		if(!empty($wordsFounded)){
             self::deleteCode(public_path() . '/' . $file);
 
-            self::$RESULTS["judgment"] = $ERROR_SYSTEM_WORDS[0];
+            self::$RESULTS["judgment"] = self::$ERROR_SYSTEM_WORDS[6];
 			return self::$RESULTS;
 		}
         
@@ -468,7 +468,7 @@ class EvaluateTool{
         
         exec($sentence_to_evaluate_time,$evaluated_time_output);
         $tle = file_get_contents($path.'temp');
-
+        dd($tle);
         if(strpos('Command exited with non-zero status 124',$tle) !== true){
             $partial1 = explode(' ',$tle);
             $partial2 = explode('u',$partial1[0]);
