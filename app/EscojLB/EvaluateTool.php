@@ -79,7 +79,7 @@ class EvaluateTool{
 		switch ($language) {
 			case '1':
 				# C
-				$output_file = $id_user."_".$problem_id.".out";
+				$output_file = $nickname_user.'_'.$id_user."_".$problem_id.".out";
 
                 $sentence_to_compile = self::$GCC . realpath($file) . " -o " . self::$STORAGE_PATH . $output_file .self::$OPTIMIZED_COMPILATION.self::$REDIRECT_OUTPUT;
 
@@ -104,18 +104,18 @@ class EvaluateTool{
                         self::evaluateWA($output_file,$problem_id,$language,$id_user);
                         
                     }
-                    
+                    self::deleteExecutableforC($output_file);
                 }
                 else{
                     #COMPILATION ERROR!!!
                     self::$RESULTS["judgment"] = self::$ERROR_SYSTEM_WORDS[1];
                 }
                 self::deleteCode(public_path() . '/' . $file);
-                self::deleteExecutableforC($output_file);
+                
 				break;
 			case '2':
 				# C++
-				$output_file = $id_user."_".$problem_id.".out";
+				$output_file = $nickname_user.'_'.$id_user."_".$problem_id.".out";
 
                 $sentence_to_compile = self::$GCCPLUSPLUS . realpath($file) . " -o " . self::$STORAGE_PATH . $output_file .self::$OPTIMIZED_COMPILATION.self::$REDIRECT_OUTPUT;
 
@@ -140,19 +140,19 @@ class EvaluateTool{
                         self::evaluateWA($output_file,$problem_id,$language,$id_user);
                         
                     }
-                    
+                    self::deleteExecutableforC($output_file);
                 }
                 else{
                     #COMPILATION ERROR!!!
                     self::$RESULTS["judgment"] = self::$ERROR_SYSTEM_WORDS[1];
                 }
                 self::deleteCode(public_path() . '/' . $file);
-                self::deleteExecutableforC($output_file);
+                
 				break;
 			case '3':
 				# JAVA
                 $replace = $nickname_user.'_'.$id_user."_".$problem_id;
-
+                
                 self::renameClassForJava($file,$replace);
                 $sentence_to_compile = self::$JAVAC. realpath($file) .' -d '.self::$STORAGE_PATH. self::$REDIRECT_OUTPUT;
 
@@ -177,13 +177,13 @@ class EvaluateTool{
                         self::evaluateWAJava($replace,$output_file,$problem_id,$language,$id_user);
                         
                     }
-
+                    self::deleteExecutableforJava(self::$STORAGE_PATH.$replace);
                 }else{
                     #COMPILATION ERROR!!!
                     self::$RESULTS["judgment"] = self::$ERROR_SYSTEM_WORDS[1];
                 }
                 self::deleteCode(public_path() . '/' . $file);
-                self::deleteExecutableforJava(self::$STORAGE_PATH.$replace);
+                
 				break;
 			case '4':
 				# PYTHON
@@ -280,7 +280,7 @@ class EvaluateTool{
                                             .' >'.self::$STORAGE_PATH. $outputname_file;
             
             exec($sentence_to_evaluate_wa);
-            dd($sentence_to_evaluate_wa);
+
             $out_file = explode('.',$in_file);
             $s1 = file_get_contents($out_file[0].'.out');
             $s2 = file_get_contents($path.$outputname_file);
@@ -288,12 +288,12 @@ class EvaluateTool{
      
             if($ans != 0){//Wrong Answer judgement
                 self::$RESULTS["judgment"] = self::$ERROR_SYSTEM_WORDS[10];
-                //unlink($path.$outputname_file);
+                unlink($path.$outputname_file);
                 break;
             }
             else{//Accepted judgement
                 self::$RESULTS["judgment"] = self::$ERROR_SYSTEM_WORDS[11];
-                //unlink($path.$outputname_file);
+                unlink($path.$outputname_file);
             }   
         }
         
@@ -306,7 +306,7 @@ class EvaluateTool{
      * @return the view 
     */
     static function evaluateTimeMemory($time,$memory){
-        if($memory*1024 > self::$MEMORY_LIMIT){
+        if($memory > self::$MEMORY_LIMIT){
             self::$RESULTS["judgment"] = self::$ERROR_SYSTEM_WORDS[7];
         }
         if($time > self::$TIME_LIMIT){
@@ -368,6 +368,7 @@ class EvaluateTool{
             $time_average = $partial_time / self::$LOOPS_TO_TIME;
             //Time per case in miliseconds
             $real_time_per_case = $time_average * 1000;
+
             if($real_time_per_case>self::$TIME_LIMIT){ 
                 self::$RESULTS['judgment'] = self::$ERROR_SYSTEM_WORDS[6];
                 break;
@@ -449,6 +450,9 @@ class EvaluateTool{
                 //var_dump('Floating point exception');
                 self::$RESULTS["judgment"] = self::$ERROR_SYSTEM_WORDS[5];
                 break;
+            default:
+                self::$RESULTS["judgment"] = self::$ERROR_SYSTEM_WORDS[5];
+                break;
         }
     }
 
@@ -463,8 +467,19 @@ class EvaluateTool{
         $sentence_to_evaluate_time = '('.self::$TIME_SENTENCE.$exec_file.') 2>'.$path.'temp'.' <'.$in_file;
         
         exec($sentence_to_evaluate_time,$evaluated_time_output);
-        $usr_time = (float)file_get_contents($path.'temp');
-        dd($usr_time);
+        $tle = file_get_contents($path.'temp');
+
+        if(strpos('Command exited with non-zero status 124',$tle) !== false){
+            $partial1 = explode(' ',$tle);
+            $partial2 = explode('u',$partial1[0]);
+            $usr_time = (float)$partial2[0];
+        }else{
+            $partial1 = explode('124',$tle);
+            $partial2 = explode(' ',$partial1[1]);
+            $partial3 = explode('s',$partial2[1]);
+            $usr_time = (float)$partial3[0];
+        }
+        //dd($usr_time);
         unlink($path.'temp');
         return $usr_time; 
     }
@@ -640,9 +655,11 @@ class EvaluateTool{
      * @param  string $language, string $problem_id, string $code 
      * @return 
      */
-    static function buildCodeFile($file,$language,$problem_id,$code,$id_user){
+    static function buildCodeFile($file,$language,$problem_id,$code,$id_user,$nickname){
 
-        $nameCode = $id_user."_";
+
+            $nameCode = $nickname.'_'.$id_user."_";
+
         switch ($language) {
             case '1':
                 $nameCode .= $problem_id.".c"; 
