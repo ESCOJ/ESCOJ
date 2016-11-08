@@ -76,7 +76,9 @@ class JudgementController extends Controller
         $file = $request->file('code');
         
         $id_user = Auth::user()->id;
-        $limits = $this->problem->findLimitsByIdAndLanguage((int)$id_user,(int)$language);
+
+        $limits = $this->problem->findLimitsByIdAndLanguage((int)$problem_id,(int)$language);
+        
         $nickname = $this->user->getNickname(1);
         if($request->hasFile('code')){
             //This user nickname is only for java rename class

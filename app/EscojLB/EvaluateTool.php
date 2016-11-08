@@ -468,7 +468,7 @@ class EvaluateTool{
         
         exec($sentence_to_evaluate_time,$evaluated_time_output);
         $tle = file_get_contents($path.'temp');
-        dd($tle);
+        //dd($tle);
         if(strpos('Command exited with non-zero status 124',$tle) !== true){
             $partial1 = explode(' ',$tle);
             $partial2 = explode('u',$partial1[0]);
