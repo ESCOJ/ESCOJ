@@ -50,10 +50,10 @@ class EvaluateTool{
 	static function evaluateCode($file,$language,$problem_id,$id_user,$limits,$nickname_user){
         self::$STORAGE_PATH = storage_path() . "/datasets/problem_".$problem_id.'/';
           
-        self::$MEMORY_LIMIT = (int)$limits['ml'];
-        self::$SIZE_LIMIT = (int)$limits['sl'];
-        self::$TIME_LIMIT = (int)$limits['tlpc'];
-        self::$TOTAL_TIME_LIMIT = (int)$limits['ttl'];
+        self::$MEMORY_LIMIT = (isset($limits['ml']) == true ?  (int)$limits['ml']:0);
+        self::$SIZE_LIMIT = (isset($limits['sl']) == true ? (int)$limits['sl']:0);
+        self::$TIME_LIMIT = (isset($limits['tlpc']) == true ? (int)$limits['tlpc']:0);
+        self::$TOTAL_TIME_LIMIT = (isset($limits['ttl']) == true ? (int)$limits['ttl']:0);
         
         self::buildResultArray($language);
         self::$RESULTS["problem_id"] = $problem_id;
