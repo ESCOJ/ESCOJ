@@ -86,11 +86,13 @@ class JudgementController extends Controller
         $file = $request->file('code');
         
         $id_user = Auth::user()->id;
-        $limits = $this->problem->findLimitsByIdAndLanguage((int)$id_user,(int)$language);
 
+        $limits = $this->problem->findLimitsByIdAndLanguage((int)$problem_id,(int)$language);
+        
+        $nickname = $this->user->getNickname(1);
         if($request->hasFile('code')){
             //This user nickname is only for java rename class
-            $nickname = $this->user->getNickname(1);
+            
             $file_name = $file->getClientOriginalName();
             $file_splited = explode('.',$file_name);
             if($language == '3')
@@ -118,9 +120,10 @@ class JudgementController extends Controller
             }
             return redirect()->route("judgment.index");
         }else{
-            $file_temp = EvaluateTool::buildCodeFile($file,$language,$problem_id,$code,$id_user);
+            $file_temp = EvaluateTool::buildCodeFile($file,$language,$problem_id,$code,$id_user,$nickname);
             $real_name_file = 'temp/'.$file_temp;
             $RESULTS = EvaluateTool::evaluateCode($real_name_file,$language,$problem_id,$id_user,$limits,$nickname);
+
             try{
                 if($request->ajax()){
                     $this->judgment->create($RESULTS, $request->contest_id);
