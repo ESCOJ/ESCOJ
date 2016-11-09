@@ -54,7 +54,7 @@ class Problem extends Model
     }
 
     public function contests(){
-        return $this->belongsToMany('EscojLB\Repo\Contest\Contest');
+        return $this->belongsToMany('EscojLB\Repo\Contest\Contest')->withPivot('letter_id');
     }
 
      public function source(){

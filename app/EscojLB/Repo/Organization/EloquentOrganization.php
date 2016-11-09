@@ -25,4 +25,14 @@ class EloquentOrganization implements OrganizationInterface {
       return $this->organization->pluck($value,$key);
     }
 
+    /**
+     * Get a Organization by Organization ID
+     *
+     * @param  int $id       Organization ID
+     * @return Object    Organization model object
+     */
+    public function findById($id){
+        return $this->organization->find($id);
+    }
+
 }

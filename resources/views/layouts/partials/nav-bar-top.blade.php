@@ -2,11 +2,12 @@
 	<div class="container-fluid">
 		<ul class="nav navbar-nav">
 			<li><a href="{{ url('/') }}" style="height:50px;"><img src="{{ asset('images/escoj7.png') }}" style=" width:210px; height:50px; position: relative; top:-14px; left: -30px;"></a></li>
-			<li><a href="{{ route('problem.index') }}">Problems <span class="sr-only">(current)</span></a></li>
-			<li><a href="{{ route('judgment.index') }}">Judgments</a></li>
-			<li><a href="#">Ranks</a></li>
-			<li><a href="./concursos.php">Contests</a></li>
-
+			@if(! isset($in_contest))
+				<li><a href="{{ route('problem.index') }}">Problems <span class="sr-only">(current)</span></a></li>
+				<li><a href="{{ route('judgment.index') }}">Judgments</a></li>
+				<li><a href="{{ route('contest.index') }}">Contests</a></li>
+				<li><a href="#">Ranks</a></li>
+			@endif
 			<!--_________________________________Aqui_______________________________________-->
 			@if (Auth::guest())
 				<li><p class="navbar-text" style="margin-left:28em;">Already have an account?</p></li>
@@ -67,7 +68,12 @@
 					</ul>
 				</li>
 			@else
+			
+			@if(! isset($in_contest)){
 				<li><p class="navbar-text" style="margin-left:35em;"></p></li>
+			@else
+				<li><p class="navbar-text" style="margin-left:60em;"></p></li>
+			@endif
 				<li class="dropdown"style="margin-left:.5em;">
 					<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false" style="height:50px;  ">
 						<img src="{{ asset('images/user_avatar/'.Auth::user()->avatar) }}" class="img-circle" style=" width:45px; height:45px; left: -5px; position: relative; top:-12px;"> <span style="position: relative; top:-12px;">{{ Auth::user()->nickname }} <span class="caret" ></span></span>
@@ -102,24 +108,24 @@
 									<i class="fa fa-folder-open" aria-hidden="true"></i> Problems
 									</a>
 								</li>
-								@if(Auth::user()->role === 'admin')
-									<li>
-										<a href="{{ route('user.users') }}">
-											<i class="fa fa-exchange" aria-hidden="true"></i> Change user role
-										</a>
-									</li>
-								@endif
  							@endif
 							<li>
-								<a href="{{ route('problem.create') }}">
+								<a href="{{ route('contest.create') }}">
 									<i class="fa fa-upload" aria-hidden="true"></i> Create Contest
 								</a>
 							</li>
 							<li>
-								<a href="{{ route('problem.problems') }}">
+								<a href="{{ route('contest.contests') }}">
 								<i class="fa fa-folder-open" aria-hidden="true"></i> Contests
 								</a>
-							</li>							
+							</li>
+							@if(Auth::user()->role === 'admin')
+								<li>
+									<a href="{{ route('user.users') }}">
+										<i class="fa fa-exchange" aria-hidden="true"></i> Change user role
+									</a>
+								</li>
+							@endif							
 						@endif
 
 						<li role="separator" class="divider"></li>

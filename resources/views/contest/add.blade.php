@@ -18,7 +18,6 @@
                     <div class="panel-body">
                         {!!Form::open(['route' => 'contest.store', 'method' => 'POST', 'class' => 'form-horizontal'])!!}
 
-
                             @include('contest.partials.contest')
 
                             <div class="form-group">
@@ -47,21 +46,56 @@
     <script type="text/javascript">
         $('.textarea-content').trumbowyg();
       
-        $('.select-organization').chosen({
+        $('.select-chosen').chosen({
+        });
+        $('.select-chosen-mult').chosen({
         });
     </script>
     <script type="text/javascript">
-    $(function () {
-        $('#datetimepicker6').datetimepicker();
-        $('#datetimepicker7').datetimepicker({
-            useCurrent: false //Important! See issue #1075
+        $(function () {
+            $('#start_date_datetimepicker').datetimepicker({
+                format : 'DD-MM-YYYY, h:mm a',
+                sideBySide: true,
+                useCurrent: false,
+                minDate: moment() 
+            });
+            $('#end_date_datetimepicker').datetimepicker({
+                format : 'DD-MM-YYYY, h:mm a',
+                sideBySide: true,
+                useCurrent: false,
+                minDate: moment()  
+            });
+            $("#start_date_datetimepicker").on("dp.change", function (e) {
+                $('#end_date_datetimepicker').data("DateTimePicker").minDate(e.date);
+            });
+            $("#end_date_datetimepicker").on("dp.change", function (e) {
+                $('#start_date_datetimepicker').data("DateTimePicker").maxDate(e.date);
+                $('#offcontest_start_date_datetimepicker').data("DateTimePicker").minDate(e.date);
+                $('#offcontest_end_date_datetimepicker').data("DateTimePicker").minDate(e.date);
+
+            });
         });
-        $("#datetimepicker6").on("dp.change", function (e) {
-            $('#datetimepicker7').data("DateTimePicker").minDate(e.date);
+        $(function () {
+            $('#offcontest_start_date_datetimepicker').datetimepicker({
+                format : 'DD-MM-YYYY, h:mm a',
+                sideBySide: true,
+                useCurrent: false,
+                minDate: moment() 
+
+            });
+            $('#offcontest_end_date_datetimepicker').datetimepicker({
+                format : 'DD-MM-YYYY, h:mm a',
+                sideBySide: true,
+                useCurrent: false, //Important! See issue #1085
+                minDate: moment() 
+            });
+            $("#offcontest_start_date_datetimepicker").on("dp.change", function (e) {
+                $('#offcontest_end_date_datetimepicker').data("DateTimePicker").minDate(e.date);
+            });
+            $("#offcontest_end_date_datetimepicker").on("dp.change", function (e) {
+                $('#offcontest_start_date_datetimepicker').data("DateTimePicker").maxDate(e.date);
+            });
         });
-        $("#datetimepicker7").on("dp.change", function (e) {
-            $('#datetimepicker6').data("DateTimePicker").maxDate(e.date);
-        });
-    });
-</script>
+    </script>
+
 @endsection

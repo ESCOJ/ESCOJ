@@ -113,5 +113,14 @@ interface UserInterface {
      */
     public function changeRole($id, $role);
 
+    /**
+     * Get all User as key-value array 
+     *
+     * @param  string $key  key to associate
+     * @param  string $value  value to associate
+     * @return array    Associative Array with all User
+     */
+    public function getKeyValueAll($key,$value);
+
 
 }

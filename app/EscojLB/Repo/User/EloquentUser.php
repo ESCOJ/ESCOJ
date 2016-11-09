@@ -192,4 +192,16 @@ class EloquentUser implements UserInterface {
         return $user->save();
     }
 
+    /**
+     * Get all User as key-value array 
+     *
+     * @param  string $key  key to associate
+     * @param  string $value  value to associate
+     * @return array    Associative Array with all User
+     */
+    public function getKeyValueAll($key,$value)
+    { 
+      return $this->user->pluck($value,$key);
+    }
+
 }

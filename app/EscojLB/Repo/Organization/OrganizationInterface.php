@@ -11,4 +11,12 @@ interface OrganizationInterface {
      */
     public function getKeyValueAll($key,$value);
 
+     /**
+     * Get a Organization by Organization ID
+     *
+     * @param  int $id       Organization ID
+     * @return Object    Organization model object
+     */
+    public function findById($id);
+
 }

@@ -2,10 +2,6 @@
 
 @section('title' , 'Problems-admin')
 
-@section('styles')
-    {!!Html::style('plugins/chosen/chosen.css')!!}
-@endsection
-
 @section('content')
 <div id="divEspacio" class="rox marg-main" style="margin-top:40px;"></div>
 <div class="container">
@@ -106,12 +102,8 @@
 </div>
 @endsection
 
-@section('scripts')
-    {!!Html::script('plugins/chosen/chosen.jquery.js')!!}
-    
+@section('scripts')    
     <script type="text/javascript">  
-        $('.select-chosen').chosen({
-        });
         $('div.alert').delay(10000).fadeOut(350);
     </script>
 @endsection
