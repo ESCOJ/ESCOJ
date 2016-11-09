@@ -3,6 +3,8 @@
 namespace ESCOJ\Providers;
 use EscojLB\Repo\Problem\Problem;
 use ESCOJ\Policies\ProblemPolicy;
+use EscojLB\Repo\Contest\Contest;
+use ESCOJ\Policies\ContestPolicy;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
 
@@ -16,6 +18,9 @@ class AuthServiceProvider extends ServiceProvider
     protected $policies = [
         'ESCOJ\Model' => 'ESCOJ\Policies\ModelPolicy',
         Problem::class => ProblemPolicy::class,
+        Contest::class => ContestPolicy::class,
+
+
     ];
 
     /**
@@ -26,7 +31,6 @@ class AuthServiceProvider extends ServiceProvider
     public function boot()
     {
         $this->registerPolicies();
-
         //
     }
 }

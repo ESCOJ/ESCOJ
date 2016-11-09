@@ -21,7 +21,7 @@
                     <td>{{ $judgment->id }}</td>
                     <td>{{ $judgment->submitted_at }}</td>
                     <td>{{ $judgment->user->nickname }}</td>
-                    <td>{!!link_to_route('problem.show', $title = $judgment->problem_id, $parameters = ['id'=> $judgment->problem_id ], $attributes = [ ]) !!}</td>
+                    <td>{{ $judgment->problem_id }}</td>
                     @if($judgment->judgment != 'Accepted')
                         <td>
                             <span class="label label-danger">

@@ -29,14 +29,17 @@
             <div>
                 <br>
                     <h1 class="text-center" style="margin-top: -10px;"><strong>{{ $contest->name }}</strong></h1>
-                    <div class="clock" id="clock" data-end-date= "{{ $contest->end_date }}" style="margin-left: 24em; margin-top: -1.3em;"></div>
-                    <div class="message text-center"></div>
+                    <div class="clock" id="clock" data-date= "{{ ($contest_type == 'future' )? $contest->start_date:$contest->end_date }}" style="margin-left: 24em; margin-top: -1.3em;"></div>
+                    @if($contest_type == 'future')
+                        <div class="text-center"><h3><label class="label label-primary">Remaining time for the contest start!!</label></h3></div>
+                    @elseif($contest_type == 'past')
+                        <div class="text-center"><h3><label class="label label-primary">The contest is over!</label></h3></div>
+                    @endif
             </div>
         </div>
     </div>
 </div>
     @include('contest.partials.show_contest.nav_tabs')
-
 @endsection
 
 @section('scripts')    
@@ -52,7 +55,7 @@
         $(document).ready(function() {
             // Set dates.
             //var futureDate  = new Date("2016","10","1","00","47","00");
-            var futureDate  = new Date($("#clock").data('end-date'));
+            var futureDate  = new Date($("#clock").data('date'));
 
             var currentDate = new Date();
 

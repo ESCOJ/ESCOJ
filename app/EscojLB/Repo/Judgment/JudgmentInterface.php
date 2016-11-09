@@ -15,18 +15,18 @@ interface JudgmentInterface {
      * Get paginated judgments
      *
      * @param int $limit Results per page
-     * @param int $by_cntest indicates if judgments will be filtered by contest_id field.
+     * @param array $contest_data indicates if judgments will be filtered by contest_id field and if the contest is current appply the logic to frozen time.
      * @return LengthAwarePaginator with the judgments to paginate
      */
-    public function getAllPaginate($limit = 10, $by_contest = 0);
+    public function getAllPaginate($limit = 10, array $contest_data = null);
 
     /**
      * Get filter paginated judgments
      *
      * @param int $limit Results per page
      * @param array  Data that contains the filters to apply to the query.
-     * @param int $by_cntest indicates if judgments will be filtered by contest_id field.
+     * @param array $contest_data indicates if judgments will be filtered by contest_id field and if the contest is current appply the logic to frozen time.
      * @return LengthAwarePaginator with the judgments to paginate
      */
-    public function getAllPaginateFiltered($limit = 10, array $data, $by_contest = 0);
+    public function getAllPaginateFiltered($limit = 10, array $data, array $contest_data = null);
 }

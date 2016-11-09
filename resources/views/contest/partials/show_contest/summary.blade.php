@@ -27,7 +27,7 @@
 
         <tr>
             <td>
-                <h4 class="text-primary">End_date:</h4>
+                <h4 class="text-primary">End date:</h4>
             </td>
             <td>
                 {!! $contest->end_date !!}

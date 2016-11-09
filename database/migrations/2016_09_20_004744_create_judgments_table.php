@@ -32,7 +32,7 @@ class CreateJudgmentsTable extends Migration
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
             $table->foreign('contest_id')->references('id')->on('contests')->onDelete('cascade');
 
-            $table->timestamps();
+            //$table->timestamps();
         });
     }
 

@@ -2,19 +2,22 @@
 
 use Illuminate\Database\Eloquent\Model;
 use EscojLB\Repo\User\UserInterface;
+use EscojLB\Repo\Contest\ContestInterface;
+
 use Illuminate\Support\Facades\DB;
 
 class EloquentJudgment implements JudgmentInterface {
 
     protected $judgment;
     protected $user;
-
+    protected $contest;
 
     // Class expects an Eloquent model
-    public function __construct(Model $judgment, UserInterface $user)
+    public function __construct(Model $judgment, UserInterface $user, ContestInterface $contest)
     {
         $this->judgment = $judgment;
         $this->user = $user;
+        $this->contest = $contest;
     }
 
     /**
@@ -47,15 +50,21 @@ class EloquentJudgment implements JudgmentInterface {
      * Get paginated judgments
      *
      * @param int $limit Results per page
-     * @param int $by_contest indicates if judgments will be filtered by contest_id field.
+     * @param array $contest_data indicates if judgments will be filtered by contest_id field and if the contest is current appply the logic to frozen time.
      * @return LengthAwarePaginator with the judgments to paginate
      */
-    public function getAllPaginate($limit = 10, $by_contest = 0){
-        if($by_contest)
-            $this->judgment = $this->judgment->where('contest_id', $by_contest);
+    public function getAllPaginate($limit = 10, array $contest_data = null){
+        if(! is_null($contest_data)){
+            $queryBuilder = $this->judgment->where('contest_id', $contest_data['contest_id']);
+            if($contest_data['status'] == 'current')
+                $queryBuilder->where(function ($query) use ($contest_data) {
+                        $query->where('submitted_at', '<=' , $contest_data['limit_date_time'])
+                              ->orWhere('user_id', $contest_data['user_id'] );
+                    });
+        }
         else
-            $this->judgment = $this->judgment->where('contest', 0);
-        return $this->judgment->orderBy('id','desc')->with('user')->paginate($limit);
+            $queryBuilder = $this->judgment->where('contest', 0);    
+        return $queryBuilder->orderBy('id','desc')->with('user')->paginate($limit);
     }
 
     /**
@@ -63,12 +72,18 @@ class EloquentJudgment implements JudgmentInterface {
      *
      * @param int $limit Results per page
      * @param array  Data that contains the filters to apply to the query.
-     * @param int $by_contest indicates if judgments will be filtered by contest_id field.
+     * @param array $contest_data indicates if judgments will be filtered by contest_id field and if the contest is current appply the logic to frozen time.
      * @return LengthAwarePaginator with the judgments to paginate
      */
-    public function getAllPaginateFiltered($limit = 10, array $data, $by_contest = 0){
-        if($by_contest)
-            $queryBuilder = $this->judgment->where('contest_id', $by_contest);
+    public function getAllPaginateFiltered($limit = 10, array $data, array $contest_data = null){
+        if(! is_null($contest_data)){
+            $queryBuilder = $this->judgment->where('contest_id', $contest_data['contest_id']);
+            if($contest_data['status'] == 'current')
+                $queryBuilder->where(function ($query) use ($contest_data) {
+                        $query->where('submitted_at', '<=' , $contest_data['limit_date_time'])
+                              ->orWhere('user_id', $contest_data['user_id'] );
+                    });
+        }
         else
             $queryBuilder = $this->judgment->where('contest', 0);
 

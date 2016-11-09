@@ -48,6 +48,22 @@ interface ContestInterface {
      */
     public function getAllPaginateFiltered($limit = 10, array $data, $no_admin = 0);
 
+     /**
+     * Get all problems order by lletter id
+     *
+     * @param int $contest_id Id of contest.
+     * @return Collection with all problems of a contest.
+     */
+    public function getAllProblemsOrderByLetterId($contest_id);
+
+    /**
+     * Get all Users with eager loading judgments of a contest
+     *
+    * @param array $contest_data indicates if judgments will be filtered by contest_id field and if the contest is current appply the logic to frozen time.
+     * @return Collection with all Users of a contest.
+     */
+    public function getAllUsersWithJudgmentsByContest($contest_data);
+
     /**
      * Get a Contest by Contest ID
      *
@@ -71,5 +87,22 @@ interface ContestInterface {
      * @return array  with all ids of the selected users
      */
     public function getSelectedUsers(Model $contest);
+
+    /**
+     * Retrieve the penalization time and the star date.
+     *
+     * @param int $id    Contest ID
+     * @return collection  
+     */
+    public function getPenalizationTimeAndStartDate($id);
+
+    /**
+     * Add a user to a contest.
+     *
+     * @param int $contest_id Id of contest.
+     * @param int $user_id Id of user.
+     * @return Collection with all problems of a contest.
+     */
+    public function attach($contest_id, $user_id);
 
 }

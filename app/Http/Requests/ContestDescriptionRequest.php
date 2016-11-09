@@ -43,7 +43,7 @@ class ContestDescriptionRequest extends FormRequest
 
             'organization_id' => 'required|integer', //exists:sources,id
             'penalization' => 'required|integer|min:0|max:60', //exists:sources,id
-            'frozen_time' => 'required|integer|min:0|max:100',
+            'frozen_time' => 'required|integer|min:0|max:200',
             'access_type' => 'required|string|min:0|max:30',
             'description' => 'required|max:5000',
             //'start_date' => 'required|date_format:d-m-Y# g:i a|after:now|before:end_date',

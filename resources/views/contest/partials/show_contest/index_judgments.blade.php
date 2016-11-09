@@ -9,14 +9,14 @@
             <table style="border-collapse: separate;margin:0 auto;">
                 <tr style="display:inline; border-spacing:10px;">
                     <td>
-                        {!!Form::text('user',null,['id'=>'user','class'=>'form-control ','placeholder'=>'User ID'])!!}
+                        {!!Form::text('user',null,['id'=>'user','class'=>'form-control ','placeholder'=>'Nickname'])!!}
                     </td>
                     <td>
                        {!!Form::text('problemm',null,['id'=>'problemm','class'=>'form-control ','placeholder'=>'Problem ID'])!!}
                     </td>
                     
                     <td>
-                        {!! Form::select('language',$languages,null,['id'=>'language', 'class' => 'form-control select-chosen','placeholder'=>'Select a language']) !!}
+                        {!! Form::select('language',$languages,null,['id'=>'language', 'class' => 'form-control select-chosen','placeholder'=>'All languages']) !!}
                     </td>
                     <td>
                         <button onclick="showJudgmentsFiltered()" class="btn btn-primary" >

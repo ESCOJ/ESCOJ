@@ -55,6 +55,8 @@ class Kernel extends HttpKernel
         'admin' => \ESCOJ\Http\Middleware\Admin::class,
         'adminOrProblemSetter' => \ESCOJ\Http\Middleware\AdminOrProblemSetter::class,
         'problemAuthorize' => \ESCOJ\Http\Middleware\ProblemAuthorize::class,
+        'adminProblemSetterOrCoach' => \ESCOJ\Http\Middleware\AdminProblemSetterOrCoach::class,
+        'contestAuthorize' => \ESCOJ\Http\Middleware\ContestAuthorize::class,
 
 
     ];

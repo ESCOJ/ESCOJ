@@ -84,7 +84,6 @@
  Your profile</a></li>
 						<li><a href="{{ url('/contestant/edit') }}"><i class="fa fa-pencil-square-o" aria-hidden="true"></i>
  Edit account</a></li>
-						<li><a href="#">Something else here</a></li>
 
 						@if(Auth::user()->role != 'contestant')
 							<li role="separator" class="divider"></li>

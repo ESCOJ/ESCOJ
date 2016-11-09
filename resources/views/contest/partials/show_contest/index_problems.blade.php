@@ -9,9 +9,9 @@
                 <th style="text-align: center;">ACCURACY</th>
                 <th style="text-align: center;">SOLVED</th>
                 <th style="text-align: center;">SUBMISSIONS</th>
-                @if(Auth::check())
+                @can('belongs', $contest)
                     <th style="text-align: center;">SUBMIT</th>
-                @endif
+                @endcan
             </tr>
         </thead>
 
@@ -28,13 +28,13 @@
                     <td>0</td>
                     <td>0</td>
 
-                    @if(Auth::check())
+                    @can('belongs', $contest)
                         <td>
                             <a onclick = "addJudgment({{ $problem->id }})" id="show_problem" style="cursor:pointer;">
                                 <i class="fa fa-paper-plane" aria-hidden="true"></i>
                             </a>
                         </td>
-                    @endif
+                    @endcan
 
                 </tr>
             @endforeach

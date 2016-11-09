@@ -195,6 +195,35 @@ class EloquentContest implements ContestInterface {
     }
 
     /**
+     * Get all problems order by lletter id
+     *
+     * @param int $contest_id Id of contest.
+     * @return Collection with all problems of a contest.
+     */
+    public function getAllProblemsOrderByLetterId($contest_id){
+        $contest = $this->findById($contest_id);
+        return $contest->problems()->orderBy('letter_id')->pluck('letter_id','problem_id');
+    }
+
+    /**
+     * Get all Users with eager loading judgments of a contest
+     *
+     * @param array $contest_data indicates if judgments will be filtered by contest_id field and if the contest is current appply the logic to frozen time.
+     * @return Collection with all Users of a contest.
+     */
+    public function getAllUsersWithJudgmentsByContest($contest_data){
+        $contest = $this->findById($contest_data['contest_id']);
+        return $contest->users()->with(['judgments' => function($query) use ($contest_data) {
+                $query = $query->where('contest_id', $contest_data['contest_id']);
+
+                if($contest_data['status'] == 'current')
+                    $query->where('submitted_at', '<=' , $contest_data['limit_date_time']);
+
+            }])->get(['users.id','nickname','avatar']);
+    }
+
+
+    /**
      * Get a Contest by Contest ID
      *
      * @param  int $id       Contest ID
@@ -273,6 +302,29 @@ class EloquentContest implements ContestInterface {
     protected function filterByOrganization($organization)
     {
         return  $this->organization->findById($organization)->contests()->with('organization');
+    }
+
+    /**
+     * Retrieve the penalization time and start date.
+     *
+     * @param int $id    Contest ID
+     * @return Collection 
+     */
+    public function getPenalizationTimeAndStartDate($id){
+        return $this->contest->find($id,['penalization','start_date','id']);
+    }
+
+    /**
+     * Add a user to a contest.
+     *
+     * @param int $contest_id Id of contest.
+     * @param int $user_id Id of user.
+     * @return Collection with all problems of a contest.
+     */
+    public function attach($contest_id, $user_id){
+        $contest = $this->findById($contest_id);
+        if(!$contest->users->contains($user_id))
+            $contest->users()->attach($user_id);
     }
 
 }

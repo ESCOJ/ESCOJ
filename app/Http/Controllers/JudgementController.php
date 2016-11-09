@@ -10,6 +10,7 @@ use EscojLB\Repo\Tag\TagInterface;
 use EscojLB\Repo\Judgment\JudgmentInterface;
 use EscojLB\Repo\Problem\ProblemInterface;
 use EscojLB\Repo\User\UserInterface;
+use EscojLB\Repo\Contest\ContestInterface;
 use ESCOJ\EscojLB\EvaluateTool;
 use Illuminate\Support\Facades\Auth;
 
@@ -19,10 +20,13 @@ class JudgementController extends Controller
     protected $language;
     protected $tag;
     protected $problem;
+    protected $judgment;
     protected $user;
+    protected $contest;
 
 
-    public function __construct(LanguageInterface $language,TagInterface $tag, JudgmentInterface $judgment, ProblemInterface $problem,UserInterface $user){
+
+    public function __construct(LanguageInterface $language,TagInterface $tag, JudgmentInterface $judgment, ProblemInterface $problem, UserInterface $user, ContestInterface $contest){
 
         $this->middleware('auth', ['except' => ['index']]);
 
@@ -31,6 +35,8 @@ class JudgementController extends Controller
         $this->problem = $problem;
         $this->judgment = $judgment;
         $this->user = $user;
+        $this->contest = $contest;
+
     }
     /**
      * Display a listing of the resource.
@@ -71,6 +77,8 @@ class JudgementController extends Controller
      */
     public function store(JudgmentAddRequest $request)
     {
+        if($request->has('contest_id'))
+            $this->authorize('belongs',$this->contest->findById($request->contest_id));
         $excep = '';
         $code = $request->input('your_code_in_the_editor');
         $language = $request->input('language');
