@@ -12,15 +12,15 @@ class EvaluateTool{
 	private static $RESULTS = array();
 	private static $PYTHON = "python ";
     private static $RTE_SENTENCE = "timeout 60 ";
-    private static $OPTIMIZED_COMPILATION = "";
+    private static $OPTIMIZED_COMPILATION = " -O2 ";
     private static $TIME_SENTENCE = "time timeout 60 ";
     private static $MEMORY_SENTENCE = "/usr/bin/time -f '%M ' timeout 60 ";
-	private static $GCC = "/usr/bin/gcc ";
-	private static $GCCPLUSPLUS = "/usr/bin/clang++ -std=c++11 ";
+	private static $GCC = "/usr/bin/gcc -std=c99 ";
+	private static $GCCPLUSPLUS = "/usr/bin/g++ ";
 	private static $JAVAC = "javac ";
 	private static $JAVA = "java -Djava.compiler=NONE -cp ";
 	private static $REDIRECT_OUTPUT = " 2>&1 ";
-	private static $SYSTEM_WORDS = array('thread','exec','system','fork','pthread_t','pthread_create','fopen','for(;;)');
+	private static $SYSTEM_WORDS = array('thread','exec','system','fork','pthread_t','pthread_create','fopen');
     private static $LOOPS_TO_TIME =  5;
     private static $SIZE_LIMIT = 0;
     private static $TIME_LIMIT = 0;
@@ -68,13 +68,7 @@ class EvaluateTool{
         self::$RESULTS["file_size"] = (string)$size_file;
         
 		$wordsFounded = self::searchSystemWords($file);
-		if(!empty($wordsFounded)){
-            self::deleteCode($realpath_file);
 
-            self::$RESULTS["judgment"] = self::$ERROR_SYSTEM_WORDS[6];
-			return self::$RESULTS;
-		}
-        
         if($size_file > self::$SIZE_LIMIT){
             self::deleteCode($realpath_file);
 
@@ -82,16 +76,24 @@ class EvaluateTool{
             return self::$RESULTS;
         }
 
+		if(!empty($wordsFounded)){
+            self::deleteCode($realpath_file);
+
+            self::$RESULTS["judgment"] = self::$ERROR_SYSTEM_WORDS[0];
+			return self::$RESULTS;
+		}
+        
+
+
 		switch ($language) {
 			case '1':
 				# C
 				$output_file = $nickname_user.'_'.$id_user."_".$problem_id.".out";
 
-                //$sentence_to_compile = self::$GCC . $realpath_file . " -o " . self::$STORAGE_PATH . $output_file .self::$OPTIMIZED_COMPILATION.self::$REDIRECT_OUTPUT;
-                
-                $sentence_to_compile = "gcc " . $realpath_file . " -o " . self::$STORAGE_PATH . $output_file . " -O2 -ansi -fno-asm -Wall -lm -static" .self::$REDIRECT_OUTPUT;
+                $sentence_to_compile = self::$GCC . $realpath_file . " -o " . self::$STORAGE_PATH . $output_file .self::$OPTIMIZED_COMPILATION. "-static -lm";  
 
-                    $process = new Process('/usr/bin/gcc /home/vagrant/Code/ESCOJ/storage/Programitas/a_plus_b.c -o /home/vagrant/Code/ESCOJ/storage/Programitas/chidoliro2.out');
+                    $process = new Process($sentence_to_compile);
+                    
                     $process->run();
 
                     // executes after the command finishes
@@ -99,12 +101,7 @@ class EvaluateTool{
                         throw new ProcessFailedException($process);
                     }
 
-                    dd( $process->getOutput() );
-                //dd($sentence_to_compile);
-                exec('gcc /home/vagrant/Code/Programitas/a_plus_b.c 2>&1',$output1);
-                dd($output1);
-
-                if(empty($output1)){
+                if( empty( $process->getOutput() ) ){
                 	
                     $output_file = self::$STORAGE_PATH . $output_file;
 
@@ -397,6 +394,9 @@ class EvaluateTool{
             //total time for every entry of the problem
             $real_time_total = $real_time_total + $real_time_per_case;
         }
+
+        if($real_time_total>self::$TOTAL_TIME_LIMIT)
+            self::$RESULTS['judgment'] = self::$ERROR_SYSTEM_WORDS[6];
         
         return $real_time_total;
     }
@@ -427,6 +427,10 @@ class EvaluateTool{
             //total time for every entry of the problem
             $real_time_total = $real_time_total + $real_time_per_case;
         }
+
+        if($real_time_total>self::$TOTAL_TIME_LIMIT)
+            self::$RESULTS['judgment'] = self::$ERROR_SYSTEM_WORDS[6];
+
         
         return $real_time_total;
     }
