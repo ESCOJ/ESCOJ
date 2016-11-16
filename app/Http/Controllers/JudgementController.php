@@ -13,6 +13,8 @@ use EscojLB\Repo\User\UserInterface;
 use EscojLB\Repo\Contest\ContestInterface;
 use ESCOJ\EscojLB\EvaluateTool;
 use Illuminate\Support\Facades\Auth;
+use Storage;
+
 
 class JudgementController extends Controller
 {
@@ -65,7 +67,7 @@ class JudgementController extends Controller
      */
     public function create(Request $request, $problem_id)
     {
-        $languages = $this->language->getKeyValueAll('id','name');
+        $languages = $this->problem->getKeyValueAllLanguages('id','name',$problem_id);
         return view('judgment.add',['languages' => $languages,'id_problem' => $problem_id]);
     }
 
@@ -89,19 +91,18 @@ class JudgementController extends Controller
 
         $limits = $this->problem->findLimitsByIdAndLanguage((int)$problem_id,(int)$language);
         
-        $nickname = $this->user->getNickname(1);
+        $nickname = $this->user->getNickname($id_user);
         if($request->hasFile('code')){
-            //This user nickname is only for java rename class
             
             $file_name = $file->getClientOriginalName();
             $file_splited = explode('.',$file_name);
+
             if($language == '3')
                 $name = $nickname.'_'.$id_user."_".$problem_id . "." . $file_splited[1]; 
             else
                 $name = $id_user."_".$problem_id . "." . $file_splited[1]; 
-            $file_temp = $file->storeAs('temp',$name,"judgements");
-            
 
+            $file_temp = $file->storeAs('/user_'.$id_user.'/problem_'.$problem_id, $name, "judgements");
             $RESULTS = EvaluateTool::evaluateCode($file_temp,$language,$problem_id,$id_user,$limits,$nickname);
             
             try{
@@ -120,9 +121,9 @@ class JudgementController extends Controller
             }
             return redirect()->route("judgment.index");
         }else{
+
             $file_temp = EvaluateTool::buildCodeFile($file,$language,$problem_id,$code,$id_user,$nickname);
-            $real_name_file = 'temp/'.$file_temp;
-            $RESULTS = EvaluateTool::evaluateCode($real_name_file,$language,$problem_id,$id_user,$limits,$nickname);
+            $RESULTS = EvaluateTool::evaluateCode($file_temp,$language,$problem_id,$id_user,$limits,$nickname);
 
             try{
                 if($request->ajax()){

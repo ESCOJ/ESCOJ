@@ -278,7 +278,7 @@ class RegisterController extends Controller
             'last_name' => 'required|max:30',
             'nickname' => 'required|max:30|alpha_dash|unique:users',
             'email' => 'required|email|max:60|confirmed|unique:users',
-            'password' => 'required|min:6|confirmed',
+            'password' => 'required|max:30|min:6|confirmed',
             'country' => 'required',
             'institution' => 'required',
             'avatar' => 'image|max:35|dimensions:width=120,height=120',

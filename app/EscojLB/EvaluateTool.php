@@ -1,6 +1,9 @@
 <?php 
 
 namespace ESCOJ\EscojLB;
+use Storage;
+use Symfony\Component\Process\Process;
+use Symfony\Component\Process\Exception\ProcessFailedException;
 
 class EvaluateTool{
 
@@ -12,7 +15,7 @@ class EvaluateTool{
     private static $OPTIMIZED_COMPILATION = "";
     private static $TIME_SENTENCE = "time timeout 60 ";
     private static $MEMORY_SENTENCE = "/usr/bin/time -f '%M ' timeout 60 ";
-	private static $GCC = "/usr/bin/clang ";
+	private static $GCC = "/usr/bin/gcc ";
 	private static $GCCPLUSPLUS = "/usr/bin/clang++ -std=c++11 ";
 	private static $JAVAC = "javac ";
 	private static $JAVA = "java -Djava.compiler=NONE -cp ";
@@ -58,19 +61,22 @@ class EvaluateTool{
         self::buildResultArray($language);
         self::$RESULTS["problem_id"] = $problem_id;
         self::$RESULTS["user_id"] = $id_user;
-        $size_file = filesize(public_path() . '/' . $file);
+
+        $realpath_file = storage_path('judgments/'.$file);
+
+        $size_file = filesize( $realpath_file );
         self::$RESULTS["file_size"] = (string)$size_file;
         
 		$wordsFounded = self::searchSystemWords($file);
 		if(!empty($wordsFounded)){
-            self::deleteCode(public_path() . '/' . $file);
+            self::deleteCode($realpath_file);
 
             self::$RESULTS["judgment"] = self::$ERROR_SYSTEM_WORDS[6];
 			return self::$RESULTS;
 		}
         
         if($size_file > self::$SIZE_LIMIT){
-            self::deleteCode(public_path() . '/' . $file);
+            self::deleteCode($realpath_file);
 
             self::$RESULTS["judgment"] = self::$ERROR_SYSTEM_WORDS[2];
             return self::$RESULTS;
@@ -81,10 +87,23 @@ class EvaluateTool{
 				# C
 				$output_file = $nickname_user.'_'.$id_user."_".$problem_id.".out";
 
-                $sentence_to_compile = self::$GCC . realpath($file) . " -o " . self::$STORAGE_PATH . $output_file .self::$OPTIMIZED_COMPILATION.self::$REDIRECT_OUTPUT;
-
-                exec($sentence_to_compile,$output1);
+                //$sentence_to_compile = self::$GCC . $realpath_file . " -o " . self::$STORAGE_PATH . $output_file .self::$OPTIMIZED_COMPILATION.self::$REDIRECT_OUTPUT;
                 
+                $sentence_to_compile = "gcc " . $realpath_file . " -o " . self::$STORAGE_PATH . $output_file . " -O2 -ansi -fno-asm -Wall -lm -static" .self::$REDIRECT_OUTPUT;
+
+                    $process = new Process('/usr/bin/gcc /home/vagrant/Code/ESCOJ/storage/Programitas/a_plus_b.c -o /home/vagrant/Code/ESCOJ/storage/Programitas/chido.out');
+                    $process->run();
+
+                    // executes after the command finishes
+                    if (!$process->isSuccessful()) {
+                        throw new ProcessFailedException($process);
+                    }
+
+                    dd( $process->getOutput() );
+                //dd($sentence_to_compile);
+                exec('gcc /home/vagrant/Code/Programitas/a_plus_b.c 2>&1',$output1);
+                dd($output1);
+
                 if(empty($output1)){
                 	
                     $output_file = self::$STORAGE_PATH . $output_file;
@@ -110,16 +129,18 @@ class EvaluateTool{
                     #COMPILATION ERROR!!!
                     self::$RESULTS["judgment"] = self::$ERROR_SYSTEM_WORDS[1];
                 }
-                self::deleteCode(public_path() . '/' . $file);
+                self::deleteCode($realpath_file);
                 
 				break;
 			case '2':
 				# C++
 				$output_file = $nickname_user.'_'.$id_user."_".$problem_id.".out";
 
-                $sentence_to_compile = self::$GCCPLUSPLUS . realpath($file) . " -o " . self::$STORAGE_PATH . $output_file .self::$OPTIMIZED_COMPILATION.self::$REDIRECT_OUTPUT;
+                $sentence_to_compile = self::$GCCPLUSPLUS . $realpath_file . " -o " . self::$STORAGE_PATH . $output_file .self::$OPTIMIZED_COMPILATION.self::$REDIRECT_OUTPUT;
 
-                exec($sentence_to_compile,$output1);
+                //exec($sentence_to_compile,$output1);
+                exec('g++ -v /home/vagrant/Code/Programitas/a_plus_b.cpp 2>&1',$output1);
+                dd($output1);
                 
                 if(empty($output1)){
                     
@@ -146,7 +167,7 @@ class EvaluateTool{
                     #COMPILATION ERROR!!!
                     self::$RESULTS["judgment"] = self::$ERROR_SYSTEM_WORDS[1];
                 }
-                self::deleteCode(public_path() . '/' . $file);
+                self::deleteCode($realpath_file);
                 
 				break;
 			case '3':
@@ -154,7 +175,7 @@ class EvaluateTool{
                 $replace = $nickname_user.'_'.$id_user."_".$problem_id;
                 
                 self::renameClassForJava($file,$replace);
-                $sentence_to_compile = self::$JAVAC. realpath($file) .' -d '.self::$STORAGE_PATH. self::$REDIRECT_OUTPUT;
+                $sentence_to_compile = self::$JAVAC. $realpath_file .' -d '.self::$STORAGE_PATH. self::$REDIRECT_OUTPUT;
 
                 exec($sentence_to_compile,$output);
                 
@@ -182,14 +203,15 @@ class EvaluateTool{
                     #COMPILATION ERROR!!!
                     self::$RESULTS["judgment"] = self::$ERROR_SYSTEM_WORDS[1];
                 }
-                self::deleteCode(public_path() . '/' . $file);
+                self::deleteCode($realpath_file);
                 
 				break;
 			case '4':
 				# PYTHON
                 $name = explode('/',$file);
                 $output_file = self::$STORAGE_PATH.$name[1];
-                $cp = "cp ".realpath($file) . ' '.$output_file;
+                $cp = "cp ".$realpath_file . ' '.$output_file;
+
                 exec($cp);
 
                 $sentence_to_execute = self::$PYTHON.$output_file;
@@ -209,7 +231,7 @@ class EvaluateTool{
                     self::evaluateWA($sentence_to_execute,$problem_id,$language,$id_user);
                     
                 }
-                self::deleteCode(public_path() . '/' . $file);
+                self::deleteCode($realpath_file);
                 self::deleteCode($output_file);
 				break;	
 		}
@@ -321,7 +343,6 @@ class EvaluateTool{
      * @return 
     */
     static function deleteCode($file){
-
         unlink($file);
     }
 
@@ -585,9 +606,9 @@ class EvaluateTool{
 	*/
 	static function searchSystemWords($file){
 		$wordsFounded = array();
-		$file_handle = fopen($file, "r");
-		$file_path = (string)$file;
-		$contentFile = file_get_contents($file_path);
+		$file_handle = fopen(storage_path('judgments/'.$file), "r");
+
+		$contentFile = file_get_contents(storage_path('judgments/'.$file));
 
         foreach(self::$SYSTEM_WORDS as $sw)
         {
@@ -629,9 +650,8 @@ class EvaluateTool{
      * @return 
     */
     static function renameClassForJava($file,$replace){
-        $file_handle = fopen($file, "r+");
-        $file_path = (string)$file;
-        //var_dump($file);
+        $file_handle = fopen(storage_path('judgments/'.$file), "r+");
+
         $temp = '';
         $flag = false;
         while (!feof($file_handle)) {
@@ -646,7 +666,7 @@ class EvaluateTool{
             else
                 $temp.=$line;
         }
-        $file_handle = fopen($file, "w+");
+        $file_handle = fopen(storage_path('judgments/'.$file), "w+");
         fwrite($file_handle, $temp);
         fclose($file_handle);
     }
@@ -679,13 +699,10 @@ class EvaluateTool{
                 # code...
                 break;
         }
-        
-        $file_code = fopen("temp/".$nameCode,"w");
-        /*$file_temp = $file->storeAs("temp",$nameCode,"judgements");
-        file_put_contents($file_temp, $code);*/
-        fwrite($file_code,$code);
-        fclose($file_code);
-        return $nameCode;
+
+        $path = 'user_'.$id_user.'/problem_'.$problem_id.'/';
+        Storage::disk('judgements')->put($path.$nameCode, $code);
+        return $path.$nameCode;
     }
 
     /**
