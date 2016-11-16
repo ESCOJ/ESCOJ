@@ -91,7 +91,7 @@ class EvaluateTool{
                 
                 $sentence_to_compile = "gcc " . $realpath_file . " -o " . self::$STORAGE_PATH . $output_file . " -O2 -ansi -fno-asm -Wall -lm -static" .self::$REDIRECT_OUTPUT;
 
-                    $process = new Process('/usr/bin/gcc /home/vagrant/Code/ESCOJ/storage/Programitas/a_plus_b.c -o /home/vagrant/Code/ESCOJ/storage/Programitas/chido.out');
+                    $process = new Process('/usr/bin/gcc /home/vagrant/Code/ESCOJ/storage/Programitas/a_plus_b.c -o /home/vagrant/Code/ESCOJ/storage/Programitas/chidoliro2.out');
                     $process->run();
 
                     // executes after the command finishes
@@ -139,7 +139,7 @@ class EvaluateTool{
                 $sentence_to_compile = self::$GCCPLUSPLUS . $realpath_file . " -o " . self::$STORAGE_PATH . $output_file .self::$OPTIMIZED_COMPILATION.self::$REDIRECT_OUTPUT;
 
                 //exec($sentence_to_compile,$output1);
-                exec('g++ -v /home/vagrant/Code/Programitas/a_plus_b.cpp 2>&1',$output1);
+                exec('/usr/bin/g++ /home/vagrant/Code/ESCOJ/storage/Programitas/a_plus_b.c -o /home/vagrant/Code/ESCOJ/storage/Programitas/holi.out 2>&1',$output1);
                 dd($output1);
                 
                 if(empty($output1)){
