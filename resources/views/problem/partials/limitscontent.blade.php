@@ -12,7 +12,7 @@
 
 		<div class="row">
             <div class="col-sm-3 {{ $errors->has('limits.0.ml') ? ' has-error' : '' }}">
-				<strong>Memory Limit(B)</strong><br><br>
+				<strong>Memory Limit(Mb)</strong><br><br>
 				<div class="input-group">
 					<input id = "ml" name = "limits[0][ml]" type="text" class="form-control" placeholder="Max memory" 
 					value="{{ !is_null(old('limits.0.ml')) ? old('limits.0.ml') : $problem->ml }}">
@@ -22,7 +22,7 @@
 				</div>
             </div>
             <div class="col-sm-3 {{ $errors->has('limits.0.sl') ? ' has-error' : '' }}">
-				<strong>Source Code Size(B)</strong><br><br>
+				<strong>Source Code Size(Kb)</strong><br><br>
 				<div class="input-group">
 					<input id = "sl" name = "limits[0][sl]" type="text" class="form-control" placeholder="Max size source" 
 					value="{{ !is_null(old('limits.0.sl')) ? old('limits.0.sl') : $problem->sl }}">
@@ -32,7 +32,7 @@
 				</div>
             </div>
             <div class="col-sm-3 {{ $errors->has('limits.0.tlpc') ? ' has-error' : '' }}">
-				<strong>Time Limit Case(MS)</strong><br><br>
+				<strong>Time Limit Case(Ms)</strong><br><br>
 				<div class="input-group">
 					<input id = "tlpc" name = "limits[0][tlpc]" type="text" class="form-control" placeholder="Max execution time per case" value="{{ !is_null(old('limits.0.tlpc')) ? old('limits.0.tlpc') : $problem->tlpc }}">
 					<span class="input-group-btn">
@@ -41,7 +41,7 @@
 				</div>
             </div>
             <div class="col-sm-3 {{ $errors->has('limits.0.ttl') ? ' has-error' : '' }}">
-				<strong>Total Time Limit(MS)</strong><br><br>
+				<strong>Total Time Limit(Ms)</strong><br><br>
 				<div class="input-group">
 					<input id = "ttl" name = "limits[0][ttl]" type="text" class="form-control" placeholder="Max total execution time" value="{{ !is_null(old('limits.0.ttl')) ? old('limits.0.ttl') : $problem->ttl }}">
 					<span class="input-group-btn">
@@ -123,16 +123,16 @@
 
 		<div class="row">
             <div class="col-sm-3">
-				<strong>Memory Limit(B)</strong><br><br>
+				<strong>Memory Limit(Mb)</strong><br><br>
 			</div>
 			<div class="col-sm-3">
-				<strong>Source Code Size(B)</strong><br><br>
+				<strong>Source Code Size(Kb)</strong><br><br>
 			</div>
 			<div class="col-sm-3">
-				<strong>Time Limit Case(MS)</strong><br><br>
+				<strong>Time Limit Case(Ms)</strong><br><br>
 			</div>
 			<div class="col-sm-3">
-				<strong>Total Time Limit(MS)</strong><br><br>
+				<strong>Total Time Limit(Ms)</strong><br><br>
 			</div>
 		</div>
 

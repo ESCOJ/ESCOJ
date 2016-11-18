@@ -11,7 +11,7 @@ use EscojLB\Repo\Judgment\JudgmentInterface;
 use EscojLB\Repo\Problem\ProblemInterface;
 use EscojLB\Repo\User\UserInterface;
 use EscojLB\Repo\Contest\ContestInterface;
-use ESCOJ\EscojLB\EvaluateTool;
+use ESCOJ\EscojLB\Grader;
 use Illuminate\Support\Facades\Auth;
 use Storage;
 
@@ -81,7 +81,7 @@ class JudgementController extends Controller
     {
         if($request->has('contest_id'))
             $this->authorize('belongs',$this->contest->findById($request->contest_id));
-        $excep = '';
+
         $code = $request->input('your_code_in_the_editor');
         $language = $request->input('language');
         $problem_id = $request->input('problem_id');
@@ -92,18 +92,21 @@ class JudgementController extends Controller
         $limits = $this->problem->findLimitsByIdAndLanguage((int)$problem_id,(int)$language);
         
         $nickname = $this->user->getNickname($id_user);
+
         if($request->hasFile('code')){
             
-            $file_name = $file->getClientOriginalName();
-            $file_splited = explode('.',$file_name);
+            $file_splited = explode('.',$file->getClientOriginalName());
 
-            if($language == '3')
-                $name = $nickname.'_'.$id_user."_".$problem_id . "." . $file_splited[1]; 
-            else
-                $name = $id_user."_".$problem_id . "." . $file_splited[1]; 
+            $name = $nickname.'_'.$id_user."_".$problem_id . "." . $file_splited[1]; 
 
             $file_temp = $file->storeAs('/user_'.$id_user.'/problem_'.$problem_id, $name, "judgements");
-            $RESULTS = EvaluateTool::evaluateCode($file_temp,$language,$problem_id,$id_user,$limits,$nickname);
+            
+        }
+        else{
+            $file_temp = Grader::buildCodeFile($file, $language, $problem_id, $code, $id_user, $nickname);
+        }
+
+        $RESULTS = Grader::evaluateCode($file_temp, $language, $problem_id, $id_user, $limits, $nickname);
             
             try{
                 if($request->ajax()){
@@ -120,27 +123,6 @@ class JudgementController extends Controller
                 $request->session()->flash('alert-success', $excep);
             }
             return redirect()->route("judgment.index");
-        }else{
-
-            $file_temp = EvaluateTool::buildCodeFile($file,$language,$problem_id,$code,$id_user,$nickname);
-            $RESULTS = EvaluateTool::evaluateCode($file_temp,$language,$problem_id,$id_user,$limits,$nickname);
-
-            try{
-                if($request->ajax()){
-                    $this->judgment->create($RESULTS, $request->contest_id);
-                    return response()->json([
-                        'message' => 'The submission has been sent successfully.',
-                    ]);
-                }
-                else
-                    $this->judgment->create($RESULTS);
-            }
-            catch(\Exception $e){
-                $excep = 'Error generated trying to submit';
-                $request->session()->flash('alert-success', $excep);
-            }
-            return redirect()->route("judgment.index");
-        }
     }
 
     /**

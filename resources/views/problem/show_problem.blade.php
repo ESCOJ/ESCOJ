@@ -43,10 +43,10 @@
                                 </thead>
                                 <tbody style="text-align: center;">
                                     <tr class="info">
-                                        <td>{{ $problem->tlpc }} ms</td>
-                                        <td>{{ $problem->ttl }} ms</td>
-                                        <td>{{ $problem->ml }} mb</td>
-                                        <td>{{ $problem->sl }} mb</td>
+                                        <td>{{ $problem->tlpc }} Ms</td>
+                                        <td>{{ $problem->ttl }} Ms</td>
+                                        <td>{{ $problem->ml }} Mb</td>
+                                        <td>{{ $problem->sl }} Kb</td>
                                     </tr>
                                 </tbody>
                             </table>

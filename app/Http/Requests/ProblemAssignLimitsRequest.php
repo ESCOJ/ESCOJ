@@ -30,10 +30,10 @@ class ProblemAssignLimitsRequest extends FormRequest
             'limits.*.tlpc' => 'required|digits_between:1,10',
             'limits.*.ttl' => 'required|digits_between:1,10',
 
-            'limits.*.ml_multiplier' => 'sometimes|required|numeric',
-            'limits.*.sl_multiplier' => 'sometimes|required|numeric',
-            'limits.*.tlpc_multiplier' => 'sometimes|required|numeric',
-            'limits.*.ttl_multiplier' => 'sometimes|required|numeric',
+            'limits.*.ml_multiplier' => 'sometimes|required|numeric|between:0,30',
+            'limits.*.sl_multiplier' => 'sometimes|required|numeric|between:0,30',
+            'limits.*.tlpc_multiplier' => 'sometimes|required|numeric|between:0,30',
+            'limits.*.ttl_multiplier' => 'sometimes|required|numeric|between:0,30',
             
         ];
     }
