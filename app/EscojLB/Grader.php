@@ -19,7 +19,8 @@ class Grader{
     private static $SIZE_LIMIT = 0;
     private static $TIME_LIMIT = 0;
     private static $MEMORY_LIMIT = 0;
-    private static $TOTAL_TIME_LIMIT = 0; 
+    private static $TOTAL_TIME_LIMIT = 0;
+    private static $OUTPUT_LIMIT = 50 * 1024;  //represented in bytes (50 kb) 
 
     //indicates where we will store the temporary files created when we compiling and executing
     private static $STORAGE_PATH = '';
@@ -37,13 +38,13 @@ class Grader{
     private static $RESTRICTED_FUNCTION = array('thread','exec','system','fork','pthread_t','pthread_create','fopen');
 	
     //var that indicates the amount of loops executed in order to obtain a average time and memory occupied for the current submit
-    private static $LOOPS_TO_TIME =  10;
+    private static $LOOPS_TO_TIME =  5;
 
     //var used to redirect the stderroutput to stdoutput
     private static $REDIRECT_OUTPUT = " 2>&1 ";
 
     //sentence used to retrieve the time used for the solution
-    private static $TIME_AND_MEMORY_SENTENCE = "/usr/bin/time -f '%e %M' ";
+    private static $TIME_AND_MEMORY_SENTENCE = "/usr/bin/time -f '%U %M' ";
 
     //array used to asign a verdict to the current submit	
 	private static $VERDICTS = array(
@@ -78,12 +79,16 @@ class Grader{
         self::$DATASET_PROBLEM_PATH = storage_path() . "/datasets/problem_".$problem_id.'/';;
 
         //Size Limit Exceeded
-        if( self::evaluateSizeLimitExceeded($realpath_of_submitted_file) )
+        if( self::evaluateSizeLimitExceeded($realpath_of_submitted_file) ){
+            self::deleteTemporaryFiles($id_user);
             return self::$RESULTS;
+        }
 
         //Restricted Function
-        if( self::evaluateRestrictedFunction($realpath_of_submitted_file) )
+        if( self::evaluateRestrictedFunction($realpath_of_submitted_file) ){
+            self::deleteTemporaryFiles($id_user);
             return self::$RESULTS;
+        }
       
 		switch ($language) {
 			case '1':
@@ -93,67 +98,41 @@ class Grader{
                 $sentence_to_compile = self::$GCC . $realpath_of_submitted_file . " -o " . $output_file . " -static -lm";
 
                 //Compilation Error
-                if( self::evaluateCompilationError($sentence_to_compile) ){
-                    self::deleteCode($realpath_of_submitted_file);
-                    return self::$RESULTS;                   
-                }
-                /*else if( self::evaluateRuntimeError($output_file) ){
-                    self::deleteCode($realpath_of_submitted_file);
-                     return self::$RESULTS;
-                }*/
-                else if( self::evaluateTimeLimitExceededMemoryLimitExceededRuntimeError($output_file) ){
-                    self::deleteCode($realpath_of_submitted_file);
-                    return self::$RESULTS;
-                }
-                else{
-                    self::evaluateWA($output_file,$problem_id,$language,$id_user);
-                    self::deleteCode($realpath_of_submitted_file);
-                    return self::$RESULTS;
-                }
-                dd('no valio pa verga');
-            
-                self::deleteExecutableforC($output_file);
+                if( self::evaluateCompilationError($sentence_to_compile) );
+                //Runtime Error
+                else if( self::evaluateRuntimeError($output_file) );
+                //Time Limit Exceeded, Memory Limit Exceeded, Generation of the outputs Files for check de WA and AC verdicts later
+                //and also in every execution check the Runtime Error in case something strange happens but really is not necesasary
+                //because in the previus step it has been checked
+                else if( self:: evaluateTleMleReAndGenerateTheOutputFiles($output_file,$problem_id,$language,$id_user) );
+                //Wrong Answer, Output Limit Exceede and Accepted verdicts
+                else self::evaluateWaOleAc($problem_id,$language,$id_user);
+        
+                self::deleteTemporaryFiles($id_user);
 
-                self::deleteCode($realpath_of_submitted_file);
                 return self::$RESULTS;
 
 				break;
 			case '2':
 				# C++
-				$output_file = $nickname_user.'_'.$id_user."_".$problem_id.".out";
+				$output_file = self::$STORAGE_PATH .'/'.$nickname_user.'_'.$id_user."_".$problem_id.".out";
 
-                $sentence_to_compile = self::$GCCPLUSPLUS . $realpath_of_submitted_file . " -o " . self::$STORAGE_PATH . $output_file .self::$OPTIMIZED_COMPILATION.self::$REDIRECT_OUTPUT;
+                $sentence_to_compile = self::$GCCPLUSPLUS . $realpath_of_submitted_file . " -o " . $output_file . " -static -lm";
 
-                //exec($sentence_to_compile,$output1);
-                exec('/usr/bin/g++ /home/vagrant/Code/ESCOJ/storage/Programitas/a_plus_b.c -o /home/vagrant/Code/ESCOJ/storage/Programitas/holi.out 2>&1',$output1);
-                dd($output1);
-                
-                if(empty($output1)){
-                    
-                    $output_file = self::$STORAGE_PATH . $output_file;
+                //Compilation Error
+                if( self::evaluateCompilationError($sentence_to_compile) );
+                //Runtime Error
+                else if( self::evaluateRuntimeError($output_file) );
+                //Time Limit Exceeded, Memory Limit Exceeded, Generation of the outputs Files for check de WA and AC verdicts later
+                //and also in every execution check the Runtime Error in case something strange happens but really is not necesasary
+                //because in the previus step it has been checked
+                else if( self:: evaluateTleMleReAndGenerateTheOutputFiles($output_file,$problem_id,$language,$id_user) );
+                //Wrong Answer, Output Limit Exceede and Accepted verdicts
+                else self::evaluateWaOleAc($problem_id,$language,$id_user);
+        
+                self::deleteTemporaryFiles($id_user);
 
-                    self::checkRunTimeError($output_file);
-                    
-                    $time = self::getAverageTime($output_file);
-                    $memory = self::measureMemory($output_file);
-
-                    self::$RESULTS["memory"] = (int)$memory;
-                    self::$RESULTS["time"] = (int)$time;
-
-                    self::evaluateTimeMemory($time,$memory);
-
-                    if(self::$RESULTS["judgment"] == ""){
-                        
-                        self::evaluateWA($output_file,$problem_id,$language,$id_user);
-                        
-                    }
-                    self::deleteExecutableforC($output_file);
-                }
-                else{
-                    #COMPILATION ERROR!!!
-                    self::$RESULTS["judgment"] = self::$VERDICTS[1];
-                }
-                self::deleteCode($realpath_of_submitted_file);
+                return self::$RESULTS;
                 
 				break;
 			case '3':
@@ -194,31 +173,25 @@ class Grader{
 				break;
 			case '4':
 				# PYTHON
-                $name = explode('/',$file);
-                $output_file = self::$STORAGE_PATH.$name[1];
-                $cp = "cp ".$realpath_of_submitted_file . ' '.$output_file;
+                $output_file = self::$STORAGE_PATH .'/'.$nickname_user.'_'.$id_user."_".$problem_id.".py";
 
-                exec($cp);
+                //dd($output_file);
+ 
 
-                $sentence_to_execute = self::$PYTHON.$output_file;
+                $output_file = self::$PYTHON.$output_file;
                 
-                self::checkRunTimeError($sentence_to_execute);
+                //Runtime Error
+                if( self::evaluateRuntimeError($output_file) );
+                //Time Limit Exceeded, Memory Limit Exceeded, Generation of the outputs Files for check de WA and AC verdicts later
+                //and also in every execution check the Runtime Error in case something strange happens but really is not necesasary
+                //because in the previus step it has been checked
+                else if( self:: evaluateTleMleReAndGenerateTheOutputFiles($output_file,$problem_id,$language,$id_user) );
+                //Wrong Answer, Output Limit Exceede and Accepted verdicts
+                else self::evaluateWaOleAc($problem_id,$language,$id_user);
+        
+                self::deleteTemporaryFiles($id_user);
 
-                $time = self::getAverageTime($sentence_to_execute);
-                $memory = self::measureMemory($sentence_to_execute);
-                //dd(self::$MEMORY_LIMIT);
-                self::$RESULTS["memory"] = (int)$memory;
-                self::$RESULTS["time"] = (int)$time;
-
-                self::evaluateTimeMemory($time,$memory);
-
-                if(self::$RESULTS["judgment"] == ""){
-                    
-                    self::evaluateWA($sentence_to_execute,$problem_id,$language,$id_user);
-                    
-                }
-                self::deleteCode($realpath_of_submitted_file);
-                self::deleteCode($output_file);
+                return self::$RESULTS;
 				break;	
 		}
 
@@ -269,25 +242,19 @@ class Grader{
     }
 
     /**
-     * Delete a file .py .java .c or .cpp
+     * Delete all temporary files generated in the judging process
      *
-     * @param  string $file name file
+     * @param  string $user_id
      * @return 
     */
-    static function deleteCode($file){
-        unlink($file);
-    }
-
-    /**
-     * Delete a .out executable file for c/c++
-     *
-     * @param  string $file name file
-     * @return 
-    */
-    static function deleteExecutableforC($file){
-        $executable = explode('.',$file);
-        $name = $executable[0] . ".out";
-        unlink($name);
+    static function deleteTemporaryFiles($user_id){
+        try{
+            if(! Storage::disk('judgements')->deleteDirectory('user_'.$user_id) )
+                throw new \Exception();
+        }catch(\Exception $e){
+            dd('no se porque pero a veces valgo verga borrando los archivos');
+            self::$RESULTS["judgment"] = self::$VERDICTS['IE'];
+        }
     } 
 
     /**
@@ -533,7 +500,6 @@ class Grader{
             self::$RESULTS["file_size"] = filesize( $realpath_of_submitted_file );
 
             if( self::convertToSizeLimitUnit( self::$RESULTS["file_size"] ) > self::$SIZE_LIMIT){
-                self::deleteCode($realpath_of_submitted_file);
                 self::$RESULTS["judgment"] = self::$VERDICTS['SLE'];
                 return true;
             }
@@ -568,7 +534,6 @@ class Grader{
     static function evaluateRestrictedFunction($realpath_of_submitted_file){
         try{
             if( self::searchSystemWords($realpath_of_submitted_file) ){
-                self::deleteCode($realpath_of_submitted_file);
                 self::$RESULTS["judgment"] = self::$VERDICTS['RF'];
                 return true;
             }
@@ -636,8 +601,10 @@ class Grader{
                 $process->setTimeout( (self::$TIME_LIMIT / 1000) );
                 $process->run();
 
-                if (!$process->isSuccessful())
-                    return false;
+                if (!$process->isSuccessful() and $process->getExitCode() == 1){ //exit code = 1 for python momentary solution
+                    self::$RESULTS["judgment"] = self::$VERDICTS['RTE'];
+                    return true;
+                }
             }
 
         }catch(ProcessTimedOutException $e){
@@ -646,11 +613,11 @@ class Grader{
         }catch(\RuntimeException $e){
             self::$RESULTS["judgment"] = self::$VERDICTS['RTE'];
             return true;
-        }
-        catch(\Exception $e){
+        }catch(\Exception $e){
+            dd('murio rte');
             self::$RESULTS["judgment"] = self::$VERDICTS['IE'];
             return true;
-        }  
+        } 
         
     }
 
@@ -660,14 +627,85 @@ class Grader{
      * @param  string $exec_file file generated after a compilation
      * @return 
      */
-    static function evaluateTimeLimitExceededMemoryLimitExceededRuntimeError($exec_file){
+    static function evaluateTleMleReAndGenerateTheOutputFiles($exec_file,$problem_id,$language,$id_user){
         try{
-            $time_and_memory_average = self::getAverageTimeAndMemory($exec_file);
-            self::$RESULTS["time"] = $time_and_memory_average[0];
-            self::$RESULTS["memory"] = $time_and_memory_average[1];
 
-            //dd('results time es '.self::$RESULTS["time"]. ' results mem es '.self::$RESULTS["memory"]);
+            $path = self::$STORAGE_PATH.'/';
+            $in_files = glob(self::$DATASET_PROBLEM_PATH . "*.in");
+            $total_time = $total_memory = 0;
+            $index = 1;
+
+            foreach ($in_files as $in_file){
+                $partial_time = 0.0;
+                $partial_memory = 0.0;
+                $time_out = (int)(self::$TIME_LIMIT / 1000);
+                for($i=0;$i<self::$LOOPS_TO_TIME;$i++){
+                    $sentence = self::$TIME_AND_MEMORY_SENTENCE.$exec_file.' 2>'.$path.'temp'.' <'.$in_file. ' timeout '.$time_out;
+                    
+                    $process = new Process('exec '.$sentence);
+                    $process->setTimeout( $time_out );
+                    $process->run();
+
+                    //check RTE or IE
+                    if(!$process->isSuccessful()){
+                        if($process->getExitCode()>128 or $process->getExitCode() ==1) //momentaneamente dejare esto pero realmente no esta bien puse >128 por que en un programa de c o c++ al usar el /usr/bin/time no lanza la excepción RuntimeException como tal si no que manda una señal de error las cuales encontramos con los códigos mayores a 128 y en python resulto que tampoco lanza la excepción pero el código devuelto es el 1
+                            throw new \RuntimeException();
+                        throw new \Exception();
+                    }
+                    
+                    $time_mem = file_get_contents($path.'temp');
+
+                    $time =  (float)(explode(' ',$time_mem)[0]);
+                    $mem =  (float)(explode(' ',$time_mem)[1]);
+
+                    $partial_time +=  $time;
+                    $partial_memory +=  $mem;
+
+                    //check TLE
+                    if( ($time * 1000) > self::$TIME_LIMIT){
+                        self::$RESULTS["memory"] = $mem;
+                        throw new ProcessTimedOutException($process,1);//1 indicates TYPE_GENERAL
+                    }
+                    //check MLE
+                    if( ($mem / 1024) > self::$MEMORY_LIMIT){
+                        self::$RESULTS["memory"] = $mem;
+                        throw new MemoryLimitException();
+                    }
+                }
+
+                //time  and memory evaluated multiple times per case
+                $time_average_per_case = $partial_time / self::$LOOPS_TO_TIME;
+                $memory_average_per_case = $partial_memory / self::$LOOPS_TO_TIME;
+                
+                //total time and total memory for every entry of the problem
+                $total_time = $total_time + $time_average_per_case;
+                $total_memory = $total_memory + $memory_average_per_case;
+
+                //generate the output files for later evaluate the verdict wrang answer
+                $outputname_file = $path.$index.'_'.$problem_id.'_'.$language.'_'.$id_user.'.out';
+                $index++;
+                $sentence_to_evaluate_wa = $exec_file.' <'.$in_file
+                                                .' >'.$outputname_file;
+
+                $process = new Process('exec '.$sentence_to_evaluate_wa);
+                $process->setTimeout( (self::$TIME_LIMIT / 1000) );
+                $process->run();
+
+            }
+            if(($total_time * 1000) >self::$TOTAL_TIME_LIMIT){
+                self::$RESULTS["memory"] = $mem;
+                throw new ProcessTimedOutException($process,1);//1 indicates TYPE_GENERAL
+            }
+            
+            $cases = count($in_files);
+            $total_time /= $cases;
+            $total_memory /= $cases;
+
+            self::$RESULTS["time"] = $total_time * 1000;
+            self::$RESULTS["memory"] = $total_memory;
+
             return false;
+
         }catch(ProcessTimedOutException $e){
             self::$RESULTS["judgment"] = self::$VERDICTS['TLE'];
             return true;
@@ -677,135 +715,57 @@ class Grader{
         }catch(\RuntimeException $e){
             self::$RESULTS["judgment"] = self::$VERDICTS['RTE'];
             return true;
-        }/*catch(\Exception $e){
+        }catch(\Exception $e){
+            dd('murio tle');
+
             self::$RESULTS["judgment"] = self::$VERDICTS['IE'];
             return true;
-        }*/
-        
-    }
-
-    /**
-     * Function to get the average time and memory usage of execution of the program using time comand mutiple times
-     *
-     * @param  string $execfile name file
-     * @return float $time_average the total time averaged
-    */
-    static function getAverageTimeAndMemory($exec_file){
-        $path = self::$STORAGE_PATH.'/';
-        $in_files = glob(self::$DATASET_PROBLEM_PATH . "*.in");
-        $total_time = $total_memory = 0;
-
-        foreach ($in_files as $in_file){
-            $partial_time = 0.0;
-            $partial_memory = 0.0;
-            $time_out = (int)(self::$TIME_LIMIT / 1000);
-            for($i=0;$i<self::$LOOPS_TO_TIME;$i++){
-                $sentence = self::$TIME_AND_MEMORY_SENTENCE.$exec_file.' 2>'.$path.'temp'.' <'.$in_file. ' timeout '.$time_out;
-
-                $process = new Process('exec '.$sentence);
-                $process->setTimeout( $time_out );
-                $process->run();
-
-                //check RTE or IE
-                if(!$process->isSuccessful()){
-                    if($process->getExitCode()>128)
-                        throw new \RuntimeException();
-                    throw new \Exception();
-                }
-                
-                $time_mem = file_get_contents($path.'temp');
-
-                $time =  (float)(explode(' ',$time_mem)[0]);
-                $mem =  (float)(explode(' ',$time_mem)[1]);
-
-                $partial_time +=  $time;
-                $partial_memory +=  $mem;
-
-                //check TLE
-                if( ($time * 1000) > self::$TIME_LIMIT){
-                    self::$RESULTS["memory"] = $mem;
-                    self::$RESULTS["time"] = $time;
-                    throw new ProcessTimedOutException();
-                }
-                //check MLE
-                if( ($mem / 1024) > self::$MEMORY_LIMIT){
-                    self::$RESULTS["memory"] = $mem;
-                    throw new MemoryLimitException();
-                }
-            }
-
-            //time  and memory evaluated multiple times per case
-            $time_average_per_case = $partial_time / self::$LOOPS_TO_TIME;
-            $memory_average_per_case = $partial_memory / self::$LOOPS_TO_TIME;
-            
-            //total time and total memory for every entry of the problem
-            $total_time = $total_time + $time_average_per_case;
-            $total_memory = $total_memory + $memory_average_per_case;
         }
-
-        if($total_time>self::$TOTAL_TIME_LIMIT)
-            throw new ProcessTimedOutException();
-        unlink($path.'temp');
         
-        $cases = count($in_files);
-        $total_time /= $cases;
-        $total_memory /= $cases;
-        
-        return array($total_time,$total_memory);
     }
 
     /**
      * This function evluate the Wrong Answer or Accepted verdict 
-     * and compare the two both out files
+     * and compare the two both out files, also verify the Output Limit Exceeded verdict
      * 
      * @param  string $id_problem 
      * @return  
     */
-    static function evaluateWA($exec_file,$problem_id,$language,$id_user){
+    static function evaluateWaOleAc($problem_id,$language,$id_user){
        
         try{
-
             $datset_path = self::$DATASET_PROBLEM_PATH;
-            $in_files = glob($datset_path . "*.in");
+            $out_files = glob($datset_path . "*.out");
             $index = 1;
             $temporary_path = self::$STORAGE_PATH. '/';
-            foreach($in_files as $in_file){
+            foreach($out_files as $out_file){
                 $outputname_file = $temporary_path.$index.'_'.$problem_id.'_'.$language.'_'.$id_user.'.out';
                 $index++;
-                $sentence_to_evaluate_wa = $exec_file.' <'.$in_file
-                                                .' >'.$outputname_file;
-                //dd($sentence_to_evaluate_wa);
-                $process = new Process('exec '.$sentence_to_evaluate_wa);
-                $process->setTimeout( (self::$TIME_LIMIT / 1000) );
-                $process->run();
 
-                $out_file = explode('.',$in_file);
-                $s1 = file_get_contents($out_file[0].'.out');
+                //Output Limit Exceeded
+                if( filesize( $outputname_file ) > self::$OUTPUT_LIMIT ){
+                    self::$RESULTS["judgment"] = self::$VERDICTS['OLE'];
+                    break;
+                }
+
+                $s1 = file_get_contents($out_file);
                 $s2 = file_get_contents($outputname_file);
                 $ans = strcmp($s1,$s2);
                 
                 if($ans != 0){//Wrong Answer judgement
                     self::$RESULTS["judgment"] = self::$VERDICTS['WA'];
-                    unlink($outputname_file);
                     break;
                 }
-                else{//Accepted judgement
+                else//Accepted judgement
                     self::$RESULTS["judgment"] = self::$VERDICTS['AC'];
-                    unlink($outputname_file);
-                }   
+
             }
             return true;
-        }catch(ProcessTimedOutException $e){
-            self::$RESULTS["judgment"] = self::$VERDICTS['TLE'];
-            return true;
-        }catch(\RuntimeException $e){
-            self::$RESULTS["judgment"] = self::$VERDICTS['RTE'];
-            return true;
-        }
-        /*catch(\Exception $e){
+        }catch(\Exception $e){
+            dd('murio wa');
+
             self::$RESULTS["judgment"] = self::$VERDICTS['IE'];
-            return true;
-        }  */
+        }
     }
 
 }
