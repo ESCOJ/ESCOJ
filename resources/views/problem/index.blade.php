@@ -64,9 +64,18 @@
                                             <td>{{ $problem->id }}</td>
                                             <td>{!!link_to_route('problem.show', $title = $problem->name, $parameters = ['id'=> $problem->id ], $attributes = [ ]) !!}</td>
                                             <td>{{ $problem->points }}</td>
-                                            <td>0.0 %</td>
-                                            <td>0</td>
-                                            <td>0</td>
+                                            <!--ACCURACY-->
+                                            <td>
+                                            @php
+                                                $acs = $problem->judgments->where('judgment','Accepted')->count();
+                                                $total = $problem->judgments->count();
+                                                echo ( ($acs/(1+$total))*100 )
+                                            @endphp
+                                             %</td>
+                                            <!--SOLVED-->
+                                            <td>{{ $problem->judgments->where('judgment','Accepted')->count() }}</td>
+                                            <!--SUBMISSIONS-->
+                                            <td>{{ $problem->judgments->count() }}</td>
 
                                             @if(Auth::check())
                                                 <td>

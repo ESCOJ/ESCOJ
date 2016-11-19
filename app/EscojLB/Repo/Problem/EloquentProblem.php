@@ -256,7 +256,7 @@ class EloquentProblem implements ProblemInterface {
      * @return LengthAwarePaginator with the problems to paginate
      */
     public function getAllPaginate($limit = 10, $enable = true, $problem_setter = 0){
-        $problems = $this->problem->getQuery();
+        $problems = $this->problem->with('judgments');
         if($enable)
              $problems->where('enable', 1);
         if($problem_setter)
@@ -276,7 +276,7 @@ class EloquentProblem implements ProblemInterface {
     public function getAllPaginateFiltered($limit = 10, array $data, $enable = true, $problem_setter = 0){
         if( isset($data['tag']) and $data['tag'] )
         {
-            $problems = $this->tag->findById($data['tag'])->problems();
+            $problems = $this->tag->findById($data['tag'])->problems()->with('judgments');
             if($enable)
                 $problems->where('enable', 1);
             if($problem_setter)
@@ -299,7 +299,7 @@ class EloquentProblem implements ProblemInterface {
                 return array_values((array) $object);
             }, $problems_id);
 
-            $problems = $this->problem->whereIn('id', $problems_id);
+            $problems = $this->problem->with('judgments')->whereIn('id', $problems_id);
             
             if($enable)
                 $problems->where('enable', 1);
@@ -315,7 +315,7 @@ class EloquentProblem implements ProblemInterface {
 
         }
 
-        $problems = $this->problem->getQuery();
+        $problems = $this->problem->with('judgments');
 
         if($enable)
             $problems->where('enable', 1);

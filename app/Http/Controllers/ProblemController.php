@@ -72,6 +72,8 @@ class ProblemController extends Controller
                 '5' => 'Very Hard',
             ];
         $request->flash();
+
+        //dd($problems);
         return view('problem.index',['problems' => $problems, 'tags' => $tags, 'levels' => $levels]);
     }
 

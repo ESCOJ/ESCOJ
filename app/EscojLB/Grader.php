@@ -12,7 +12,7 @@ class Grader{
     private static $GCC = "/usr/bin/gcc -std=c99 -w ";
     private static $GCCPLUSPLUS = "/usr/bin/g++ -w ";
     private static $JAVAC = "javac ";
-    private static $JAVA = "java -Djava.compiler=NONE -cp ";
+    private static $JAVA = "java -Xmx512m -cp ";//-Djava.compiler=NONE -cp ";
     private static $PYTHON = "python ";
 
     //vars used to store the limits to evaluate
@@ -97,18 +97,7 @@ class Grader{
 
                 $sentence_to_compile = self::$GCC . $realpath_of_submitted_file . " -o " . $output_file . " -static -lm";
 
-                //Compilation Error
-                if( self::evaluateCompilationError($sentence_to_compile) );
-                //Runtime Error
-                else if( self::evaluateRuntimeError($output_file) );
-                //Time Limit Exceeded, Memory Limit Exceeded, Generation of the outputs Files for check de WA and AC verdicts later
-                //and also in every execution check the Runtime Error in case something strange happens but really is not necesasary
-                //because in the previus step it has been checked
-                else if( self:: evaluateTleMleReAndGenerateTheOutputFiles($output_file,$problem_id,$language,$id_user) );
-                //Wrong Answer, Output Limit Exceede and Accepted verdicts
-                else self::evaluateWaOleAc($problem_id,$language,$id_user);
-        
-                self::deleteTemporaryFiles($id_user);
+                self::evaluate($sentence_to_compile, $output_file, $problem_id, $language, $id_user);                
 
                 return self::$RESULTS;
 
@@ -119,18 +108,7 @@ class Grader{
 
                 $sentence_to_compile = self::$GCCPLUSPLUS . $realpath_of_submitted_file . " -o " . $output_file . " -static -lm";
 
-                //Compilation Error
-                if( self::evaluateCompilationError($sentence_to_compile) );
-                //Runtime Error
-                else if( self::evaluateRuntimeError($output_file) );
-                //Time Limit Exceeded, Memory Limit Exceeded, Generation of the outputs Files for check de WA and AC verdicts later
-                //and also in every execution check the Runtime Error in case something strange happens but really is not necesasary
-                //because in the previus step it has been checked
-                else if( self:: evaluateTleMleReAndGenerateTheOutputFiles($output_file,$problem_id,$language,$id_user) );
-                //Wrong Answer, Output Limit Exceede and Accepted verdicts
-                else self::evaluateWaOleAc($problem_id,$language,$id_user);
-        
-                self::deleteTemporaryFiles($id_user);
+                self::evaluate($sentence_to_compile, $output_file, $problem_id, $language, $id_user);                
 
                 return self::$RESULTS;
                 
@@ -138,356 +116,56 @@ class Grader{
 			case '3':
 				# JAVA
                 $replace = $nickname_user.'_'.$id_user."_".$problem_id;
-                
                 self::renameClassForJava($file,$replace);
-                $sentence_to_compile = self::$JAVAC. $realpath_of_submitted_file .' -d '.self::$STORAGE_PATH. self::$REDIRECT_OUTPUT;
 
-                exec($sentence_to_compile,$output);
-                
-                if(empty($output)){
+                $output_file = self::$JAVA.self::$STORAGE_PATH.'/ '.$replace;
+                $sentence_to_compile = self::$JAVAC. $realpath_of_submitted_file.' -d '.self::$STORAGE_PATH;
 
-                    $output_file = self::$JAVA.self::$STORAGE_PATH. $replace;
+                self::evaluate($sentence_to_compile, $output_file, $problem_id, $language, $id_user);                
 
-                    self::checkRunTimeError($output_file);
-
-                    $time = self::getAverageTimeJava($output_file);
-                    $memory = self::measureMemoryJava($output_file);
-
-                    self::$RESULTS["memory"] = (int)$memory;
-                    self::$RESULTS["time"] = (int)$time;
-
-                    self::evaluateTimeMemory($time,$memory);
-
-                    if(self::$RESULTS["judgment"] == ""){
-                        
-                        self::evaluateWAJava($replace,$output_file,$problem_id,$language,$id_user);
-                        
-                    }
-                    self::deleteExecutableforJava(self::$STORAGE_PATH.$replace);
-                }else{
-                    #COMPILATION ERROR!!!
-                    self::$RESULTS["judgment"] = self::$VERDICTS[1];
-                }
-                self::deleteCode($realpath_of_submitted_file);
-                
+                return self::$RESULTS;
+               
 				break;
 			case '4':
 				# PYTHON
-                $output_file = self::$STORAGE_PATH .'/'.$nickname_user.'_'.$id_user."_".$problem_id.".py";
-
-                //dd($output_file);
- 
+                $output_file = self::$STORAGE_PATH .'/'.$nickname_user.'_'.$id_user."_".$problem_id.".py"; 
 
                 $output_file = self::$PYTHON.$output_file;
                 
-                //Runtime Error
-                if( self::evaluateRuntimeError($output_file) );
-                //Time Limit Exceeded, Memory Limit Exceeded, Generation of the outputs Files for check de WA and AC verdicts later
-                //and also in every execution check the Runtime Error in case something strange happens but really is not necesasary
-                //because in the previus step it has been checked
-                else if( self:: evaluateTleMleReAndGenerateTheOutputFiles($output_file,$problem_id,$language,$id_user) );
-                //Wrong Answer, Output Limit Exceede and Accepted verdicts
-                else self::evaluateWaOleAc($problem_id,$language,$id_user);
-        
-                self::deleteTemporaryFiles($id_user);
+                self::evaluate(null, $output_file, $problem_id, $language, $id_user);                
 
                 return self::$RESULTS;
 				break;	
 		}
 
-        // Just evaluate WA and OLE
-
-		return self::$RESULTS;
 	}
 
     /**
-     * This function evluate the Wrong Answer or Accepted verdict 
-     * and compare the two both out files
-     * 
-     * @param  string $id_problem 
-     * @return  
-    */
-    static function evaluateWAJava($name_file,$exec_file,$problem_id,$language,$id_user){
-        
-        $path = self::$STORAGE_PATH;
-        $in_files = glob($path . "*.in");
-        $index = 1;
-        
-        foreach($in_files as $in_file){
-            $outputname_file = $index.'_'.$problem_id.'_'.$language.'_'.$id_user.'.out';
-            $index = $index + 1;
-            $cd = 'cd '.self::$STORAGE_PATH . ' && ';
-            
-            $sentence_to_evaluate_wa = $cd . self::$RTE_SENTENCE. 'java -Djava.compiler=NONE ' .$name_file.' <'.$in_file
-                                            .' >' . $outputname_file;
-            //dd($sentence_to_evaluate_wa);
-            exec($sentence_to_evaluate_wa);
-            
-            $out_file = explode('.',$in_file);
-            $s1 = file_get_contents($out_file[0].'.out');
-            $s2 = file_get_contents($path.$outputname_file);
-            $ans = strcmp($s1,$s2);
-     
-            if($ans != 0){//Wrong Answer judgement
-                self::$RESULTS["judgment"] = self::$VERDICTS[10];
-                unlink($path.$outputname_file);
-                break;
-            }
-            else{//Accepted judgement
-                self::$RESULTS["judgment"] = self::$VERDICTS[11];
-                unlink($path.$outputname_file);
-            }   
-        }
-        
-    }
-
-    /**
-     * Delete all temporary files generated in the judging process
+     * Evaluate the verdicts Runtime Error, Time Limit Exceeded, Memory Limit Exceeded, Output Limit Exceeded,
+     * Wrong Answer, Accepted and manage the Inter Error verdict.
      *
-     * @param  string $user_id
-     * @return 
-    */
-    static function deleteTemporaryFiles($user_id){
-        try{
-            if(! Storage::disk('judgements')->deleteDirectory('user_'.$user_id) )
-                throw new \Exception();
-        }catch(\Exception $e){
-            dd('no se porque pero a veces valgo verga borrando los archivos');
-            self::$RESULTS["judgment"] = self::$VERDICTS['IE'];
-        }
-    } 
-
-    /**
-     * Delete a .class java file generated
-     *
-     * @param  string $file name file
-     * @return 
-    */
-    static function deleteExecutableforJava($file){
-        $executable = explode('.',$file);
-        $name = $executable[0] . ".class";
-        unlink($name);
-    }
-
-    /**
-     * Function to get the average time of execution of the program using time comand mutiple times
-     *
-     * @param  string $execfile name file
-     * @return float $time_average the total time averaged
-    */
-    static function getAverageTimeJava($exec_file){
-        $path = self::$STORAGE_PATH;
-        $in_files = glob($path . "*.in");
-        $ans = false;
-        $real_time_total = 0;
-        foreach ($in_files as $in_file){
-            $partial_time = 0.0;
-            for($i=0;$i<self::$LOOPS_TO_TIME;$i++)
-                $partial_time = $partial_time + (float)(self::measureTimeJava($exec_file,$in_file));
-            //time evaluated multiple times per case
-            $time_average = $partial_time / self::$LOOPS_TO_TIME;
-            //Time per case in miliseconds
-            $real_time_per_case = $time_average * 1000;
-            if($real_time_per_case>self::$TIME_LIMIT){ 
-                self::$RESULTS['judgment'] = self::$VERDICTS[6];
-                break;
-            }
-            //total time for every entry of the problem
-            $real_time_total = $real_time_total + $real_time_per_case;
-        }
-
-        if($real_time_total>self::$TOTAL_TIME_LIMIT)
-            self::$RESULTS['judgment'] = self::$VERDICTS[6];
-
-        
-        return $real_time_total;
-    }
-
-
-    /**
-     * Uses the time command to measure the time of a program
-     *
-     * @param  string $execution name file
-     * @return string $time 
-    */
-    static function measureTimeJava($exec_file,$in_file){
-        $path = self::$STORAGE_PATH;
-        $sentence_to_evaluate_time = '('.self::$TIME_SENTENCE.$exec_file.') 2>'.$path.'temp'.' <'.$in_file;
-        
-        exec($sentence_to_evaluate_time,$evaluated_time_output);
-
-        $temp = fopen($path.'temp','r');
-        $usr_time = 0.0;
-        $flag = false;
-        while (!feof($temp)) {
-            $line = fgets($temp);
-            if($flag){
-                $split1 = explode(' ',$line);
-                $split2 = explode('u',$split1[0]);
-                $usr_time = (float)$split2[0];
-                break;
-            }
-            if(strpos($line,'Command exited with non-zero status 1') !== false){
-                $flag = true;
-            }
-
-        }
-        fclose($temp);
-        unlink($path.'temp');
-        return $usr_time; 
-    }
-
-
-    /**
-     * Uses the time command to measure the memory of a program
-     *
-     * @param  string $execution name file
-     * @return string $mem 
-    */
-    static function measureMemoryJava($exec_file){
-        $path = self::$STORAGE_PATH;
-        $in_files = glob($path . "*.in");
-        foreach($in_files as $in_file){
-            $sentence_to_evaluate_mem = '('.self::$MEMORY_SENTENCE.$exec_file.') 2>'.$path.'temp'.' <'.$in_file;
-            
-            exec($sentence_to_evaluate_mem,$evaluated_mem_output);
-            break;
-        }
-        #This returns the memory used in Kb
-        $temp = fopen($path.'temp','r');
-        $usr_mem = '';
-        $flag = false;
-        while (!feof($temp)) {
-            $line = fgets($temp);
-            if($flag){
-                $usr_mem = (int)$line;
-                break;
-            }
-            if(strpos($line,'Command exited with non-zero status 1') !== false){
-                $flag = true;
-            }
-
-        }
-        fclose($temp);
-        unlink($path.'temp');
-        return $usr_mem;
-        
-    }
-
-    /**
-     * Search for the word 'class' to point to the subsequent word that is the name of the file and the class
-     *
-     * @param  $words array of strings(the line that contains the name of the class) 
-     * @return $name_of_class the real name of the class
-    */
-    static function searchNameOfClass($words){
-        $name_of_class;
-        $flag = false;
-        foreach($words as $s){
-            if($flag){
-                $name_of_class = $s;
-                break;
-            }
-            if($s == "class")
-                $flag = true;
-            
-        }
-        return $name_of_class;
-    }
-
-    /**
-     * Rename the class using the convention of iduser_idproblem.java this for the correct compilation
-     *
-     * @param  file $file, $replace $string
-     * @return 
-    */
-    static function renameClassForJava($file,$replace){
-        $file_handle = fopen(storage_path('judgments/'.$file), "r+");
-
-        $temp = '';
-        $flag = false;
-        while (!feof($file_handle)) {
-            $line = fgets($file_handle);
-            if(!$flag && str_contains($line,"class")){
-                $words = explode(' ',$line);
-                $name_class = self::searchNameOfClass($words);
-                $new = str_replace($name_class,$replace,$line);
-                $temp.= $new."{\n";
-                $flag = true;
-            }
-            else
-                $temp.=$line;
-        }
-        $file_handle = fopen(storage_path('judgments/'.$file), "w+");
-        fwrite($file_handle, $temp);
-        fclose($file_handle);
-    }
-
-	/**
-     * Build a file that contents the code added in the code builder.
-     *
-     * @param  string $language, string $problem_id, string $code 
+     * @param  int $realpath_of_submitted_file path of the code submitted
      * @return 
      */
-    static function buildCodeFile($file,$language,$problem_id,$code,$id_user,$nickname){
-
-        $nameCode = $nickname.'_'.$id_user."_".$problem_id;
-
-        switch ($language) {
-            case '1':
-                $nameCode .= ".c"; 
-                break;
-            case '2':
-                $nameCode .= ".cpp";
-                break;
-            case '3':
-                $nameCode .= ".java";
-                break;
-            case '4':
-                $nameCode .= ".py";
-                break;
-            default:
-                # code...
-                break;
-        }
-
-        $path = 'user_'.$id_user.'/problem_'.$problem_id.'/';
-        Storage::disk('judgements')->put($path.$nameCode, $code);
-        return $path.$nameCode;
-    }
-
-    /**
-     * Fill the array just in case that one of the parameters dont get any value
-     *
-     * @param  int $language ID of the language submit
-     * @param  int $problem_id ID of the problem submit   
-     * @param  int $id_user ID of the id_user submit   
-     * @return 
-     */
-    static function buildResultArray($language, $problem_id, $id_user){
-        switch ($language) {
-            case '1':
-                self::$RESULTS["language"] = "C";
-                break;
-            case '2':
-                self::$RESULTS["language"] = "C++";
-                break;
-            case '3':
-                self::$RESULTS["language"] = "Java";
-                break;
-            case '4':
-                self::$RESULTS["language"] = "Python";
-                break;
-        }
+    static function evaluate($sentence_to_compile,$output_file,$problem_id,$language,$id_user){
         
-        self::$RESULTS["memory"] = "...";
-        self::$RESULTS["time"] = "...";
-        self::$RESULTS["judgment"] = "";
-        self::$RESULTS["file_size"] = "";
-        self::$RESULTS["problem_id"] = $problem_id;
-        self::$RESULTS["user_id"] = $id_user;
-    }
+        $flag = true;
+        if( is_null($sentence_to_compile) ) //only to know if is a interpreted language like a python
+            $flag = false;
 
+        //Compilation Error
+        if( $flag and self::evaluateCompilationError($sentence_to_compile) ); //if is a interpreted language, it does not compile
+        //Runtime Error
+        else if( self::evaluateRuntimeError($output_file) );
+        //Time Limit Exceeded, Memory Limit Exceeded, Generation of the outputs Files for check de WA and AC verdicts later
+        //and also in every execution check the Runtime Error in case something strange happens but really is not necesasary
+        //because in the previus step it has been checked
+        else if( self:: evaluateTleMleReAndGenerateTheOutputFiles($output_file,$problem_id,$language,$id_user) );
+        //Wrong Answer, Output Limit Exceede and Accepted verdicts
+        else self::evaluateWaOleAc($problem_id,$language,$id_user);
+
+        self::deleteTemporaryFiles($id_user);
+    }
 
     /**
      * Evaluate the verdict Size Limit Exceeded
@@ -662,15 +340,11 @@ class Grader{
                     $partial_memory +=  $mem;
 
                     //check TLE
-                    if( ($time * 1000) > self::$TIME_LIMIT){
-                        self::$RESULTS["memory"] = $mem;
+                    if( ($time * 1000) > self::$TIME_LIMIT)
                         throw new ProcessTimedOutException($process,1);//1 indicates TYPE_GENERAL
-                    }
                     //check MLE
-                    if( ($mem / 1024) > self::$MEMORY_LIMIT){
-                        self::$RESULTS["memory"] = $mem;
+                    if( ($mem / 1024) > self::$MEMORY_LIMIT)
                         throw new MemoryLimitException();
-                    }
                 }
 
                 //time  and memory evaluated multiple times per case
@@ -692,10 +366,8 @@ class Grader{
                 $process->run();
 
             }
-            if(($total_time * 1000) >self::$TOTAL_TIME_LIMIT){
-                self::$RESULTS["memory"] = $mem;
+            if(($total_time * 1000) >self::$TOTAL_TIME_LIMIT)
                 throw new ProcessTimedOutException($process,1);//1 indicates TYPE_GENERAL
-            }
             
             $cases = count($in_files);
             $total_time /= $cases;
@@ -766,6 +438,137 @@ class Grader{
 
             self::$RESULTS["judgment"] = self::$VERDICTS['IE'];
         }
+    }
+
+    /**
+     * Delete all temporary files generated in the judging process
+     *
+     * @param  string $user_id
+     * @return 
+    */
+    static function deleteTemporaryFiles($user_id){
+        try{
+            if(! Storage::disk('judgements')->deleteDirectory('user_'.$user_id) )
+                throw new \Exception();
+        }catch(\Exception $e){
+            dd('no sé porque pero a veces valgo versh borrando los archivos, pero me he dado cuenta de que no valgo versh totalemente, al parecer solo no borro las carpetas chido, pero los archivos que contienen si se van alv');
+            self::$RESULTS["judgment"] = self::$VERDICTS['IE'];
+        }
+    } 
+
+    /**
+     * Rename the class using the convention of nickname_iduser_idproblem this for the correct compilation
+     *
+     * @param  file $file, $replace $string
+     * @return 
+    */
+    static function renameClassForJava($file,$replace){
+        $file_handle = fopen(storage_path('judgments/'.$file), "r+");
+
+        $temp = '';
+        $flag = false;
+        while (!feof($file_handle)) {
+            $line = fgets($file_handle);
+            if(!$flag && str_contains($line,"class")){
+                $words = explode(' ',$line);
+                $name_class = self::searchNameOfClass($words);
+                $new = str_replace($name_class,$replace,$line);
+                $temp.= $new."{\n";
+                $flag = true;
+            }
+            else
+                $temp.=$line;
+        }
+        fclose($file_handle);
+        $file_handle = fopen(storage_path('judgments/'.$file), "w+");
+        fwrite($file_handle, $temp);
+        fclose($file_handle);
+    }
+
+    /**
+     * Search for the word 'class' to point to the subsequent word that is the name of the file and the class
+     *
+     * @param  $words array of strings(the line that contains the name of the class) 
+     * @return $name_of_class the real name of the class
+    */
+    static function searchNameOfClass($words){
+        $name_of_class;
+        $flag = false;
+        foreach($words as $s){
+            if($flag){
+                $name_of_class = $s;
+                break;
+            }
+            if($s == "class")
+                $flag = true;
+            
+        }
+        return $name_of_class;
+    }
+
+    /**
+     * Build a file that contents the code added in the code builder.
+     *
+     * @param  string $language, string $problem_id, string $code 
+     * @return 
+     */
+    static function buildCodeFile($file,$language,$problem_id,$code,$id_user,$nickname){
+
+        $nameCode = $nickname.'_'.$id_user."_".$problem_id;
+
+        switch ($language) {
+            case '1':
+                $nameCode .= ".c"; 
+                break;
+            case '2':
+                $nameCode .= ".cpp";
+                break;
+            case '3':
+                $nameCode .= ".java";
+                break;
+            case '4':
+                $nameCode .= ".py";
+                break;
+            default:
+                # code...
+                break;
+        }
+
+        $path = 'user_'.$id_user.'/problem_'.$problem_id.'/';
+        Storage::disk('judgements')->put($path.$nameCode, $code);
+        return $path.$nameCode;
+    }
+
+    /**
+     * Fill the array just in case that one of the parameters dont get any value
+     *
+     * @param  int $language ID of the language submit
+     * @param  int $problem_id ID of the problem submit   
+     * @param  int $id_user ID of the id_user submit   
+     * @return 
+     */
+    static function buildResultArray($language, $problem_id, $id_user){
+        switch ($language) {
+            case '1':
+                self::$RESULTS["language"] = "C";
+                break;
+            case '2':
+                self::$RESULTS["language"] = "C++";
+                break;
+            case '3':
+                self::$RESULTS["language"] = "Java";
+                break;
+            case '4':
+                self::$RESULTS["language"] = "Python";
+                break;
+        }
+        
+        self::$RESULTS["memory"] = "...";
+        self::$RESULTS["time"] = "...";
+        self::$RESULTS["judgment"] = "";
+        self::$RESULTS["file_size"] = "";
+        self::$RESULTS["problem_id"] = $problem_id;
+        self::$RESULTS["user_id"] = $id_user;
     }
 
 }

@@ -2,13 +2,7 @@
 
 @section('title' , 'Submits')
 @section('styles')
-    {!!Html::style('plugins/chosen/chosen.css')!!}    <style type="text/css" media="screen">
-    
-        table thead {
-          color: #fff;
-          background-color: #4C83C3;
-        }
-    </style>
+    {!!Html::style('plugins/chosen/chosen.css')!!} 
 @endsection  
 
 @section('content')
@@ -77,9 +71,17 @@
                                             <td>{{ $judgment->user->nickname }}</td>
                                             <td>{!!link_to_route('problem.show', $title = $judgment->problem_id, $parameters = ['id'=> $judgment->problem_id ], $attributes = [ ]) !!}</td>
                                             @if($judgment->judgment != 'Accepted')
-                                                <td style="color:#FF0000;"><strong>{{ $judgment->judgment }}</strong></td>
+                                                <td>
+                                                    <span class="label label-danger">
+                                                        <strong>{{ $judgment->judgment }}</strong>
+                                                    </span>
+                                                </td>
                                             @else
-                                                <td style="color:#298A08;"><strong>{{ $judgment->judgment }}</strong></td>
+                                                <td>
+                                                    <span class="label label-success">
+                                                        <strong>{{ $judgment->judgment }}</strong>
+                                                    </span>
+                                                </td>
                                             @endif
                                             <td>{{ $judgment->time }}</td>
                                             <td>{{ $judgment->memory }}</td>

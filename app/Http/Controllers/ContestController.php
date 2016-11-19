@@ -295,15 +295,18 @@ class ContestController extends Controller
                 $status = 'no attempted';
                 $min = 0;
                 $judgments_accepteds = $judgments->where('judgment','Accepted');
-                $attempts = $judgments->where('judgment','!=','Accepted')->count();
+
                 if($judgments_accepteds->count() > 0){
+                        $attempts = $judgments->where('submitted_at', '<',$judgments_accepteds->first()->submitted_at)->count();
                         $status = 'accepted';
                         $accepteds++;
                         $min = (int)floor(abs(strtotime($judgments_accepteds->first()->submitted_at) - strtotime($start_date)) /60);
                         $time+= $attempts * $penalization + $min;
                 }
-                else if ($judgments->count() > 0)
+                else if ($judgments->count() > 0){
                     $status = 'attempted';
+                    $attempts = $judgments->where('judgment','!=','Accepted')->count();
+                }
 
                 $problems_collection[$problem_letter] = $problems_collection[$problem_letter]->combine([$status, $attempts, $min]);
             }
