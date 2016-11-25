@@ -88,26 +88,21 @@ Route::group(['prefix' => 'contest'], function (){
 	Route::get('/gym/{contest}', 'ContestController@show')->name('contest.show');
 	Route::get('/gym/problem/{problem}/{contest}', 'ContestController@showProblem')->name('contest.show.problem');
 	Route::get('/gym/judgments/{contest}', 'ContestController@showJudgments')->name('contest.show.judgments');	
-	Route::get('/gym/scoreboard/{contest}', 'ContestController@showScoreBoard')->name('contest.show.scoreboard');	
-
-
-
-	/*//limits
-	Route::get('/limits/{contest}/{flag_update?}', 'contestController@limits')->name('contest.limits');
-	Route::put('/limits/{contest}', 'contestController@assignLimits')->name('contest.assignLimits');
-	//datasets
-	Route::put('/datasets/{contest}', 'contestController@assignDatasets')->name('contest.assignDatasets');
-	Route::get('/datasets/{contest}/delete', 'contestController@deleteDatasets')->name('contest.deleteDatasets');	
-	Route::get('/datasets/{contest}/download', 'contestController@downloadDatasets')->name('contest.downloadDatasets');
-	Route::get('/datasets/{contest}/{flag_update?}', 'contestController@datasets')->name('contest.datasets');
-
-
-	//admin
-	Route::get('/admin', 'contestController@contestSettercontests')->name('contest.problems');*/
+	Route::get('/gym/scoreboard/{contest}', 'ContestController@showScoreBoard')->name('contest.show.scoreboard');
+	//get Languages per problem
+	Route::get('/gym/languages/{problem}', 'ContestController@getLanguages')->name('contest.get.languages');	
 
 });
 
 
+//The Sources Routes
+Route::resource('source','SourceController');
+
+//The Organizations Routes
+Route::resource('organization','OrganizationController');
+
+//The Institutions Routes
+Route::resource('institution','InstitutionController');
 
 
 

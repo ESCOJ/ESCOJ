@@ -66,16 +66,17 @@
                                             <td>{{ $problem->points }}</td>
                                             <!--ACCURACY-->
                                             <td>
-                                            @php
-                                                $acs = $problem->judgments->where('judgment','Accepted')->count();
-                                                $total = $problem->judgments->count();
-                                                echo ( ($acs/(1+$total))*100 )
-                                            @endphp
+                                                @if($problem->judgments->where('contest','0')->count() > 0)
+                                                {{ number_format( ( $problem->judgments->where('contest','0')->where('judgment','Accepted')->count() 
+                                                        / $problem->judgments->where('contest','0')->count() ) * 100 , 2) }}
+                                                @else
+                                                    0
+                                                @endif
                                              %</td>
                                             <!--SOLVED-->
-                                            <td>{{ $problem->judgments->where('judgment','Accepted')->count() }}</td>
+                                            <td>{{ $problem->judgments->where('contest','0')->where('judgment','Accepted')->count() }}</td>
                                             <!--SUBMISSIONS-->
-                                            <td>{{ $problem->judgments->count() }}</td>
+                                            <td>{{ $problem->judgments->where('contest','0')->count() }}</td>
 
                                             @if(Auth::check())
                                                 <td>

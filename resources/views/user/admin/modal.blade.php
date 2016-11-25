@@ -17,7 +17,7 @@
 				</div>
 
 				<div class="form-group">
-					{!!Form::label('nickname','NickName:',[])!!}
+					{!!Form::label('nickname','Role:',[])!!}
 					{!! Form::select('role',$roles,null,['placeholder' => 'Select a role','id'=>'role', 'class' => 'form-control']) !!}
 				</div>
 

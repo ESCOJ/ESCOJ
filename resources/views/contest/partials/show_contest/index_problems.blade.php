@@ -10,7 +10,9 @@
                 <th style="text-align: center;">SOLVED</th>
                 <th style="text-align: center;">SUBMISSIONS</th>
                 @can('belongs', $contest)
-                    <th style="text-align: center;">SUBMIT</th>
+                    @if($contest_type == 'current')
+                        <th style="text-align: center;">SUBMIT</th>
+                    @endif
                 @endcan
             </tr>
         </thead>
@@ -29,11 +31,13 @@
                     <td>0</td>
 
                     @can('belongs', $contest)
-                        <td>
-                            <a onclick = "addJudgment({{ $problem->id }})" id="show_problem" style="cursor:pointer;">
-                                <i class="fa fa-paper-plane" aria-hidden="true"></i>
-                            </a>
-                        </td>
+                        @if($contest_type == 'current')
+                            <td>
+                                <a onclick = "addJudgment({{ $problem->id }})" id="show_problem" style="cursor:pointer;">
+                                    <i class="fa fa-paper-plane" aria-hidden="true"></i>
+                                </a>
+                            </td>
+                        @endif
                     @endcan
 
                 </tr>

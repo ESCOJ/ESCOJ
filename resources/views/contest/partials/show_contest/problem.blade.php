@@ -149,11 +149,13 @@
                         </div>
 
                         @can('belongs', $contest)
-                            <div class="col-xs-offset-2 col-xs-8" style=" text-align: center;">
-                                    <a onclick = "addJudgment({{ $problem->id }})" id="show_problem" style="cursor:pointer;" class="btn btn-primary">
-                                        <strong>Submit </strong><i class="fa fa-paper-plane" aria-hidden="true"></i>
-                                    </a>
-                            </div>
+                            @if($contest_type == 'current')
+                                <div class="col-xs-offset-2 col-xs-8" style=" text-align: center;">
+                                        <a onclick = "addJudgment({{ $problem->id }})" id="show_problem" style="cursor:pointer;" class="btn btn-primary">
+                                            <strong>Submit </strong><i class="fa fa-paper-plane" aria-hidden="true"></i>
+                                        </a>
+                                </div>
+                            @endif
                         @endcan
 
                     </div>

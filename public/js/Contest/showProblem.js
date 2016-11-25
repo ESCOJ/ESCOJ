@@ -29,6 +29,16 @@ function showJudgments( id ){
     });
 };
 function addJudgment( problem_id ){
+    var route = "http://www.escoj.com/contest/gym/languages/" +problem_id;
+    $("#language").empty();
+    $.get(route, function(res){
+        res.forEach(element => {
+            $("#language").append(`<option value=${element.id}> ${element.name} </option>`);
+        });
+        $("#language").chosen({ width: "100%" });
+        $("#language").trigger("chosen:updated");
+    });
+
     $("#div_problem_id").attr("tabindex",-1).focus();
     $("#problem_id").val(problem_id);
     $('#code').fileinput('clear');
@@ -37,6 +47,19 @@ function addJudgment( problem_id ){
     $(".select-chosen").trigger("chosen:updated");
     $('.nav-tabs a[href="#submit"]').tab('show');
 };
+
+$("#problem_id").change(event => {
+    $("#language").empty();
+
+    $.get(`http://www.escoj.com/contest/gym/languages/${event.target.value}`, function(res){
+        res.forEach(element => {
+            $("#language").append(`<option value=${element.id}> ${element.name} </option>`);
+        });
+         $("#language").chosen({ width: "100%" });
+         $("#language").trigger("chosen:updated");
+    });
+});
+
 
 $(function(){
     $("#formuploadajax").on("submit", function(e){

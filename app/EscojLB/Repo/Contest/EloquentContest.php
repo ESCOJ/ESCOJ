@@ -213,13 +213,13 @@ class EloquentContest implements ContestInterface {
      */
     public function getAllUsersWithJudgmentsByContest($contest_data){
         $contest = $this->findById($contest_data['contest_id']);
-        return $contest->users()->with(['judgments' => function($query) use ($contest_data) {
+        return $contest->users()->with('country')->with(['judgments' => function($query) use ($contest_data) {
                 $query = $query->where('contest_id', $contest_data['contest_id']);
 
                 if($contest_data['status'] == 'current')
                     $query->where('submitted_at', '<=' , $contest_data['limit_date_time']);
 
-            }])->get(['users.id','nickname','avatar']);
+            }])->get(['users.id','nickname','avatar','country_id']);
     }
 
 
@@ -230,7 +230,7 @@ class EloquentContest implements ContestInterface {
      * @return Object    Contest model object
      */
     public function findById($id){
-        return $this->contest->find($id);
+        return $this->contest->findOrFail($id);
     }
 
     /**

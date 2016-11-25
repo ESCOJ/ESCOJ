@@ -12,27 +12,18 @@ class CountriesTableSeeder extends Seeder
      */
     public function run()
     {
-        //
+        //Get all of the countries
+        $countries = json_decode(file_get_contents(storage_path().'/countries.json'), true);
 
-        Country::create(array(
-            'name' => 'Mexico',
-        ));
-        Country::create(array(
-            'name' => 'Estados Unidos',
-        ));
-        Country::create(array(
-            'name' => 'China',
-        ));
-        Country::create(array(
-            'name' => 'Japon',
-        ));
-        Country::create(array(
-            'name' => 'Rusia',
-        ));
-        Country::create(array(
-            'name' => 'Cuba',
-        ));
+        foreach ($countries as $countryId => $country){
+            Country::create(array(
+                //'id' => $countryId,
+                'name' => $country['name'],
+                'full_name' => ((isset($country['full_name'])) ? $country['full_name'] : null),
+                'flag' =>((isset($country['flag'])) ? $country['flag'] : null),
+            ));
+        }
 
-        //Model::unguard();
     }
+
 }

@@ -24,7 +24,7 @@ class JudgmentAddRequest extends FormRequest
     public function rules()
     {
         return [
-            'problem_id' => 'required|integer',
+            'problem_id' => 'required|integer|exists:problems,id',
             'language' => 'required|integer',
             'code' => 'required_without:your_code_in_the_editor|file|mimes:c,c++,java,py,txt|max:100',
             'your_code_in_the_editor' => 'required_without:code|string|max:10000',

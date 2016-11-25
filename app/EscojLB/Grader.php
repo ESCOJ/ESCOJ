@@ -5,6 +5,7 @@ use Storage;
 use Symfony\Component\Process\Process;
 use Symfony\Component\Process\Exception\ProcessTimedOutException;
 use ESCOJ\Exceptions\MemoryLimitException;
+use File;
 
 class Grader{
 
@@ -38,7 +39,7 @@ class Grader{
     private static $RESTRICTED_FUNCTION = array('thread','exec','system','fork','pthread_t','pthread_create','fopen');
 	
     //var that indicates the amount of loops executed in order to obtain a average time and memory occupied for the current submit
-    private static $LOOPS_TO_TIME =  5;
+    private static $LOOPS_TO_TIME =  2;
 
     //var used to redirect the stderroutput to stdoutput
     private static $REDIRECT_OUTPUT = " 2>&1 ";
@@ -292,7 +293,6 @@ class Grader{
             self::$RESULTS["judgment"] = self::$VERDICTS['RTE'];
             return true;
         }catch(\Exception $e){
-            dd('murio rte');
             self::$RESULTS["judgment"] = self::$VERDICTS['IE'];
             return true;
         } 
@@ -373,7 +373,7 @@ class Grader{
             $total_time /= $cases;
             $total_memory /= $cases;
 
-            self::$RESULTS["time"] = $total_time * 1000;
+            self::$RESULTS["time"] = $total_time * 1000; //Convertion to miliseconds
             self::$RESULTS["memory"] = $total_memory;
 
             return false;
@@ -388,8 +388,6 @@ class Grader{
             self::$RESULTS["judgment"] = self::$VERDICTS['RTE'];
             return true;
         }catch(\Exception $e){
-            dd('murio tle');
-
             self::$RESULTS["judgment"] = self::$VERDICTS['IE'];
             return true;
         }
@@ -434,8 +432,6 @@ class Grader{
             }
             return true;
         }catch(\Exception $e){
-            dd('murio wa');
-
             self::$RESULTS["judgment"] = self::$VERDICTS['IE'];
         }
     }
@@ -448,10 +444,17 @@ class Grader{
     */
     static function deleteTemporaryFiles($user_id){
         try{
-            if(! Storage::disk('judgements')->deleteDirectory('user_'.$user_id) )
-                throw new \Exception();
+            usleep(500000);
+            Storage::disk('judgements')->deleteDirectory('user_'.$user_id);
+            usleep(500000);
+
+            /*$idx = 0;
+            while( ( !Storage::disk('judgements')->deleteDirectory('user_'.$user_id) ) && ( $idx <= 5 ) ){
+                $idx++;
+            }*/
+            /*if( !File::deleteDirectory(storage_path('/judgments/user_'.$user_id)) )
+                throw new \Exception();*/
         }catch(\Exception $e){
-            dd('no sé porque pero a veces valgo versh borrando los archivos, pero me he dado cuenta de que no valgo versh totalemente, al parecer solo no borro las carpetas chido, pero los archivos que contienen si se van alv');
             self::$RESULTS["judgment"] = self::$VERDICTS['IE'];
         }
     } 

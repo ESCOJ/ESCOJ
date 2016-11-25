@@ -21,7 +21,7 @@
 								<li><a data-toggle="tab" href="#submit">Submit</a></li>
 							@endif
 						@endcan
-						<li><a data-toggle="tab" href="#clarifications">Clarifications</a></li>
+						<!--<li><a data-toggle="tab" href="#clarifications">Clarifications</a></li>-->
 						<li><a data-toggle="tab" href="#scoreboard" onclick = "showScoreBoard({!! $contest->id !!})">ScoreBoard</a></li>
 				</ul>
 			</div>
@@ -56,10 +56,10 @@
 					@endif
 				@endcan
 
-				<!--clarifications tab-->
+				<!--clarifications tab
 				<div id="clarifications" class="tab-pane fade">
 					hola 2
-				</div>
+				</div>-->
 
 				<!--ranking tab-->
 				<div id="scoreboard" class="tab-pane fade">

@@ -55,9 +55,9 @@
                                         <th style="text-align: center;">User</th>
                                         <th style="text-align: center;">Problem</th>
                                         <th style="text-align: center;">Judgement</th>
-                                        <th style="text-align: center;">Time</th>
-                                        <th style="text-align: center;">Mem</th>
-                                        <th style="text-align: center;">Size</th>
+                                        <th style="text-align: center;">Time<small> (ms)</small></th>
+                                        <th style="text-align: center;">Mem<small> (kb)</small></th>
+                                        <th style="text-align: center;">Size<small> (b)</small></th>
                                         <th style="text-align: center;">Lang</th>
 
                                     </tr>

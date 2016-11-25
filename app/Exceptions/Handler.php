@@ -5,7 +5,7 @@ namespace ESCOJ\Exceptions;
 use Exception;
 use Illuminate\Auth\AuthenticationException;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
-
+use Illuminate\Session\TokenMismatchException;
 class Handler extends ExceptionHandler
 {
     /**
@@ -44,6 +44,10 @@ class Handler extends ExceptionHandler
      */
     public function render($request, Exception $exception)
     {
+        if ($exception instanceof TokenMismatchException) {
+            flash('"Your session has expired, please try again. In the future, reload the login page if it has been open for several hours.','warning')->important();
+            return redirect()->route('welcome');
+        }
         return parent::render($request, $exception);
     }
 

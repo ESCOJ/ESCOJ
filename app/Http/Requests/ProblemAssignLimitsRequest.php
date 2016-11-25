@@ -59,6 +59,12 @@ class ProblemAssignLimitsRequest extends FormRequest
                 $messages['limits.' .$key. '.ttl_multiplier.numeric'] = 'The Total Time Limit Multiplier ' . $language . 'must be a number.';
                 $messages['limits.' .$key. '.ml_multiplier.numeric'] = 'The Memory Limit Multiplier ' . $language . 'must be a number.';
                 $messages['limits.' .$key. '.sl_multiplier.numeric'] = 'The Source Limit Multiplier ' . $language . 'must be a number.';
+
+                $messages['limits.' .$key. '.tlpc_multiplier.between'] = 'The Time Limit Per Case Multiplier ' . $language . 'must be between :min and :max.';
+                $messages['limits.' .$key. '.ttl_multiplier.between'] = 'The Total Time Limit Multiplier ' . $language . 'must be between :min and :max.';
+                $messages['limits.' .$key. '.ml_multiplier.between'] = 'The Memory Limit Multiplier ' . $language . 'must be between :min and :max.';
+                $messages['limits.' .$key. '.sl_multiplier.between'] = 'The Source Limit Multiplier ' . $language . 'must be between :min and :max.';
+
             }
 
             $messages['limits.' .$key. '.tlpc.required'] = 'The Time Limit Per Case field ' . $language . 'is required.';

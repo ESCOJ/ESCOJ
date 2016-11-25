@@ -36,7 +36,7 @@ class ContestController extends Controller
                                 LanguageInterface $language){
 
         $this->middleware('auth', ['except' => ['index'] ]);
-        $this->middleware('adminProblemSetterOrCoach', ['except' => ['index','show', 'showProblem','showJudgments','showScoreBoard', 'getUsersToScoreBoard'] ]);
+        $this->middleware('adminProblemSetterOrCoach', ['except' => ['index','show', 'showProblem','showJudgments','showScoreBoard', 'getUsersToScoreBoard','getLanguages'] ]);
         $this->middleware('contestAuthorize', ['only' => ['edit', 'update', 'destroy'] ]);
         
         $this->organization = $organization;
@@ -54,7 +54,6 @@ class ContestController extends Controller
      */
     public function index(Request $request)
     {
-    	//dd(date_format(date_create(),"Y-m-d H:i:s"));
         if( $request->has('name') or $request->has('organization') or $request->has('time') )
             $contests = $this->contest->getAllPaginateFiltered(5, $request->all());   
         else
@@ -197,10 +196,17 @@ class ContestController extends Controller
             $this->contest->attach($id, Auth::user()->id);
         
 
-        $languages = $this->language->getKeyValueAll('id','name');
         $problems_map = array();
-        foreach($contest->problems()->orderBy('letter_id')->get() as $problem)
+        $flag = true;
+        foreach($contest->problems()->orderBy('letter_id')->get() as $problem){
+
+            if($flag){
+                $languages = $this->problem->getKeyValueAllLanguages('id','name',$problem->id);
+            $flag = false;
+            }
+
             $problems_map[$problem->id] = $problem->pivot->letter_id;
+        }
 
         return view('contest.show',['contest' => $contest , 'in_contest' => true, 'languages' => $languages,
                                     'problems_map' => $problems_map, 'contest_type' => $contest_type]);
@@ -215,9 +221,11 @@ class ContestController extends Controller
     {
         $contest = $this->contest->findById($contest_id);
         $problem = $this->problem->findById($problem_id);
+        $contest_type = $this->getContestStatus($contest->start_date, $contest->end_date);
         if($request->ajax()){
             return response()->json(view('contest.partials.show_contest.problem',
-                                            ['problem' => $problem, 'contest' => $contest])->render());
+                                            ['problem' => $problem, 'contest' => $contest, 
+                                            'contest_type' => $contest_type])->render());
         }
     }
 
@@ -277,7 +285,7 @@ class ContestController extends Controller
         $users = $this->contest->getAllUsersWithJudgmentsByContest( 
                                     $this->getContestDataToFilterJudgmentsAndScoreBoard($contest_id) 
                                 );
-        $format = collect(['avatar', 'nickname', 'problems'])->merge(['time','AC']);
+        $format = collect(['avatar', 'nickname', 'country', 'problems'])->merge(['time','AC']);
         
         $users_collection = collect();
 
@@ -295,7 +303,7 @@ class ContestController extends Controller
                 $status = 'no attempted';
                 $min = 0;
                 $judgments_accepteds = $judgments->where('judgment','Accepted');
-
+                $attempts = 0;
                 if($judgments_accepteds->count() > 0){
                         $attempts = $judgments->where('submitted_at', '<',$judgments_accepteds->first()->submitted_at)->count();
                         $status = 'accepted';
@@ -311,10 +319,9 @@ class ContestController extends Controller
                 $problems_collection[$problem_letter] = $problems_collection[$problem_letter]->combine([$status, $attempts, $min]);
             }
 
-            $users_collection->push( $format->combine([$user->avatar, $user->nickname, 'problems' => $problems_collection,
+            $users_collection->push( $format->combine([$user->avatar, $user->nickname, $user->country,'problems' => $problems_collection,
                                     $time, $accepteds]) );
         }
-        
 
         return  $users_collection->sort( function ($a, $b) {
                                                 if($a['AC'] === $b['AC']){
@@ -354,6 +361,20 @@ class ContestController extends Controller
         $end_date = strtotime($ed_date); 
         $now = strtotime("now");
         return  ( ($start_date <= $now)  and ($end_date > $now) ) ? 'current' : (( $start_date > $now) ? 'future': 'past'); 
+    }
+
+    /**
+     * Retrieve the languages of the specified problem.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function getLanguages(Request $request,$problem_id)
+    {
+        $languages = $this->problem->getAllLanguages($problem_id);
+        if($request->ajax()){
+              return response()->json( $languages );
+
+        }
     }
 
 

@@ -9,6 +9,19 @@ $("#country").change(event => {
 	});
 });
 
+$(document).ready(function(){
+    if( $('#country').val() >= 1 ){
+    	$("#institution").empty();
+		$.get(`http://www.escoj.com/contestant/institutions/`+$('#country').val(), function(res){
+			res.forEach(element => {
+				$("#institution").append(`<option value=${element.id}> ${element.name} </option>`);
+			});
+	         $("#institution").chosen({ width: "95%" });
+			 $("#institution").trigger("chosen:updated");
+		});
+    }
+});
+
 /*	
 $("#country").change(function(event){
 	alert('institutions');

@@ -28,7 +28,8 @@
 
                     <!--Avatar and Nickname-->
                     <td>
-                        <img src="{{ asset('images/user_avatar/'. $user['avatar']) }}" class="img-circle" style=" width:28px; height:28px; position: relative; left: -10px;"> 
+                        <img src="{{ asset('images/flags/'. $user['country']->flag) }}"  style=" width:30px; height:20px; position: relative; left: -30px;"> 
+                        <img src="{{ asset('images/user_avatar/'. $user['avatar']) }}" class="img-circle" style=" width:28px; height:28px; position: relative; left: -15px;"> 
                         <span class="label label-primary">{{ $user['nickname']}}</span>
                     </td>
                     

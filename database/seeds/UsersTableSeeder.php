@@ -16,14 +16,13 @@ class UsersTableSeeder extends Seeder
         User::create(array(
             'name' => 'Admin',
             'last_name' => 'ESCOJ',
-            'nickname' => 'papilord',
+            'nickname' => 'admin',
             'email' => 'esc.onlinejudge@gmail.com',
             'password' => bcrypt('123456'),
             'register_date' => date("Y/m/d"),
             'role' => 'admin',
             'institution_id' => 1,
-            'institution_id' => 1,
-            'country_id' => 1,
+            'country_id' => 139,
             'avatar' => 'user_default.png',
             'confirmed' => 1,
 
