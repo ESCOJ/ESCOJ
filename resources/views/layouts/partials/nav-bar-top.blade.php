@@ -104,7 +104,12 @@
 								</li>
 								<li>
 									<a href="{{ route('problem.problems') }}">
-									<i class="fa fa-folder-open" aria-hidden="true"></i> Problems
+										<i class="fa fa-folder-open" aria-hidden="true"></i> Problems
+									</a>
+								</li>
+								<li>
+									<a href="{{ route('source.index') }}">
+										<i class="fa fa-folder-open" aria-hidden="true"></i> Sources
 									</a>
 								</li>
  							@endif
@@ -118,7 +123,18 @@
 								<i class="fa fa-folder-open" aria-hidden="true"></i> Contests
 								</a>
 							</li>
+							<li>
+								<a href="{{ route('organization.index') }}">
+									<i class="fa fa-folder-open" aria-hidden="true"></i> Organizations
+								</a>
+							</li>
+
 							@if(Auth::user()->role === 'admin')
+								<li>
+									<a href="{{ route('institution.index') }}">
+										<i class="fa fa-folder-open" aria-hidden="true"></i> Institutions
+									</a>
+								</li>
 								<li>
 									<a href="{{ route('user.users') }}">
 										<i class="fa fa-exchange" aria-hidden="true"></i> Change user role
