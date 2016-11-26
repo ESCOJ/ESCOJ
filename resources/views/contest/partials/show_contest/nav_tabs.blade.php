@@ -27,7 +27,7 @@
 			</div>
 			<br>
 
-			<div class="tab-content content-nav">
+			<div id="divalltabs" class="tab-content content-nav">
 				
 				<!--summary tab-->
 				<div id="summary" class="tab-pane fade in active">

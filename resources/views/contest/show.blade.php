@@ -48,6 +48,8 @@
     {!!Html::script('plugins/ace/src-noconflict/ace.js') !!}
     {!!Html::script('plugins/fileinput/js/fileinput.min.js')!!}
     {!!Html::script('plugins/chosen/chosen.jquery.js')!!}
+    {!! Html::script('plugins/pace/js/loadingoverlay.js') !!}
+
     
     <script type="text/javascript">
         var clock;
@@ -130,5 +132,28 @@
              opts["width"] = '100%';
         }
         $(".select-chosen").chosen(opts);
+    </script>
+
+    <script type="text/javascript">
+        
+        $(document).ajaxStart(function(){
+    $("#divalltabs").LoadingOverlay("show", {
+            color           : "rgba(0, 0, 0, .8)",    // String
+            custom          : "",                            // String/DOM Element/jQuery Object
+            fade            : true,                          // Boolean/Integer/String/Array
+            fontawesome     : "",                            // String
+            image           : "{{ asset('plugins/pace/js/box.gif') }}",   // String
+            imagePosition   : "center center",               // String
+            maxSize         : "100px",                       // Integer/String
+            minSize         : "50",                        // Integer/String
+            resizeInterval  : 50,                            // Integer
+            size            : "50%",                         // Integer/String
+            zIndex          : undefined                     // Integer
+
+        });
+});
+$(document).ajaxStop(function(){
+    $("#divalltabs").LoadingOverlay("hide");
+});
     </script>
 @endsection
