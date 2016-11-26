@@ -31,11 +31,11 @@ class ProblemsTableSeeder extends Seeder
 		$prob->tags()->sync([1 => ['level' => 1],2 => ['level' => 2]]);
 		$prob->languages()->sync([1,2]);
 
-    	for ($i=1; $i <= 10 ; $i++) { 
+    	for ($i=2; $i <= 5 ; $i++) { 
     		$prob =  Problem::create(array(
 			    'name' => 'Problema ' . $i,
 			    'source_id' => '1',
-			    'points' => '50' .$i,
+			    'points' => '50',
 			    'description' => 'Este problema si que rifa machin <br> <strong>hola que hace</strong><br><p>ferras ya estuvo</p>',
 			    'input_specification' => 'mete lo que sea',
 			    'output_specification' => 'saldra lo que sea',
