@@ -31,7 +31,7 @@ class ProblemsTableSeeder extends Seeder
 		$prob->tags()->sync([1 => ['level' => 1],2 => ['level' => 2]]);
 		$prob->languages()->sync([1,2]);
 
-    	for ($i=2; $i <= 5 ; $i++) { 
+    	for ($i=2; $i <= 4 ; $i++) { 
     		$prob =  Problem::create(array(
 			    'name' => 'Problema ' . $i,
 			    'source_id' => '1',

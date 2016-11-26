@@ -44,6 +44,7 @@
 @section('scripts')
     {!!Html::script('plugins/ace/src-noconflict/ace.js') !!}
     {!!Html::script('plugins/fileinput/js/fileinput.min.js')!!}
+    {!! Html::script('plugins/pace/js/jquery.loading.block.js') !!}
 
     <script type="text/javascript">
         $("#code").fileinput({
@@ -71,12 +72,9 @@
         editor.setTheme("ace/theme/tomorrow_night_bright");
         editor.session.setMode("ace/mode/c_cpp");
 
-        function clearBox()
-        {
+        function clearBox(){
             var editor = ace.edit("editor");
             editor.setValue("");
-            //To get the code from the editor
-            //var code = editor.getValue();
         }
 
         $("#language").change(event => {
@@ -91,6 +89,22 @@
         function submitAndCopyTheCode() {
             $("#your_code_in_the_editor").val(editor.getValue());
             document.getElementById("form_judgment").submit();
+
+            $.loadingBlockShow({
+                imgPath: '{{ asset('plugins/pace/js/box.gif') }}',
+                text: 'Please wait, evaluating your submission...',
+                style: {
+                    color: '#2E6DA4',
+                    position: 'fixed',
+                    width: '100%',
+                    height: '100%',
+                    background: 'rgba(0, 0, 0, .8)',
+                    left: 0,
+                    top: 0,
+                    zIndex: 10000
+                }
+            });
+
         }
 
     </script>
