@@ -6,7 +6,7 @@
 				<li><a href="{{ route('problem.index') }}">Problems <span class="sr-only">(current)</span></a></li>
 				<li><a href="{{ route('judgment.index') }}">Judgments</a></li>
 				<li><a href="{{ route('contest.index') }}">Contests</a></li>
-				<li><a href="#">Ranks</a></li>
+				
 			@endif
 			<!--_________________________________Aqui_______________________________________-->
 			@if (Auth::guest())
