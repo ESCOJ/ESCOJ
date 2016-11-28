@@ -46,7 +46,7 @@ class CreateContestsTable extends Migration
             $table->string('letter_id',1); // indicates the letter_id of a problem
 
             $table->foreign('contest_id')->references('id')->on('contests')->onDelete('cascade');
-            $table->foreign('problem_id')->references('id')->on('problems');
+            $table->foreign('problem_id')->references('id')->on('problems')->onDelete('cascade');
         });
 
         //Pivot table to manage the relationship many to many between contests and users

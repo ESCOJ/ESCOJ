@@ -18,7 +18,7 @@ use ESCOJ\Http\Requests\ProblemAssignDatasetsRequest;
 use ESCOJ\Constants;
 use Validator;
 use Storage;
-
+use File;
 class ProblemController extends Controller
 {
 
@@ -331,15 +331,17 @@ class ProblemController extends Controller
      */
     public function destroy($id)
     {
-        //dd('shi');
-
-        $this->problem->delete($id);
-        if(Storage::disk('datasets')->deleteDirectory('problem_'.$id)){
+        try{
+            $this->problem->delete($id);
+            //if(Storage::disk('datasets')->deleteDirectory('problem_'.$id)){
+            File::deleteDirectory(storage_path('/datasets/problem_'.$id));
             flash('The problem has been removed successfully.','success')->important();
-        }
-        else
+            return back();
+        }catch(\Exception $e){
+            dd($e->getMessage());
             flash('The problem could not be removed.','warning')->important();
-        return back();
+            return back();
+        }
     }
 
     /**
