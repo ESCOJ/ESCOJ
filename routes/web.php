@@ -105,7 +105,8 @@ Route::resource('organization','OrganizationController');
 Route::resource('institution','InstitutionController');
 
 
-
+//The ranks Routes
+Route::resource('ranks','RanksController');
 
 //Other Routes
 Route::get('/', function () {

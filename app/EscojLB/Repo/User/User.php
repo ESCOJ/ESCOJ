@@ -16,7 +16,7 @@ class User extends Authenticatable
      * @var array
      */
     protected $fillable = [
-        'name','last_name','nickname', 'email', 'password','register_date','role','institution_id','country_id','points','avatar','confirmation_code', 'provider','provider_id',
+        'name','last_name','nickname', 'email', 'password','register_date','role','institution_id','country_id','points','avatar','confirmation_code', 'provider','provider_id','submitted','accepted',
     ];
 
     /**
@@ -38,6 +38,10 @@ class User extends Authenticatable
         return $this->belongsTo('EscojLB\Repo\Institution\Institution');
     }
 
+    public function rank(){
+        return $this->belongsTo('EscojLB\Repo\Ranks\Ranks');
+    }
+    
     public function contests(){
         return $this->belongsToMany('EscojLB\Repo\Contest\Contest');
     }

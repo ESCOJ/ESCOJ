@@ -4,9 +4,9 @@
 			<li><a href="{{ url('/') }}" style="height:50px;"><img src="{{ asset('images/escoj7.png') }}" style=" width:210px; height:50px; position: relative; top:-14px; left: -30px;"></a></li>
 			@if(! isset($in_contest))
 				<li><a href="{{ route('problem.index') }}">Problems <span class="sr-only">(current)</span></a></li>
-				<li><a href="{{ route('judgment.index') }}">Judgments</a></li>
+				<li><a href="{{ route('judgment.index') }}">Judgements</a></li>
 				<li><a href="{{ route('contest.index') }}">Contests</a></li>
-				
+				<li><a href="{{ route('ranks.index') }}">Ranks</a></li>
 			@endif
 			<!--_________________________________Aqui_______________________________________-->
 			@if (Auth::guest())

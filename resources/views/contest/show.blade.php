@@ -31,7 +31,7 @@
                     <h1 class="text-center" style="margin-top: -10px;"><strong>{{ $contest->name }}</strong></h1>
                     <div class="clock" id="clock" data-date= "{{ ($contest_type == 'future' )? $contest->start_date:$contest->end_date }}" style="margin-left: 24em; margin-top: -1em;"></div>
                     @if($contest_type == 'future')
-                        <div class="text-center"><h3><label class="label label-primary">Remaining time for the contest start!!</label></h3></div>
+                        <div class="text-center"><h3><label class="label label-primary">Remaining time for the contest start</label></h3></div>
                     @elseif($contest_type == 'past')
                         <div class="text-center"><h3><label class="label label-primary">The contest is over!</label></h3></div>
                     @endif

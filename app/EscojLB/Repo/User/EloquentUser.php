@@ -33,6 +33,8 @@ class EloquentUser implements UserInterface {
             'register_date' => date("Y/m/d"),
             'institution_id' => $data['institution'],
             'country_id' => $data['country'],
+            'submitted' => $data['submitted'],
+            'accepted' => $data['accepted'],
             'avatar' => $avatar,
             'confirmation_code' => $confirmation_code,
             'provider' => $provider['provider'],
@@ -214,4 +216,17 @@ class EloquentUser implements UserInterface {
       return $this->user->pluck($value,$key);
     }
 
+    /**
+     * Get all User order points
+     *
+     * @return array    Associative Array with all User
+     */
+    public function getUsersOrderByPoints()
+    {
+        return $this->user->orderBy('points','desc')->paginate(5);
+    }
+
+    public function getUserByPoints($nickname){
+        return $this->user->where('nickname',$nickname)->paginate(5);
+    }
 }

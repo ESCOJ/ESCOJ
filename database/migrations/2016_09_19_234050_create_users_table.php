@@ -23,6 +23,8 @@ class CreateUsersTable extends Migration
             $table->string('email')->unique();
             $table->string('password');
             $table->date('register_date');
+            $table->integer('submitted')->unsigned()->default(0);
+            $table->integer('accepted')->unsigned()->default(0);
             $table->enum('role',['contestant', 'coach', 'problem_setter', 'admin'])->default('contestant');
             $table->integer('institution_id')->unsigned();
             $table->integer('country_id')->unsigned();

@@ -131,5 +131,10 @@ interface UserInterface {
      */
     public function getKeyValueAll($key,$value);
 
-
+    /**
+     * Get all User order points
+     *
+     * @return array    Associative Array with all User
+     */
+    public function getUsersOrderByPoints();
 }

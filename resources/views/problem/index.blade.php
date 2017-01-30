@@ -91,7 +91,7 @@
                             </table>
 
                             <div style="text-align: center;">
-                                {{ $problems->appends(Request::input())->render() }}
+                                {{ $users->appends(Request::input())->render() }}
                             </div>
 
                         </div>

@@ -22,6 +22,8 @@ use EscojLB\Repo\Organization\EloquentOrganization;
 use EscojLB\Repo\Organization\Organization;
 use EscojLB\Repo\Contest\EloquentContest;
 use EscojLB\Repo\Contest\Contest;
+use EscojLB\Repo\Ranks\EloquentRanks;
+use EscojLB\Repo\Ranks\Ranks;
 
 use Illuminate\Support\ServiceProvider;
 
@@ -118,6 +120,13 @@ class RepoServiceProvider extends ServiceProvider
         {
             $contest =  new EloquentContest(new Contest, $app->make('EscojLB\Repo\Organization\OrganizationInterface'));
             return $contest;
+
+        });
+
+        $app->bind('EscojLB\Repo\Ranks\RanksInterface', function($app)
+        {
+            $rank =  new EloquentRanks(new Ranks, $app->make('EscojLB\Repo\User\UserInterface'));
+            return $rank;
 
         });
 
